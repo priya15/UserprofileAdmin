@@ -27,8 +27,10 @@ class User extends BaseController
     public function index()
     {
 
-        $countUser = count($this->db->get('tbl_driver')->result_array());
+        $countUser = count($this->db->get('tbl_users')->result_array());
+        $countDriver = count($this->db->get('tbl_driver')->result_array());
         $data['countUser'] = $countUser;
+        $data['countDriver'] = $countDriver;
 
         $monthlySale = $this->db->get('tbl_driver_amount_transfer')->result_array();
         $data['verifyDriver'] = count($this->db->get_where('tbl_driver',array('RCStatus'=>2,"insuranceStatus"=>2,"vehicleImageStatus"=>2))->result_array());

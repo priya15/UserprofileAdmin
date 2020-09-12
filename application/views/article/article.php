@@ -2,7 +2,8 @@
   <div class="container-fluid">
 
 <!-- Page Heading -->
-<h1 class="h3 mb-2 text-gray-800">Auto Load  #Article List </h1>
+<h1 class="h3 mb-2 text-gray-800">Auto Load  #Article List  <a href="<?php echo base_url() ?>AddArticle" class="btn btn-sm bg-gradient-primary" style="float:right;font-weight:bold;">Add Article</a></h1> 
+
 <div class="row">
             <div class="col-md-12">
               
@@ -41,7 +42,6 @@
 <div class="card shadow mb-4">
   <div class="card-header py-3">
     <h6 class="m-0 font-weight-bold text-primary" style="float:left;font-size: 24px;">Article List</h6>
-<a href="<?php echo base_url() ?>AddArticle" class="btn btn-primary" style="margin-left:20px">Add Article</a>
     <form action="<?php echo base_url() ?>ArticleListing" method="POST" id="searchList" style="float:right">
                            
                        
@@ -112,11 +112,12 @@
                       
                       
                 <td  class="text-center">
-                                      <a href="void:main(0)" class="btn btn-sm bg-gradient-danger" onclick="deleteFunction(<?php echo $record->id; ?>)" title="Delete"><i class="fa fa-trash-o"></i>
-                           </a>
-                                     <a class="btn btn-sm bg-gradient-success" href="<?php echo base_url('articleEditDetail/').$record->id; ?>">
-                        <i class="fa fa-eye"></i>
+                                    <a class="btn btn-sm bg-gradient-success" href="<?php echo base_url('articleEditDetail/').$record->id; ?>">
+                        <i class="fa fa-edit"></i>
                     </a>
+                             <a href="void:main(0)" class="btn btn-sm bg-gradient-danger" onclick="deleteFunction(<?php echo $record->id; ?>)" title="Delete"><i class="fa fa-trash-o"></i>
+                           </a>
+                   
 
                             
                 </td>

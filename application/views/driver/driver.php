@@ -86,7 +86,6 @@
             <th>City</th>
             <th>State</th>
             <th>Wallet Balance</th>
-            <th>Verify </th>
             <th>CreatedAt</th>
             <th class="text-center">Actions</th>
           </tr>
@@ -99,7 +98,6 @@
             <th>City</th>
             <th>State</th>
             <th>Wallet Balance</th>
-            <th>Verify</th>
             <th>CreatedAt</th>
             <th class="text-center">Actions</th>
           </tr>
@@ -121,12 +119,6 @@
           <td><?php echo $record->city ?></td>
           <td><?php if($record->state) echo $record->state; else echo "Not Updated Yet"; ?></td>
           <td><?php if($record->walletBalance) echo "₹ ".$record->walletBalance; else echo "Not Updated Yet"; ?></td>
-          <td><?php if(($record->RCStatus == 0)&&($record->insuranceStatus == 0)&&($record->vehicleImageStatus == 0)) echo "Not Uploded";
-          if(($record->RCStatus == 1)&&($record->insuranceStatus == 1)&&($record->vehicleImageStatus == 1)) echo "Not Verfiy";
-          if(($record->RCStatus == 2)&&($record->insuranceStatus == 2)&&($record->vehicleImageStatus == 2)) echo "Verify";
-         
-                   
-                                 ?></td>
           <td><?php if($record->created_at) echo date('d-m-y h:ia',strtotime($record->created_at));
                        ?></td>
         
@@ -143,7 +135,7 @@
                         <i class="fa fa-eye"></i>
                     </a>
                     
-                    <a href="void:main(0)" class="btn btn-sm bg-gradient-success" onclick="deleteFunction(<?php echo $record->id; ?>)" title="Delete"><i class="fa fa-trash-o"></i>
+                    <a href="void:main(0)" class="btn btn-sm bg-gradient-danger" onclick="deleteFunction(<?php echo $record->id; ?>)" title="Delete"><i class="fa fa-trash-o"></i>
                            </a>
                             
                 </td>

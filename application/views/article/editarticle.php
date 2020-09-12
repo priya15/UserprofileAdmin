@@ -4,7 +4,7 @@
 <!-- Page Heading -->
 <h1 class="h3 mb-2 text-gray-800">Auto Load  #Article List </h1>
 <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-8">
 
         <form class="user" method="post" action="<?=base_url('editarticledata')?>" enctype="multipart/form-data">
                     <div class="form-group">
@@ -12,13 +12,7 @@
                       <input type="hidden" name="id" value="<?php echo $article[0]["id"]?>">
                     </div>
                     <div class="form-group">
-                      <textarea name="desc" class="form-control " id="editor2" width="400" height="400"><?php echo $article[0]["desc"]?></textarea>
-                    </div>
-                    <div class="form-group">
-                      <input type="file"  style='border-radius: 10rem !important;' name="image" aria-describedby="emailHelp"  class="btn btn-default btn-file">
-                      <?php if($article[0]["image"]!=""){ ?>
-                      <img src="<?php echo base_url()?>assets/articleimg/<?php echo $article[0]["image"]?>" height="300" width="300">
-                 <?php    }?>
+                      <textarea name="desc" class="form-control " id="editor2" style='border-radius: 10rem !important;' width="400" height="400"><?php echo $article[0]["desc"]?></textarea>
                     </div>
                     <div class="form-group">
                       <input type="text" class="form-control form-control-user" style='border-radius: 10rem !important;' name="link" aria-describedby="emailHelp"  placeholder="Enter link" value="<?php echo $article[0]["link"]?>">

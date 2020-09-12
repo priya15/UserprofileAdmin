@@ -19,6 +19,18 @@ class User_Webservice_model extends CI_Model
         // echo $this->db->last_query();
         return $query->row();
     }
+function checkEmailExists($email){
+        $this->db->select("*");
+        $this->db->from("tbl_users");
+       
+        $this->db->where("email", $email);   
+        $this->db->where("isDeleted", 0);
+        
+        $query = $this->db->get();
+        // echo $this->db->last_query();
+        return $query->row();
+    }
+
 
     function validateOTP($mobile,$otp){
         $this->db->select("*");

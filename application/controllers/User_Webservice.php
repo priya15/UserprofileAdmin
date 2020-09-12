@@ -124,7 +124,7 @@ class User_Webservice extends CI_Controller {
 		$city = trim($this->input->get_post('city', TRUE));
 		$state = trim($this->input->get_post('state', TRUE));
 		$password = trim($this->input->get_post('password', TRUE));
-		 
+		 $email = trim($this->input->get_post('email', TRUE));
 		$deviceId = trim($this->input->get_post('deviceId', TRUE));
 		$deviceType = trim($this->input->get_post('deviceType', TRUE));
 		$phone = trim($this->input->get_post('mobile', TRUE));
@@ -138,6 +138,16 @@ class User_Webservice extends CI_Controller {
 		}
 		
 			$data = $this->User_Webservice_model->checkMobileExists($phone);
+			if($email!=""){
+			$dataemail = $this->User_Webservice_model->checkEmailExists($email);
+		}
+		//print_r($dataemail);die();
+		if($dataemail!=""){
+			$result['status'] = 0;
+			$result['responseMessage'] = "Email number Already Exits";
+			echo json_encode($result);die();
+		}
+
 			// print_r($data);die;
 			//var_dump($flag); die;
 			if($data == ""){
@@ -147,7 +157,7 @@ class User_Webservice extends CI_Controller {
 				// $msg = "".$code." is your Verification OTP. Do not share this code with anyone else.";
 				// $this->sendSMS($phoneCoun,$msg,$code);
 				// $code = '1111';
-				$tableData = array('name'=>$name,'city'=>$city,'state'=>$state,'phone'=>$phone,"phoneOtp"=>$code,"languageType"=>$languageType,'password'=>md5($password),'created_at'=>date('Y-m-d H:i:s'));
+				$tableData = array('name'=>$name,'city'=>$city,'state'=>$state,'phone'=>$phone,"phoneOtp"=>$code,"languageType"=>$languageType,"email"=>$email,'password'=>md5($password),'created_at'=>date('Y-m-d H:i:s'));
 				$insert_id = $this->User_Webservice_model->insert('tbl_users',$tableData);
 				if($insert_id){
 
@@ -174,6 +184,35 @@ class User_Webservice extends CI_Controller {
 			}
 	
 		echo json_encode($result);
+    }
+
+    public function resendOtp(){
+    	$phone = trim($this->input->get_post('mobile', TRUE));
+      
+        //  1-> english 2->hindi 
+		$apiKey = trim($this->input->get_post('apiKey', TRUE));
+// 		echo API_KEY;die;
+		if($apiKey != API_KEY){
+			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
+		}
+		
+			$data = $this->User_Webservice_model->checkMobileExists($phone);
+			if($data!=""){
+				$code = '1111';
+				// $code=rand(1000,9999);
+				// $phoneCoun = '91'.$phone;
+				// $msg = "".$code." is your Verification OTP. Do not share this code with anyone else.";
+				// $this->sendSMS($phoneCoun,$msg,$code);
+			    $result['status'] = 1;
+					$result['responseMessage'] = "Otp resend";
+					$result["otp"]=$code;
+			}
+			else
+			{
+				$result['status'] = 0;
+					$result['responseMessage'] = "Mobie not found.";
+			}
+			echo json_encode($result);
     }
     
      
@@ -545,6 +584,39 @@ class User_Webservice extends CI_Controller {
             $result['status'] = 1;
 			$result['responseMessage'] = "All Data";
 			$result['AllData'] = $data;
+        }
+        else{
+            $result['status'] = 0;
+			$result['responseMessage'] = "No Address Found";
+			
+        }
+
+        echo json_encode($result);
+    }
+
+
+    function delete_address(){
+    	 $apiKey   = trim($this->input->get_post('apiKey', TRUE));
+        $userId    = trim($this->input->get_post('userId', TRUE));
+        $addressId = trim($this->input->get_post('addressId', TRUE));
+        $deviceId  = trim($this->input->get_post('deviceId', TRUE));
+	 
+
+		if($apiKey != API_KEY){
+			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
+        }
+        
+
+       $this->checkDeviceToken($userId,$deviceId);
+
+        $data = $this->User_Webservice_model->getData('tbl_address',array('userId'=>$userId,"addressId"=>$addressId));
+        //print_r($data);die();
+        if($data)
+        {
+        	$this->db->delete('tbl_address',array('userId'=>$userId,"addressId"=>$addressId));
+            $result['status'] = 1;
+			$result['responseMessage'] = "delete Data success";
+			$result['addressId'] = $addressId;
         }
         else{
             $result['status'] = 0;

@@ -87,7 +87,7 @@ class AllArticleListing extends BaseController
         $desc  = $this->input->post("desc");
         $link  = $this->input->post("link");
         $filename="";
-        if (isset($_FILES['image']['name']) && $_FILES['image']['name'] != "")
+       /* if (isset($_FILES['image']['name']) && $_FILES['image']['name'] != "")
             {
                     
                 $filename = explode('.', $_FILES['image']['name']);
@@ -104,7 +104,7 @@ class AllArticleListing extends BaseController
                     $data1 = $this->upload->data();
                     $arr['profilePic']  = $filename; 
                   }
-              }
+              }*/
               $data = array("title"=>$title,"desc"=>$desc,"image"=>$filename,"link"=>$link,"created_at"=>date("Y-m-d h:i:s"));
               $this->db->insert("tbl_article",$data);
               redirect("ArticleListing");
@@ -118,7 +118,7 @@ class AllArticleListing extends BaseController
          $id  = $this->input->post("id");
 
         $filename="";
-        if (isset($_FILES['image']['name']) && $_FILES['image']['name'] != "")
+        /*if (isset($_FILES['image']['name']) && $_FILES['image']['name'] != "")
             {
                     
                 $filename = explode('.', $_FILES['image']['name']);
@@ -136,7 +136,7 @@ class AllArticleListing extends BaseController
                     $arr['profilePic']  = $filename; 
                   }
               }
-              $data = array("title"=>$title,"desc"=>$desc,"image"=>$filename,"link"=>$link,"created_at"=>date("Y-m-d h:i:s"));
+*/              $data = array("title"=>$title,"desc"=>$desc,"image"=>$filename,"link"=>$link,"created_at"=>date("Y-m-d h:i:s"));
               $where["id"]=$id;
               $this->db->update("tbl_article",$data,$where);
                             redirect("ArticleListing");

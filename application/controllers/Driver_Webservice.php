@@ -163,6 +163,39 @@ class Driver_Webservice extends CI_Controller {
 	
 		echo json_encode($result);
     }
+
+
+        public function resendOtp(){
+    	$phone = trim($this->input->get_post('mobile', TRUE));
+      
+        //  1-> english 2->hindi 
+		$apiKey = trim($this->input->get_post('apiKey', TRUE));
+// 		echo API_KEY;die;
+		if($apiKey != API_KEY){
+			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
+		}
+		
+			$data = $this->Driver_Webservice_model->checkMobileExists($phone);
+                 if($data != ""){
+				// $code = '1111';
+				$code=rand(1000,9999);
+				$phoneCoun = '91'.$phone;
+				$msg = "".$code." is your Verification OTP. Do not share this code with anyone else.";
+				$this->sendSMS($phoneCoun,$msg,$code);
+               $this->db->update("tbl_driver",array("phoneOtp"=>$code),array("phone"=>$phone,"id"=>$data->id));
+				    $result['status'] = 1;
+					$result['responseMessage'] = "Otp resend";
+					$result["otp"]=$code;
+			}
+			else
+			{
+				$result['status'] = 0;
+					$result['responseMessage'] = "Mobie not found.";
+			}
+			echo json_encode($result);
+    }
+    
+
     
      
 
@@ -186,10 +219,18 @@ class Driver_Webservice extends CI_Controller {
 		 
 		if($checkLoginUser){
 			$this->updateDeviceInfo($deviceId,$deviceType,$firebasetoken,$phone);
+		$profiledata = 	$this->db->select("*")->from("tbl_driver")->where("id",$checkLoginUser->id)->get()->result_array();
+		//print_r($profiledata);die();
+		$document_status=0;
+	if(($profiledata[0]["RCStatus"]==1)&&($profiledata[0]["insuranceStatus"]==1)&&($profiledata[0]["vehicleImageStatus"]==1)){
+		$document_status=1;
+	}
+		//print_r($profiledata);die();
 		
 			$result['status'] = 1;
 			$result['responseMessage'] = "Login Successfully";
 			$result['driverData'] =  $this->Driver_Webservice_model->getUserProfile($checkLoginUser->id);
+			$result['document_status'] =$document_status;
 			// if(!empty($result['userData']->userProfile))
 			// 	$result['userData']->userProfile = base_url('assets/profileImage/'.$result['userData']->userProfile);
  		}else{

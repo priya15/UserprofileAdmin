@@ -79,6 +79,10 @@ $route['DriversListing'] = "AllDriverListing/DriversListing";
 $route['UsersListing'] = "AllUserListing/UsersListing";
 $route['UsersListing/(:any)'] = "AllUserListing/UsersListing/$1";
 $route['userstatus/(:any)'] = "AllUserListing/userstatus/$1";
+$route['userdelete/(:any)'] = "AllUserListing/userdelete/$1";
+$route['userDetail/(:any)'] = "AllUserListing/userDetail/$1";
+
+
 $route['DriversListing/(:any)'] = "AllDriverListing/DriversListing/$1";
 $route['driverDetail/(:any)'] = "AllDriverListing/driverDetail/$1";
 $route['driverdelete/(:any)'] = "AllDriverListing/driverdelete/$1";
@@ -92,12 +96,26 @@ $route['RideDetail/(:any)'] = "AllRideListing/RideDetail/$1";
 
 
 $route['ArticleListing'] = 'AllArticleListing/ArticleListing';
+$route['ArticleListing/(:any)'] = "AllArticleListing/ArticleListing/$1";
 $route['AddArticle'] = 'AllArticleListing/AddArticle';
 $route['addarticledata'] = 'AllArticleListing/addarticledata';
 $route['deleteArticle/(:any)'] = "AllArticleListing/deleteArticle/$1";
 $route['articleEditDetail/(:any)'] = "AllArticleListing/articleEditDetail/$1";
 $route['editarticledata'] = 'AllArticleListing/editarticledata';
 
+
+$route['VechicleListing'] = 'AllVechicleListing/VechicleListing';
+
+$route['AddVechicle'] = 'AllVechicleListing/AddVechicle';
+$route['AddVechicledata'] = 'AllVechicleListing/AddVechicledata';
+$route['deletevechicle/(:any)'] = "AllVechicleListing/deletevechicle/$1";
+
+$route['vehicleDetails/(:any)'] = "AllVechicleListing/vehicleDetails/$1";
+
+$route['vehicleEditDetails/(:any)'] = "AllVechicleListing/vehicleEditDetails/$1";
+$route['editvechicledata'] = 'AllVechicleListing/editvechicledata';
+
+$route['VechicleListing/(:any)'] = "AllVechicleListing/VechicleListing/$1";
 
 
 

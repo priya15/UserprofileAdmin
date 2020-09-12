@@ -2,7 +2,9 @@
   <div class="container-fluid">
 
 <!-- Page Heading -->
-<h1 class="h3 mb-2 text-gray-800">Auto Load  #User List </h1>
+<h1 class="h3 mb-2 text-gray-800">Auto Load  #Vechicle List 
+<a href="<?php echo base_url() ?>AddVechicle" class="btn btn-sm bg-gradient-primary" style="float:right;font-weight:bold;">Add Vechicle</a></h1> 
+
 <div class="row">
             <div class="col-md-12">
               
@@ -40,22 +42,13 @@
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
   <div class="card-header py-3">
-    <h6 class="m-0 font-weight-bold text-primary" style="float:left;font-size: 24px;">User List</h6>
-
-    <form action="<?php echo base_url() ?>UsersListing" method="POST" id="searchList" style="float:right">
+    <h6 class="m-0 font-weight-bold text-primary" style="float:left;font-size: 24px;">Vechicle List</h6>
+    <form action="<?php echo base_url() ?>VechicleListing" method="POST" id="searchList" style="float:right">
                            
                        
                            <div class="input-group">
 
 
-                           <select class="form-control input-sm" name="dropdownText" id='dropdownText' style="width: 185px;" onchange="this.form.submit()"  >
-                                      <option <?php if($dropdownText == "" || $dropdownText == 'allUsers') echo "selected";?> value="allUsers" selected>All User</option>
-                                      <option <?php if($dropdownText == 'verifyUser') echo "selected";?> value="verifyUser" >Verify user</option>
-                                      <option <?php if($dropdownText == 'unVerifyUser') echo "selected";?> value="unVerifyUser" >Un Verify User</option>
-                                       <option <?php if($dropdownText == 'active') echo "selected";?> value="Active" >Active User</option>
-                                        <option <?php if($dropdownText == 'inactive') echo "selected";?> value="InActive" >InActive User</option>
-                                         <option <?php if($dropdownText == 'newuser') echo "selected";?> value="newuser" >New User</option>
-                                    </select>
                                    
                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <input type="text" name="searchText" value="<?php echo $searchText; ?>" class="form-control input-sm " style="width: 150px;" placeholder="Search"/>
@@ -84,10 +77,9 @@
           <tr>
             <th>id</th>
             <th>Name</th>
-            <th>Phone</th>
-            <th>City</th>
-            <th>State</th>
-            <th>Verify With Phone</th>
+            <th>PricePerKm</th>
+            <th>minPrice</th>
+            <th>maxPrice</th>
 
             <th>CreatedAt</th>
             <th class="text-center">Actions</th>
@@ -97,10 +89,9 @@
         <tr>
             <th>id</th>
             <th>Name</th>
-            <th>Phone</th>
-            <th>City</th>
-            <th>State</th>
-            <th>Verify With Phone</th>
+            <th>PricePerKm</th>
+            <th>minPrice</th>
+            <th>maxPrice</th>
 
             <th>CreatedAt</th>
             <th class="text-center">Actions</th>
@@ -108,51 +99,38 @@
         </tfoot>
         <tbody>
         <?php
-                    if(!empty($userRecords))
+                    if(!empty($VechicleRecords))
                     {
                       $i = 1;
                       
-                        foreach($userRecords as $record)
+                        foreach($VechicleRecords as $record)
                         {
                     ?>
                     <tr>
           
           <td><?php echo "#".$record->id ?></td>
-          <td><?php if($record->name) echo $record->name; else echo "Not Updated Yet"; ?></td>
-          <td><?php if($record->phone) echo $record->phone; else echo "Not Updated Yet"; ?></td>
-          <td><?php echo $record->city ?></td>
-          <td><?php if($record->state) echo $record->state; else echo "Not Updated Yet"; ?></td>
-         
-          <td><?php if($record->phoneVerifyStatus == 0) echo "Not Verify";
-                  if($record->phoneVerifyStatus == 1) echo "<span style='color:green'>Verify</span>";
-                   
-                                 ?></td>
-          <td><?php if($record->created_at) echo date('d-m-y h:ia',strtotime($record->created_at));
-                       ?></td>
-        
-
-                     
-                      
-                      
+          <td><?php if($record->vehicle_name) echo $record->vehicle_name; else echo "Not Updated Yet"; ?></td>
+          <td><?php if($record->pricePerKM) echo $record->pricePerKM; else echo "-----"; ?></td>
+           <td><?php if($record->minPrice) echo $record->minPrice; else echo "-----"; ?></td>
+            <td><?php if($record->maxPrice) echo $record->maxPrice; else echo "-----"; ?></td>
+            <?php $cretedate = explode(" ",$record->createdAt);?>
+          <td><?php echo $cretedate[0] ?></td>
+                  
                 <td  class="text-center">
-                  <?php if($record->isDeleted == 0){ ?>
-                    <a class="btn btn-sm bg-gradient-info" href="<?php echo base_url('userstatus/').$record->id; ?>"  style='padding: 3px 11px 5px;'>
-                        Active
-                    </a>
-                    <?php }?>
-                    <?php if($record->isDeleted == 1){ ?>
-                    <a class="btn btn-sm bg-gradient-info" href="<?php echo base_url('userstatus/').$record->id; ?>"  style='padding: 3px 11px 5px;'>
-                        InActive
-                    </a>
-                    <?php }?>
-                   <a class="btn btn-sm bg-gradient-success" href="<?php echo base_url('userDetail/').$record->id; ?>">
+                 <a class="btn btn-sm bg-gradient-success" href="<?php echo base_url('vehicleDetails/').$record->id; ?>">
                         <i class="fa fa-eye"></i>
                     </a>
-                       <a href="void:main(0)" class="btn btn-sm bg-gradient-danger" onclick="deleteFunction(<?php echo $record->id; ?>)" title="Delete"><i class="fa fa-trash-o"></i>
+
+                  <a class="btn btn-sm bg-gradient-success" href="<?php echo base_url('vehicleEditDetails/').$record->id; ?>">
+                        <i class="fa fa-edit"></i>
+                    </a>
+                             <a href="void:main(0)" class="btn btn-sm bg-gradient-danger" onclick="deleteFunction(<?php echo $record->id; ?>)" title="Delete"><i class="fa fa-trash-o"></i>
                            </a>
+                   
 
                             
                 </td>
+
                     </tr>
                     <?php
                         }
@@ -209,6 +187,21 @@
 </div>
 <!-- End of Main Content -->
 <script type="text/javascript">
+       function deleteFunction($id){
+        var confirmation = confirm("are you sure ? You want to delete Vechicle?");
+        if(confirmation) { 
+                var serial_no = $id;
+                $.ajax({
+                     url:"<?php echo base_url('deletevechicle/');?>"+serial_no+"",
+                     type:"post",
+                    // dataType: "JSON",
+                     success: function(data){
+                        location.reload();
+                     }
+                });
+        }
+    }
+
     jQuery(document).ready(function(){
         jQuery('ul.pagination li a').click(function (e) {
             e.preventDefault();    
@@ -234,19 +227,4 @@
         $('#driverId').val(driverId);
         $("#transferMoney").modal('show');
     }
-         function deleteFunction($id){
-        var confirmation = confirm("are you sure ? You want to delete User?");
-        if(confirmation) { 
-                var serial_no = $id;
-                $.ajax({
-                     url:"<?php echo base_url('userdelete/');?>"+serial_no+"",
-                     type:"post",
-                    // dataType: "JSON",
-                     success: function(data){
-                        location.reload();
-                     }
-                });
-        }
-    }
-
 </script>

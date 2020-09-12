@@ -106,6 +106,30 @@ class AllUserListing extends BaseController
         
         $this->loadViews("404", $this->global, NULL, NULL);
     }
+
+        public function userdelete(){
+        $id = $this->uri->segment(2);
+         $data = $this->db->delete("tbl_users",array("id"=>$id));
+
+        if($data){
+            //redirect("DriversListing");
+        }
+    }
+
+
+    public function userDetail(){
+        $id = $this->uri->segment(2);
+         $data = $this->AllUserModel->getUserInfo($id);
+         $data['userData'] = $data[0];
+      //  print_r($data);die();
+       // $driverImage = $this->db->get_where('driverTranspostImages',array("driverId"=>$id))->result_array();
+        //$data['driverData']['driverDocument'] = $driverImage;
+        $this->global['pageTitle'] = 'Auto Load : User Detail';
+         
+        $this->loadViews("user/userDetail", $this->global, $data, NULL);
+
+    }
+
 }
 
 ?>

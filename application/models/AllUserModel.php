@@ -100,6 +100,15 @@ class AllUserModel extends CI_Model
         return $result;
     }
 
+
+    public function getUserInfo($id){
+                 $this->db->select("*");
+        $this->db->from("tbl_users as d");
+        $this->db->where("d.id",$id);
+       return $this->db->get()->result_array();
+
+    }
+
      function getStatusInfo($id){
         $this->db->select('*');
         $this->db->from('tbl_users');
