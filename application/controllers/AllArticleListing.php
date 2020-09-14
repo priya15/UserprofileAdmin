@@ -156,8 +156,10 @@ class AllArticleListing extends BaseController
     public function articleEditDetail(){
         $id = $this->uri->segment(2);
         $data["article"] = $this->AllArticleModel->getArticleInfo($id);
+                $this->global['pageTitle'] = 'Auto Load : Edit Article ';
+
         if($data){
-            $this->load->view("includes/header",$data,$this->global);
+            $this->load->view("includes/header",$this->global,$data);
 
             $this->load->view("article/editarticle",$data);
              $this->load->view("includes/footer",$data);

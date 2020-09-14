@@ -451,8 +451,8 @@ class Driver_Webservice extends CI_Controller {
 		}
 
 		
-		// $where = array('id'=>$driverId);
-		$data = $this->Driver_Webservice_model->getData('tbl_vehicle_category');
+		$wherev = array('publish_status'=>1);
+		$data = $this->Driver_Webservice_model->getData('tbl_vehicle_category',$wherev);
 		if($data)
 		{
 			// if(!empty($data['userProfile'])){
@@ -1080,7 +1080,7 @@ function uploadDocuments()
 	$driverData =  $this->Driver_Webservice_model->getDataById('tbl_driver',array("id"=>$driverId));
 	if(!empty($driverData)){
 
-	$vechicleData =  $this->Driver_Webservice_model->getDataById('tbl_vehicle_category',array("id"=>$driverData["vehicleCategoryId"]));
+	$vechicleData =  $this->Driver_Webservice_model->getDataById('tbl_vehicle_category',array("id"=>$driverData["vehicleCategoryId"],"publish_status"=>1));
 	//print_r($vechicleData);die();
 //	print_r($driverData);die();
 	$lat = $driverData["lat"];
@@ -1442,7 +1442,7 @@ else
 			$distance  = 1;
 		}
 
-		$getPerKmPrice = $this->Driver_Webservice_model->getDataById('tbl_vehicle_category',array("id"=>$vehicleId));
+		$getPerKmPrice = $this->Driver_Webservice_model->getDataById('tbl_vehicle_category',array("id"=>$vehicleId,"publish_status"=>1));
 		//echo $getPerKmPrice['pricePerKM'];die();
 		if($getPerKmPrice['pricePerKM'] != 0)
 		{
@@ -1606,6 +1606,9 @@ else
 	    $driverdata = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId));
 	    $start_date_new = date('Y-m-d');
 	    $end_date_new   = date('Y-m-d', strtotime(' -30 days'));
+	    $start_date = date("d M Y",strtotime($start_date_new));
+	    $end_date = date("d M Y",strtotime($end_date_new));
+	    //echo $start_date.$end_date;
 	  //  echo $start_date_new.$end_date_new;die();
 
 
@@ -1625,6 +1628,8 @@ else
 			$dashboard["totalearning"] = $totalearning;
 			$dashboard["totalride"]    = $totalrides;
 			$dashboard["cashcollected"] = 0;
+			$dashboard["start_date"]=$end_date;
+			$dashboard["end_date"]=$start_date;
 			if(!empty($onride)){
 				$dashboard["onride"]=1;
 			}
@@ -1647,6 +1652,9 @@ else
 			$dashboard["totalearning"] = 0;
 			$dashboard["totalride"]    = 0;
 			$dashboard["cashcollected"] = 0;
+		  $dashboard["start_date"]=$end_date;
+			$dashboard["end_date"]=$start_date;
+
                     $result['status'] = 1;
 					$result['responseMessage'] = " Data Found";
 			$result['AllData'] = $dashboard;

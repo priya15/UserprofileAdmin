@@ -184,6 +184,15 @@ function checkEmailExists($email){
             return $query->row_array();
         } 
 
+    function checkRideBookingStatusdrop($rideId)
+        {
+            $this->db->where('id',$rideId);
+            
+            $query = $this->db->get('tbl_booking');
+            return $query->row_array();
+        } 
+
+
         function updateRideStatus($rideStatus,$rideId,$cancelReasone)
         {
             $this->db->where('id',$rideId);

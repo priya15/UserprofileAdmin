@@ -169,8 +169,10 @@ class AllVechicleListing extends BaseController
     	        $id = $this->uri->segment(2);
         $data = $this->AllVechicleModel->getVechicleInfo($id);
         $data["vechicle"] =$data[0];
+        $this->global['pageTitle'] = 'Auto Load : Edit Vechicle ';
+
         if($data){
-            $this->load->view("includes/header",$data,$this->global);
+            $this->load->view("includes/header",$this->global,$data);
 
             $this->load->view("vechicle/editvechicle",$data);
              $this->load->view("includes/footer",$data);

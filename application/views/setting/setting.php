@@ -2,7 +2,7 @@
   <div class="container-fluid">
 
 <!-- Page Heading -->
-<h1 class="h3 mb-2 text-gray-800">Auto Load  #Article List  <a href="<?php echo base_url() ?>AddArticle" class="btn btn-sm bg-gradient-primary" style="float:right;font-weight:bold;">Add Article</a></h1> 
+<h1 class="h3 mb-2 text-gray-800">Auto Load  #Setting List  </h1> 
 
 <div class="row">
             <div class="col-md-12">
@@ -41,8 +41,8 @@
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
   <div class="card-header py-3">
-    <h6 class="m-0 font-weight-bold text-primary" style="float:left;font-size: 24px;">Article List</h6>
-    <form action="<?php echo base_url() ?>ArticleListing" method="POST" id="searchList" style="float:right">
+    <h6 class="m-0 font-weight-bold text-primary" style="float:left;font-size: 24px;">Setting List</h6>
+    <form action="<?php echo base_url() ?>SettingListing" method="POST" id="searchList" style="float:right">
                            
                        
                            <div class="input-group">
@@ -76,7 +76,7 @@
           <tr>
             <th>id</th>
             <th>Title</th>
-            <th>Link</th>
+            <th>Percentage</th>
 
             <th>CreatedAt</th>
             <th class="text-center">Actions</th>
@@ -86,25 +86,25 @@
         <tr>
             <th>id</th>
             <th>Title</th>
-            <th>Link</th>
+            <th>Percentage</th>
             <th>CreatedAt</th>
             <th class="text-center">Actions</th>
           </tr>
         </tfoot>
         <tbody>
         <?php
-                    if(!empty($ArticleRecords))
+                    if(!empty($SettingsRecords))
                     {
                       $i = 1;
                       
-                        foreach($ArticleRecords as $record)
+                        foreach($SettingsRecords as $record)
                         {
                     ?>
                     <tr>
           
           <td><?php echo "#".$record->id ?></td>
           <td><?php if($record->title) echo $record->title; else echo "Not Updated Yet"; ?></td>
-          <td><?php if($record->link) echo $record->link; else echo "-----"; ?></td>
+          <td><?php if($record->percent) echo $record->percent; else echo "-----"; ?></td>
           <?php $cr = explode(" ",$record->created_at); ?>
           <td><?php echo $cr[0]; ?></td>
         
@@ -113,11 +113,9 @@
                       
                       
                 <td  class="text-center">
-                                    <a class="btn btn-sm bg-gradient-success" href="<?php echo base_url('articleEditDetail/').$record->id; ?>">
+                                    <a class="btn btn-sm bg-gradient-success" href="<?php echo base_url('settingEditDetail/').$record->id; ?>">
                         <i class="fa fa-edit"></i>
                     </a>
-                             <a href="void:main(0)" class="btn btn-sm bg-gradient-danger" onclick="deleteFunction(<?php echo $record->id; ?>)" title="Delete"><i class="fa fa-trash-o"></i>
-                           </a>
                    
 
                             

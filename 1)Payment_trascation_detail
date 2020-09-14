@@ -1,0 +1,43 @@
+1)Payment_trascation_detail
+trasction id
+driverid
+userid
+amoutid 
+ride id
+payment mode
+payment_status
+
+2)wallet
+Recharge_user_Wallet
+rideId
+PaymentId
+UserId
+Amount
+
+3)Deduct_user_wallet
+rideId
+PaymentId
+UserId
+Amount
+
+
+types:
+cash
+wallet
+payment gateway
+
+
+payment gateway-->
+user ke walllet me add hogha
+10%company ayegha
+90% adriver ko
+
+
+wallet se user kiya he 
+user ke waallet se deduct hogha
+10%company ayegha
+90% adriver ko
+
+
+cash payemnt kareghe 
+driver ke amont 10%cut je company jayegha

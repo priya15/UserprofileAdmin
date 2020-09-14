@@ -120,5 +120,14 @@ $route['VechicleListing/(:any)'] = "AllVechicleListing/VechicleListing/$1";
 
 
 
+$route['SettingListing'] = "AllSettingListing/SettingListing";
 
+$route['SettingListing/(:any)'] = "AllSettingListing/SettingListing/$1";
+
+
+$route['settingEditDetail/(:any)'] = "AllSettingListing/settingEditDetail/$1";
+
+
+
+$route['editsettingdata'] = 'AllSettingListing/editsettingdata';
 
