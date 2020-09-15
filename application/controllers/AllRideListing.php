@@ -44,9 +44,13 @@ class AllRideListing extends BaseController
         else
         {
                    // print_r($this->input->post());
+            if($this->session->userdata("dropvaldriver")!=""){
+                    $this->session->unset_userdata("dropvaldriver");
+            } 
             if($this->session->userdata("dropval")!=""){
                     $this->session->unset_userdata("dropval");
             }   
+  
         
             $searchText = $this->input->post('searchText');
             $dropdownText = $this->input->post('dropdownText');
@@ -86,6 +90,129 @@ class AllRideListing extends BaseController
             //print_r($data);die();
             $this->loadViews("ride/ride", $this->global, $data, NULL);
         }
+    }
+
+    function createRideXLS(){
+         $fileName = 'Ride-'.time().'.xlsx'; 
+        $dropdownval  = $this->session->userdata("dropvalbooking"); 
+        $searchText="";
+        $dropdownText = $dropdownval;
+       // echo $dropdownval;die();
+        $data['userRecords'] = $this->AllRideModel->RidesListing($searchText, "", "",$dropdownText);
+       //print_r($data['userRecords']);die();
+
+        // load excel library
+        $this->load->library('excel');
+       // $mobiledata = $this->admin_database->emp_record();
+        $objPHPExcel = new PHPExcel();
+        $objPHPExcel->setActiveSheetIndex(0);
+        // set Header
+        $objPHPExcel->getActiveSheet()->SetCellValue('A1', 'Name.');
+        $objPHPExcel->getActiveSheet()->SetCellValue('B1', 'Phone');
+        $objPHPExcel->getActiveSheet()->SetCellValue('C1', 'Email');
+         $objPHPExcel->getActiveSheet()->SetCellValue('D1', 'Pickup address');
+
+        $objPHPExcel->getActiveSheet()->SetCellValue('E1', 'Drop address');
+        $objPHPExcel->getActiveSheet()->SetCellValue('F1', 'RideStatus');
+        $objPHPExcel->getActiveSheet()->SetCellValue('G1', 'VechicleName');
+        
+        $objPHPExcel->getActiveSheet()->SetCellValue('H1', 'Total Charge');
+        $objPHPExcel->getActiveSheet()->SetCellValue('I1', 'Total Distance');
+        $objPHPExcel->getActiveSheet()->SetCellValue('J1', 'DriverName');
+        $objPHPExcel->getActiveSheet()->SetCellValue('K1', 'CancelBy');
+        $objPHPExcel->getActiveSheet()->SetCellValue('L1', 'CancelReason');
+        $objPHPExcel->getActiveSheet()->SetCellValue('M1', 'BookingDate');
+
+
+
+
+
+
+
+        // set Row
+        $rowCount = 2;
+        for($i=0; $i<count($data['userRecords']); $i++) 
+        {
+            //print_r($val);die();
+          //  echo  ;die();
+           $vechicledata =  $this->db->select("*")->From("tbl_vehicle_category")->where("id",$data['userRecords'][$i]->vehicleId)->get()->result_array();
+          $driverdata =  $this->db->select("*")->From("tbl_driver")->where("id",$data['userRecords'][$i]->driverId)->get()->result_array();
+
+            $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, $data['userRecords'][$i]->name);
+            $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowCount, $data['userRecords'][$i]->phone);
+            $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowCount, $data['userRecords'][$i]->email);
+
+            $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowCount, $data['userRecords'][$i]->pickup_address);
+            $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowCount, $data['userRecords'][$i]->drop_address);
+            if($data['userRecords'][$i]->status == 0){
+            $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount, "Pending");
+        }
+            if($data['userRecords'][$i]->status == 1){
+            $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount, "Ride Confirm");
+        }
+        if($data['userRecords'][$i]->status == 2){
+            $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount, "Pickup");
+        }
+            if($data['userRecords'][$i]->status == 3){
+            $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount, "Cancel");
+        }
+
+            if($data['userRecords'][$i]->status == 4){
+            $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount, "Drop");
+        }
+        
+       
+        if(empty($vechicledata)){
+            $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowCount, "-----");
+        }
+        if(!empty($vechicledata)){
+        if($vechicledata[0]["vehicle_name"] !=""){
+            $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowCount, $vechicledata[0]["vehicle_name"]);
+        }
+      }
+            $objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowCount, $data['userRecords'][$i]->totalDistance);
+        
+        
+            $objPHPExcel->getActiveSheet()->SetCellValue('I' . $rowCount, $data['userRecords'][$i]->totalCharge);
+            if(!empty($driverdata)){
+            $objPHPExcel->getActiveSheet()->SetCellValue('J' . $rowCount, $driverdata[0]["name"]);
+            }
+    if(empty($driverdata)){
+            $objPHPExcel->getActiveSheet()->SetCellValue('J' . $rowCount, "----");
+        }
+    if($data['userRecords'][$i]->canceledBy == 1){
+            $objPHPExcel->getActiveSheet()->SetCellValue('K' . $rowCount, "User");
+        }
+    if($data['userRecords'][$i]->canceledBy == 2){
+            $objPHPExcel->getActiveSheet()->SetCellValue('K' . $rowCount, "Driver");
+        }
+    if($data['userRecords'][$i]->canceledBy == ""){
+            $objPHPExcel->getActiveSheet()->SetCellValue('K' . $rowCount, "----");
+        }
+        if($data['userRecords'][$i]->cancelReason == ""){
+            $objPHPExcel->getActiveSheet()->SetCellValue('L' . $rowCount, "---");
+        }
+    if($data['userRecords'][$i]->cancelReason != "" ){
+            $objPHPExcel->getActiveSheet()->SetCellValue('L' . $rowCount, $data['userRecords'][$i]->cancelReason);
+        }
+
+        $bookingdatefinal  =explode(" ",$data['userRecords'][$i]->created_at);
+     $objPHPExcel->getActiveSheet()->SetCellValue('M' . $rowCount, $bookingdatefinal[0]);
+
+
+
+
+      
+
+             $rowCount++;
+        }
+
+        $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+        $objWriter->save($fileName);
+        // download file
+        header("Content-Type: application/vnd.ms-excel");
+         redirect(site_url().$fileName);              
+
     }
 
         function RideDetail()

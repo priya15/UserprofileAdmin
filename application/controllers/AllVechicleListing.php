@@ -54,6 +54,9 @@ class AllVechicleListing extends BaseController
             if($this->session->userdata("dropvalbooking")!=""){
                     $this->session->unset_userdata("dropvalbooking");
             }
+            if($this->session->userdata("dropvaldriver")!=""){
+                    $this->session->unset_userdata("dropvaldriver");
+            } 
         
             $searchText = $this->input->post('searchText');
             //$dropdownText = $this->input->post('dropdownText');
@@ -75,6 +78,61 @@ class AllVechicleListing extends BaseController
             //print_r($data);die();
             $this->loadViews("vechicle/vechicle", $this->global, $data, NULL);
         }
+    }
+
+
+    public function createVechicleXLS(){
+                      $fileName = 'Vechicle-'.time().'.xlsx'; 
+        $searchText="";
+        //$dropdownText = $dropdownval;
+       // echo $dropdownval;die();
+        $data['userRecords'] = $this->AllVechicleModel->VechicleListing($searchText, "", "");
+       //print_r($data['userRecords']);die();
+
+        // load excel library
+        $this->load->library('excel');
+       // $mobiledata = $this->admin_database->emp_record();
+        $objPHPExcel = new PHPExcel();
+        $objPHPExcel->setActiveSheetIndex(0);
+        // set Header
+        $objPHPExcel->getActiveSheet()->SetCellValue('A1', 'vehicle_name.');
+        $objPHPExcel->getActiveSheet()->SetCellValue('B1', 'MinPrice');
+        $objPHPExcel->getActiveSheet()->SetCellValue('C1', 'MaxPrice');
+         $objPHPExcel->getActiveSheet()->SetCellValue('D1', 'pricePerKM');
+        $objPHPExcel->getActiveSheet()->SetCellValue('E1', 'vehiDesc');
+        $objPHPExcel->getActiveSheet()->SetCellValue('F1', 'publish_status');
+
+
+
+        // set Row
+        $rowCount = 2;
+        for($i=0; $i<count($data['userRecords']); $i++) 
+        {
+            //print_r($val);die();
+          //  echo  ;die();
+            $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, $data['userRecords'][$i]->vehicle_name);
+            $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowCount, $data['userRecords'][$i]->minPrice);
+            $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowCount, $data['userRecords'][$i]->maxPrice);
+          
+            $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowCount, $data['userRecords'][$i]->pricePerKM);
+            $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowCount, $data['userRecords'][$i]->vehiDesc);
+            if($data['userRecords'][$i]->publish_status==1){
+            $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount,"Publish" );
+            }
+            if($data['userRecords'][$i]->publish_status==2){
+         $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount,"NotPublish" );
+            }
+      
+
+             $rowCount++;
+        }
+
+        $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+        $objWriter->save($fileName);
+        // download file
+        header("Content-Type: application/vnd.ms-excel");
+         redirect(site_url().$fileName);              
+
     }
 
 

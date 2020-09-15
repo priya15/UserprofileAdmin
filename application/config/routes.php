@@ -82,6 +82,7 @@ $route['userstatus/(:any)'] = "AllUserListing/userstatus/$1";
 $route['userdelete/(:any)'] = "AllUserListing/userdelete/$1";
 $route['userDetail/(:any)'] = "AllUserListing/userDetail/$1";
 
+$route['createUserXLS'] = "AllUserListing/createUserXLS";
 
 $route['DriversListing/(:any)'] = "AllDriverListing/DriversListing/$1";
 $route['driverDetail/(:any)'] = "AllDriverListing/driverDetail/$1";
@@ -89,10 +90,13 @@ $route['driverdelete/(:any)'] = "AllDriverListing/driverdelete/$1";
 $route['notifyDriver/(:any)'] = "AllDriverListing/notifyDriver/$1";
 $route['submitDocuments'] = "AllDriverListing/submitDocuments";
 
+$route['createDriverXLS'] = "AllDriverListing/createDriverXLS";
 
 $route['RideListing'] = 'AllRideListing/RideListing';
 $route['RideListing/(:any)'] = "AllRideListing/RideListing/$1";
 $route['RideDetail/(:any)'] = "AllRideListing/RideDetail/$1";
+$route['createRideXLS'] = 'AllRideListing/createRideXLS';
+$route['createArticleXLS'] = 'AllArticleListing/createArticleXLS';
 
 
 $route['ArticleListing'] = 'AllArticleListing/ArticleListing';
@@ -105,6 +109,7 @@ $route['editarticledata'] = 'AllArticleListing/editarticledata';
 
 
 $route['VechicleListing'] = 'AllVechicleListing/VechicleListing';
+$route['createVechicleXLS'] = 'AllVechicleListing/createVechicleXLS';
 
 $route['AddVechicle'] = 'AllVechicleListing/AddVechicle';
 $route['AddVechicledata'] = 'AllVechicleListing/AddVechicledata';
@@ -122,6 +127,8 @@ $route['VechicleListing/(:any)'] = "AllVechicleListing/VechicleListing/$1";
 
 $route['SettingListing'] = "AllSettingListing/SettingListing";
 
+$route['createSettingXLS'] = "AllSettingListing/createSettingXLS";
+
 $route['SettingListing/(:any)'] = "AllSettingListing/SettingListing/$1";
 
 
@@ -130,4 +137,17 @@ $route['settingEditDetail/(:any)'] = "AllSettingListing/settingEditDetail/$1";
 
 
 $route['editsettingdata'] = 'AllSettingListing/editsettingdata';
+
+
+$route['SubadminListing'] = "AllSubadminListing/SubadminListing";
+$route['SubadminListing/(:any)'] = "AllSubadminListing/SubadminListing/$1";
+$route['AddSubadmin'] = "AllSubadminListing/AddSubadmin";
+$route['SubadminEditDetail/(:any)'] = "AllSubadminListing/SubadminEditDetail/$1";
+$route['editsubadmindata'] = "AllSubadminListing/editsubadmindata";
+
+$route['deleteSubadmin/(:any)'] = "AllSubadminListing/deleteSubadmin/$1";
+
+$route['addsubadmindata'] = "AllSubadminListing/addsubadmindata";
+$route['createSubadminXLS'] = "AllSubadminListing/createSubadminXLS";
+
 

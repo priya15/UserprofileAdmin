@@ -58,7 +58,7 @@ class AllUserModel extends CI_Model
      */
     function UsersListing($searchText = '', $page, $segment,$dropdownText = '')
     {
-        $this->db->select("d.id,d.name,d.phone,d.city,d.state,d.languageType,d.phoneVerifyStatus,d.created_at,d.isDeleted");
+        $this->db->select("d.id,d.name,d.phone,d.city,d.state,d.languageType,d.phoneVerifyStatus,d.created_at,d.isDeleted,d.lat,d.long,d.email,d.emailstatus");
         $this->db->from("tbl_users as d");
        // $this->db->join("tbl_vehicle_category as v",'v.id = d.vehicleCategoryId','left');
          

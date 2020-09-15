@@ -18,7 +18,9 @@ class AllDriverListing extends BaseController
     {
         parent::__construct();
         $this->load->model('AllDriverModel');
-        $this->isLoggedIn();   
+        $this->isLoggedIn(); 
+        $this->load->library('excel');
+  
     }
     
     /**
@@ -52,7 +54,28 @@ class AllDriverListing extends BaseController
            }
            if($this->session->userdata("dropvalbooking")!=""){
                     $this->session->unset_userdata("dropvalbooking");
-            }      
+            } 
+
+            if($dropdownText!=""){
+                if($this->session->userdata("dropvaldriver")!=""){
+                    $this->session->unset_userdata("dropvaldriver");
+                    $this->session->set_userdata("dropvaldriver",$dropdownText);
+                }
+                else{
+                   $this->session->set_userdata("dropvaldriver",$dropdownText); 
+                }
+            }
+            elseif(($this->session->userdata("dropvaldriver")!="")&&($dropdownText == ""))
+            {
+               $dropdownText = $this->session->userdata("dropvaldriver");
+            }
+            else
+            {
+                $dropdownText=$dropdownText;
+            }
+
+           
+     
             $this->load->library('pagination');
             
             $count = $this->AllDriverModel->DriversListingCount($searchText,$dropdownText);
@@ -106,6 +129,140 @@ class AllDriverListing extends BaseController
             }
 
             redirect($_SERVER['HTTP_REFERER']);
+    }
+
+    public function createDriverXLS(){
+        $fileName = 'driver-'.time().'.xlsx'; 
+        $dropdownval  = $this->session->userdata("dropvaldriver"); 
+        $searchText="";
+        $dropdownText = $dropdownval;
+       // echo $dropdownval;die();
+        $data['userRecords'] = $this->AllDriverModel->DriversListing($searchText, "", "",$dropdownText);
+       //print_r($data['userRecords']);die();
+
+        // load excel library
+        $this->load->library('excel');
+       // $mobiledata = $this->admin_database->emp_record();
+        $objPHPExcel = new PHPExcel();
+        $objPHPExcel->setActiveSheetIndex(0);
+        // set Header
+        $objPHPExcel->getActiveSheet()->SetCellValue('A1', 'Name.');
+        $objPHPExcel->getActiveSheet()->SetCellValue('B1', 'Phone');
+        $objPHPExcel->getActiveSheet()->SetCellValue('C1', 'City');
+        $objPHPExcel->getActiveSheet()->SetCellValue('D1', 'State');
+        $objPHPExcel->getActiveSheet()->SetCellValue('E1', 'PhoneVerfiyStatus');
+        $objPHPExcel->getActiveSheet()->SetCellValue('F1', 'RcStatus');
+        
+        $objPHPExcel->getActiveSheet()->SetCellValue('H1', 'vehicleImageStatus');
+        $objPHPExcel->getActiveSheet()->SetCellValue('G1', 'InsuranceStatus');
+        $objPHPExcel->getActiveSheet()->SetCellValue('I1', 'VechicleName');
+        $objPHPExcel->getActiveSheet()->SetCellValue('J1', 'VechicleMinPrice');
+        $objPHPExcel->getActiveSheet()->SetCellValue('K1', 'VechicleMaxprice');
+        $objPHPExcel->getActiveSheet()->SetCellValue('L1', 'PricePerKm');
+        $objPHPExcel->getActiveSheet()->SetCellValue('M1', 'VechicleDesc');
+        $objPHPExcel->getActiveSheet()->SetCellValue('N1', 'AccountName');
+        $objPHPExcel->getActiveSheet()->SetCellValue('O1', 'AccountNumber');
+        $objPHPExcel->getActiveSheet()->SetCellValue('P1', 'IfscNumber');
+         $objPHPExcel->getActiveSheet()->SetCellValue('Q1', 'BankName');
+
+        $objPHPExcel->getActiveSheet()->SetCellValue('R1', 'BranchName');
+        $objPHPExcel->getActiveSheet()->SetCellValue('S1', 'lat');
+        $objPHPExcel->getActiveSheet()->SetCellValue('T1', 'lng');
+
+
+
+
+
+
+        // set Row
+        $rowCount = 2;
+        for($i=0; $i<count($data['userRecords']); $i++) 
+        {
+            //print_r($val);die();
+          //  echo  ;die();
+           $bankinfo =  $this->db->select("*")->from("tbl_bank_info")->where("driverId",$data["userRecords"][$i]->id)->get()->result_array();
+            $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, $data['userRecords'][$i]->name);
+            $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowCount, $data['userRecords'][$i]->phone);
+            $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowCount, $data['userRecords'][$i]->city);
+            $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowCount, $data['userRecords'][$i]->state);
+            if($data['userRecords'][$i]->phoneVerifyStatus == 0){
+            $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowCount, "NotVerified");
+        }
+            if($data['userRecords'][$i]->phoneVerifyStatus == 1){
+            $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowCount, "Verified");
+        }
+        if($data['userRecords'][$i]->RCStatus ==0){
+            $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount, "Not Uploaded");
+        }
+        if($data['userRecords'][$i]->RCStatus ==1){
+            $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount, "Uploaded");
+        }
+        if($data['userRecords'][$i]->RCStatus ==2){
+            $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount, "Accepted");
+        }
+        if($data['userRecords'][$i]->RCStatus ==3){
+            $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount, "Cancel");
+        }
+        if($data['userRecords'][$i]->vehicleImageStatus ==0){
+            $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowCount, "Not Uploaded");
+        }
+        if($data['userRecords'][$i]->vehicleImageStatus ==1){
+            $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowCount, "Uploaded");
+        }
+        if($data['userRecords'][$i]->vehicleImageStatus ==2){
+            $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowCount, "Accepted");
+        }
+        if($data['userRecords'][$i]->vehicleImageStatus ==3){
+            $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowCount, "Cancel");
+        }
+        if($data['userRecords'][$i]->insuranceStatus ==0){
+            $objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowCount, "Not Uploaded");
+        }
+        if($data['userRecords'][$i]->insuranceStatus ==1){
+            $objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowCount, "Uploaded");
+        }
+        if($data['userRecords'][$i]->insuranceStatus ==2){
+            $objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowCount, "Accepted");
+        }
+        if($data['userRecords'][$i]->insuranceStatus ==3){
+            $objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowCount, "Cancel");
+        }
+            $objPHPExcel->getActiveSheet()->SetCellValue('I' . $rowCount, $data['userRecords'][$i]->vehicle_name);
+            $objPHPExcel->getActiveSheet()->SetCellValue('J' . $rowCount, $data['userRecords'][$i]->minPrice);
+
+            $objPHPExcel->getActiveSheet()->SetCellValue('K' . $rowCount, $data['userRecords'][$i]->maxPrice);
+            $objPHPExcel->getActiveSheet()->SetCellValue('L' . $rowCount, $data['userRecords'][$i]->pricePerKM);
+            $objPHPExcel->getActiveSheet()->SetCellValue('M' . $rowCount, $data['userRecords'][$i]->vehiDesc);
+            if(!empty($bankinfo)){
+            $objPHPExcel->getActiveSheet()->SetCellValue('N' . $rowCount, $bankinfo[0]['accountHolderName']);
+            $objPHPExcel->getActiveSheet()->SetCellValue('O' . $rowCount, $bankinfo[0]['accountNumber']);
+            $objPHPExcel->getActiveSheet()->SetCellValue('P' . $rowCount, $bankinfo[0]['IFSCNumber']);
+
+            $objPHPExcel->getActiveSheet()->SetCellValue('Q' . $rowCount, $bankinfo[0]['BankName']);
+          $objPHPExcel->getActiveSheet()->SetCellValue('R' . $rowCount, $bankinfo[0]['branchName']);
+      }
+    if(empty($bankinfo)){
+            $objPHPExcel->getActiveSheet()->SetCellValue('N' . $rowCount, "---");
+            $objPHPExcel->getActiveSheet()->SetCellValue('O' . $rowCount, "---");
+            $objPHPExcel->getActiveSheet()->SetCellValue('P' . $rowCount, "---");
+
+            $objPHPExcel->getActiveSheet()->SetCellValue('Q' . $rowCount, "---");
+          $objPHPExcel->getActiveSheet()->SetCellValue('R' . $rowCount, "---");
+          $objPHPExcel->getActiveSheet()->SetCellValue('S' . $rowCount,$data['userRecords'][$i]->lat );
+          $objPHPExcel->getActiveSheet()->SetCellValue('T' . $rowCount, $data['userRecords'][$i]->lng);
+
+
+      }
+
+             $rowCount++;
+        }
+
+        $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+        $objWriter->save($fileName);
+        // download file
+        header("Content-Type: application/vnd.ms-excel");
+         redirect(site_url().$fileName);              
+
     }
 
     function driverDetail()

@@ -2,7 +2,7 @@
   <div class="container-fluid">
 
 <!-- Page Heading -->
-<h1 class="h3 mb-2 text-gray-800">Auto Load  #User List </h1>
+<h1 class="h3 mb-2 text-gray-800">Auto Load  #User List <a href="<?php echo base_url()?>createUserXLS" class="btn btn-sm bg-gradient-primary" style="float:right;">Export User Record</a></h1>
 <div class="row">
             <div class="col-md-12">
               

@@ -182,7 +182,20 @@
           </div>
         </div>
       </li>
-           <li class="nav-item">
+         <!--   <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo11111" aria-expanded="true" aria-controls="collapseTwo">
+          <i class="fas fa-fw fa-users"></i>
+          <span>All Subadmin</span>
+        </a>
+        <div id="collapseTwo11111" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Subadmin</h6>
+              <a class="collapse-item" href="<?=base_url('SubadminListing')?>">Add Subadmin</a>
+          </div>
+        </div>
+      </li>-->
+
+      <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo1111" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-fw fa-users"></i>
           <span>All Settings</span>

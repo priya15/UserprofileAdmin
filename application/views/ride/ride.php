@@ -2,7 +2,8 @@
   <div class="container-fluid">
 
 <!-- Page Heading -->
-<h1 class="h3 mb-2 text-gray-800">Auto Load  #Ride List </h1>
+<h1 class="h3 mb-2 text-gray-800">Auto Load  #Ride List
+<a href="<?php echo base_url()?>createRideXLS" class="btn btn-sm bg-gradient-primary" style="float:right;">Export Ride Record</a> </h1>
 <div class="row">
             <div class="col-md-12">
               

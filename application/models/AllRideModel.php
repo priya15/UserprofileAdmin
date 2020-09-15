@@ -9,7 +9,7 @@ class AllRideModel extends CI_Model
      */
     function RidesListingCount($searchText = '',$dropdownText = '')
     {
-        $this->db->select("d.id,d.name,d.phone,book.pickup_address,book.drop_address,book.id as bookid,book.userId,book.rideStatus as status,book.created_at");
+        $this->db->select("d.id,d.name,d.phone,book.pickup_address,book.drop_address,book.id as bookid,book.userId,book.rideStatus as status,book.created_at,book.totalCharge,book.totalDistance,book.canceledBy,book.cancelReason");
         $this->db->from("tbl_users as d");
         $this->db->join("tbl_booking as book",'d.id=book.userId');
          
@@ -61,7 +61,7 @@ class AllRideModel extends CI_Model
     function RidesListing($searchText = '', $page, $segment,$dropdownText = '')
     {
         
-        $this->db->select("d.id,d.name,d.phone,book.pickup_address,book.drop_address,book.id as bookid,book.userId,book.rideStatus as status,book.created_at");
+        $this->db->select("d.id,d.name,d.phone,book.pickup_address,book.drop_address,book.id as bookid,book.userId,book.rideStatus as status,book.created_at,book.totalCharge,book.totalDistance,book.canceledBy,book.cancelReason,book.vehicleId,book.driverId,d.email");
         $this->db->from("tbl_users as d");
         $this->db->join("tbl_booking as book",'d.id=book.userId');
        // $this->db->join("tbl_vehicle_category as v",'v.id = d.vehicleCategoryId','left');

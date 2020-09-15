@@ -50,6 +50,10 @@ class AllArticleListing extends BaseController
             if($this->session->userdata("dropvalbooking")!=""){
                     $this->session->unset_userdata("dropvalbooking");
             }
+            if($this->session->userdata("dropvaldriver")!=""){
+                    $this->session->unset_userdata("dropvaldriver");
+            }
+
         
             $searchText = $this->input->post('searchText');
             //$dropdownText = $this->input->post('dropdownText');
@@ -108,6 +112,50 @@ class AllArticleListing extends BaseController
               $data = array("title"=>$title,"desc"=>$desc,"image"=>$filename,"link"=>$link,"created_at"=>date("Y-m-d h:i:s"));
               $this->db->insert("tbl_article",$data);
               redirect("ArticleListing");
+
+    }
+
+    public function createArticleXLS(){
+                $fileName = 'Article-'.time().'.xlsx'; 
+        $searchText="";
+        //$dropdownText = $dropdownval;
+       // echo $dropdownval;die();
+        $data['userRecords'] = $this->AllArticleModel->ArticleListing($searchText, "", "");
+       //print_r($data['userRecords']);die();
+
+        // load excel library
+        $this->load->library('excel');
+       // $mobiledata = $this->admin_database->emp_record();
+        $objPHPExcel = new PHPExcel();
+        $objPHPExcel->setActiveSheetIndex(0);
+        // set Header
+        $objPHPExcel->getActiveSheet()->SetCellValue('A1', 'Title.');
+        $objPHPExcel->getActiveSheet()->SetCellValue('B1', 'Description');
+        $objPHPExcel->getActiveSheet()->SetCellValue('C1', 'Link');
+         $objPHPExcel->getActiveSheet()->SetCellValue('D1', 'Created_at');
+
+
+        // set Row
+        $rowCount = 2;
+        for($i=0; $i<count($data['userRecords']); $i++) 
+        {
+            //print_r($val);die();
+          //  echo  ;die();
+            $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, $data['userRecords'][$i]->title);
+            $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowCount, $data['userRecords'][$i]->desc);
+            $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowCount, $data['userRecords'][$i]->link);
+          $datefinal = explode(" ",$data['userRecords'][$i]->created_at);
+            $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowCount, $datefinal[0]);
+      
+
+             $rowCount++;
+        }
+
+        $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+        $objWriter->save($fileName);
+        // download file
+        header("Content-Type: application/vnd.ms-excel");
+         redirect(site_url().$fileName);              
 
     }
 

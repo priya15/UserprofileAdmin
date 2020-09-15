@@ -53,7 +53,7 @@ class AllDriverModel extends CI_Model
      */
     function DriversListing($searchText = '', $page, $segment,$dropdownText = '')
     {
-        $this->db->select("d.id,d.RCStatus,d.insuranceStatus,d.vehicleImageStatus,d.name,d.vehicleNumber,d.phone,d.city,d.state,d.languageType,d.phoneVerifyStatus,v.vehicle_name,d.walletBalance,d.created_at");
+        $this->db->select("d.id,d.RCStatus,d.insuranceStatus,d.vehicleImageStatus,d.name,d.vehicleNumber,d.phone,d.city,d.state,d.languageType,d.phoneVerifyStatus,v.vehicle_name,d.walletBalance,d.created_at,v.minPrice,v.maxPrice,v.pricePerKM,v.vehiDesc,d.lat,d.lng");
         $this->db->from("tbl_driver as d");
         $this->db->join("tbl_vehicle_category as v",'v.id = d.vehicleCategoryId','left');
          

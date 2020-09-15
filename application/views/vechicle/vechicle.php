@@ -3,7 +3,9 @@
 
 <!-- Page Heading -->
 <h1 class="h3 mb-2 text-gray-800">Auto Load  #Vechicle List 
-<a href="<?php echo base_url() ?>AddVechicle" class="btn btn-sm bg-gradient-primary" style="float:right;font-weight:bold;">Add Vechicle</a></h1> 
+<a href="<?php echo base_url() ?>AddVechicle" class="btn btn-sm bg-gradient-primary" style="float:right;font-weight:bold;">Add Vechicle</a>
+<a href="<?php echo base_url()?>createVechicleXLS" class="btn btn-sm bg-gradient-primary" style="float:right;margin-right:20px">Export Vechicle Record</a>
+</h1> 
 
 <div class="row">
             <div class="col-md-12">
