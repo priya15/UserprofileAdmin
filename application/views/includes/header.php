@@ -99,6 +99,12 @@
 
 <body id="page-top">
 
+<?php $d = $this->session->userdata("isLoggedIn");
+//print_r($d);
+      $userid = $d[0]->userId;
+      $dataper =  $this->db->select("*")->from("tbl_modules_permission")->where("user_id",$userid)->get()->result_array();
+    //  print_r($dataper);
+?>
   <!-- Page Wrapper -->
   <div id="wrapper">
 
@@ -130,8 +136,10 @@
       <div class="sidebar-heading">
         
       </div>
-
+<?php if(!empty($dataper)) {?>
       <!-- Nav Item - Pages Collapse Menu -->
+     <?php if(($dataper[0]["driver"] == 1)||($dataper[0]["user"] == 1)) { ?>
+
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-fw fa-users"></i>
@@ -140,11 +148,19 @@
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Driver/User</h6>
+           <?php if($dataper[0]["driver"] == 1) { ?>
             <a class="collapse-item" href="<?=base_url('DriversListing')?>">Driver</a>
+            <?php }?>
+            <?php if($dataper[0]["user"] == 1) { ?>
+
             <a class="collapse-item" href="<?=base_url('UsersListing')?>">User</a>
+            <?php } ?>
           </div>
         </div>
       </li>
+      <?php }?>
+       <?php if($dataper[0]["ride"] == 1) { ?>
+
             <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo1" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-fw fa-users"></i>
@@ -157,6 +173,9 @@
           </div>
         </div>
       </li>
+      <?php } ?>
+     <?php if($dataper[0]["article"] == 1) { ?>
+
 
                   <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo11" aria-expanded="true" aria-controls="collapseTwo">
@@ -170,30 +189,68 @@
           </div>
         </div>
       </li>
+      <?php }  ?>
+           <?php if($dataper[0]["vechicle"] == 1) { ?>
+
       <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo111" aria-expanded="true" aria-controls="collapseTwo">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo1112" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-fw fa-users"></i>
           <span>All Vechicle</span>
         </a>
-        <div id="collapseTwo111" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div id="collapseTwo1112" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Vechicle</h6>
               <a class="collapse-item" href="<?=base_url('VechicleListing')?>">Add Vechicle</a>
           </div>
         </div>
       </li>
-         <!--   <li class="nav-item">
+      <?php } ?>
+           <?php if($dataper[0]["feedback"] == 1) { ?>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo1131" aria-expanded="true" aria-controls="collapseTwo">
+          <i class="fas fa-fw fa-users"></i>
+          <span>All Feedback</span>
+        </a>
+        <div id="collapseTwo1131" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Feedback</h6>
+              <a class="collapse-item" href="<?=base_url('FeedbackListing')?>">Feedback</a>
+          </div>
+        </div>
+      </li>
+      <?php } ?>
+ <?php if($dataper[0]["city"] == 1) { ?>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo111111" aria-expanded="true" aria-controls="collapseTwo">
+          <i class="fas fa-fw fa-users"></i>
+          <span>All City</span>
+        </a>
+        <div id="collapseTwo111111" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">City</h6>
+              <a class="collapse-item" href="<?=base_url('CityListing')?>">Add City</a>
+          </div>
+        </div>
+      </li>
+<?php } ?>
+     <?php if($dataper[0]["subadmin"] == 1) { ?>
+
+           <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo11111" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-fw fa-users"></i>
           <span>All Subadmin</span>
         </a>
-        <div id="collapseTwo11111" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div id="collapseTwo11111" class="collapse" aria-labelledby="headingTwo" data-parent="  #accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Subadmin</h6>
               <a class="collapse-item" href="<?=base_url('SubadminListing')?>">Add Subadmin</a>
           </div>
         </div>
-      </li>-->
+      </li>
+<?php } ?>
+           <?php if($dataper[0]["setting"] == 1) { ?>
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo1111" aria-expanded="true" aria-controls="collapseTwo">
@@ -207,8 +264,10 @@
           </div>
         </div>
       </li>
+<?php } ?>
+          
 
-
+<?php } ?>
      
 
 

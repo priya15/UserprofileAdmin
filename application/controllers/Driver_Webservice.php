@@ -1088,7 +1088,124 @@ function uploadDocuments()
 	$distance="5";
 	if(($lat!=NULL)&&($lng!=NULL)){
 		$vechicleid = $driverData["vehicleCategoryId"];
-		$searchData = $this->Driver_Webservice_model->searchDriver($lat,$lng,$distance,$vechicleid,$driverId);
+		$searchData = $this->Driver_Webservice_model->searchDriver1($lat,$lng,$distance,$vechicleid,$driverId);
+
+		$newarray= array();
+		if(!empty($searchData)){
+          foreach($searchData as $key=>$cat_fam) {
+	          //$this->Driver_Webservice_model->VechicleName($searchData[$key]["vechicle_id"]);
+				 $searchData[$key]["vechicle_name"]=$vechicleData["vehicle_name"];
+		}
+		$searchmaindata = $searchData[0];
+
+		$distance =  $this->Driver_Webservice_model->distance($lat,$lng,$searchmaindata["pickup_lat"],$searchmaindata["pickup_lng"]);
+				if($distance == 0)
+				{
+
+					$searchmaindata["Customer_distance"]  = 1;
+				}
+				else
+				{
+					$searchmaindata["Customer_distance"] = number_format((float)$distance, 2, '.', '');
+
+				}
+			   $searchmaindata["distance"] = number_format((float)$searchmaindata["distance"], 2, '.', '');
+
+				$searchmaindata["vechicle_number"]=$driverData["vehicleNumber"];
+				$vehicleData['image'] = base_url()."assets/vehicleImages/".$vechicleData['image'];
+							$searchmaindata['vechicle_image'] = $vehicleData['image'];
+
+			     $booking_id = $searchmaindata["id"];
+
+				$notcheck = $this->Driver_Webservice_model->getDataById('tbl_notification',array("booking_id"=>$booking_id,"title"=>"NewBooking"));
+				//print_r($notcheck);die();
+				if(($notcheck == "")){
+                 $title = "NewBooking";
+                 $msg="";
+                 $date = date('Y-m-d H:i:s');
+                 $insert = array("booking_id"=>$booking_id,"title"=>$title,"msg"=>$msg,"driver_id"=>$driverId,"created_at"=>$date);
+                $this->Driver_Webservice_model->insertNotification($insert);
+                  }
+                  $userid=$searchmaindata["userId"];
+                $fireBaseToken = $this->Driver_Webservice_model->findFirebaseid($userid);
+            	//print_r($fireBaseToken);die();
+            	if(!empty($firebasetoken)){
+            		$firetokend = $fireBaseToken["fireBaseToken"];
+            	}
+            	else
+            	{
+            		$firetokend="";
+            	}
+            	$msg = array(
+								"title"=>"New Booking",
+								"body" => "You have a new ride Request accepted by User.",
+								"userId" => $userid,
+								"rideId" => $booking_id,
+								"driverId"=>$driverId
+						);
+						$tokend = $firetokend;
+						$this->send($tokend,$msg);
+
+					$result['status'] = 1;
+					$result['responseMessage'] = "All Ride Data";
+					$result['AllData'] = $searchmaindata;
+
+
+	   }
+	   else
+	   {
+
+					$result['status'] = 0;
+					$result['responseMessage'] = "No New Ride found";
+
+
+	   }
+	}
+	else
+	{ 
+		             $result['status'] = 0;
+					$result['responseMessage'] = "Driver lat lng notfound";
+
+	}
+}
+else
+{
+	            $result['status'] = 0;
+				$result['responseMessage'] = "No driver  found";
+
+}
+	   		echo json_encode($result);
+
+
+}
+
+
+
+	function MyNewRidedDetail1(){
+	$apiKey = trim($this->input->get_post('apiKey', TRUE));
+    $driverId = trim($this->input->get_post('driverId', TRUE));
+  //  $deviceId = trim($this->input->get_post('deviceId', TRUE));
+	//$userId = trim($this->input->get_post('userId', TRUE));
+	
+
+	if($apiKey != API_KEY){
+		echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
+	}
+
+
+	// $this->checkDeviceToken($userId,$deviceId);
+	$driverData =  $this->Driver_Webservice_model->getDataById('tbl_driver',array("id"=>$driverId));
+	if(!empty($driverData)){
+
+	$vechicleData =  $this->Driver_Webservice_model->getDataById('tbl_vehicle_category',array("id"=>$driverData["vehicleCategoryId"],"publish_status"=>1));
+	//print_r($vechicleData);die();
+//	print_r($driverData);die();
+	$lat = $driverData["lat"];
+	$lng = $driverData["lng"];
+	$distance="5";
+	if(($lat!=NULL)&&($lng!=NULL)){
+		$vechicleid = $driverData["vehicleCategoryId"];
+		$searchData = $this->Driver_Webservice_model->searchDriver1($lat,$lng,$distance,$vechicleid,$driverId);
 
 		$newarray= array();
 		if(!empty($searchData)){
@@ -1175,11 +1292,12 @@ else
 
 
 
+
    		function getRideDetail()
 	{
 		$apiKey = trim($this->input->get_post('apiKey', TRUE));
         $rideId = trim($this->input->get_post('rideId', TRUE));
-      //  $deviceId = trim($this->input->get_post('deviceId', TRUE));
+      $driverId = trim($this->input->get_post('driverId', TRUE));
 		//$userId = trim($this->input->get_post('userId', TRUE));
 		
 
@@ -1195,10 +1313,12 @@ else
 			
 					if($rideData['vehicleId'] != 0){
 						$vehicleData = $this->Driver_Webservice_model->getDataById('tbl_vehicle_category',array('id'=>$rideData['vehicleId'],"publish_status"=>1),"id as vehicleId, vehicle_name,image,vehiDesc,publish_status");
+						$driverdatas = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$rideData["driverId"],"id as driverId,*"));
+$rideData["vechicle_number"] = $driverdatas["vehicleNumber"];
 
 						if($vehicleData != '' ):
 							$vehicleData['image'] = base_url()."assets/vehicleImages/".$vehicleData['image'];
-							$rideData['vehicleData'] = $vehicleData;
+							$rideData['vechicle_image'] = $vehicleData['image'];
 
 						else:
 							$rideData['vehicleData'] = "";	
@@ -1209,11 +1329,11 @@ else
 							$rideData['driverData'] = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$rideData['driverId'],"id as driverId,*"));
 
 						else:
-							$rideData['driverData'] = "";
+						//	$rideData['driverData'] = "";
 						endif;
 					}
 					else{
-						$rideData['vehicleData'] = "";
+						//$rideData['vehicleData'] = "";
 					}
 					
 
@@ -1251,9 +1371,11 @@ else
            // print_r($rideData);die();
             $userid = $rideData["userId"];
             if($rideData){
-            	$token = $six_digit_random_number = mt_rand(100000, 999999); 
+            	$token = $six_digit_random_number = mt_rand(1000, 9999); 
             	$data  = array("driverId"=>$driverId,"rideStatus"=>1,"token"=>$token);
             	$rideDatas =  $this->Driver_Webservice_model->update('tbl_booking',$data,array("id"=>$rideId));
+            	
+
             	$rideDatanew =  $this->Driver_Webservice_model->getDataById('tbl_booking',array("id"=>$rideId));
 
             	//$userid = $rideData["userId"];
@@ -1276,7 +1398,7 @@ else
 						$tokend = $firetokend;
 						$this->send($tokend,$msg);
 		
-            	echo json_encode(array('status' => 1, 'responseMessage' => 'Ride accept by driver','token'=>$token,'data'=>$rideDatanew));die();
+            	echo json_encode(array('status' => 1, 'responseMessage' => 'Ride accept by driver','rideId'=>$rideId));die();
 
             }
 
@@ -1307,11 +1429,13 @@ else
 		$rideData =  $this->Driver_Webservice_model->getDataById('tbl_booking',array("id"=>$rideId,"token"=>$token,"driverId"=>$driverId));
 		//print_r($rideData);die();
 		if(!empty($rideData)){
-			$time = date("Y-m-d h:i:s a");
+			$time = date("Y-m-d H:i:s a");
 			$data = array("rideStatus"=>2,"startRideTime"=>$time);
 			$rideDatas =  $this->Driver_Webservice_model->update('tbl_booking',$data,array("id"=>$rideId));
+			$driverdatas = array("isBooked"=>1);
+            	 $driverdatass =  $this->Driver_Webservice_model->update('tbl_driver',$driverdatas,array("id"=>$driverId));
 			$rideDatanew =  $this->Driver_Webservice_model->getDataById('tbl_booking',array("id"=>$rideId,"token"=>$token));
-			echo json_encode(array('status' => 1, 'responseMessage' => 'Otp verfied','data'=>$rideDatanew));die;
+			echo json_encode(array('status' => 1, 'responseMessage' => 'Otp verfied','data'=>$rideId));die;
 		}
 		else
 		{
@@ -1340,11 +1464,12 @@ else
 		if($apiKey != API_KEY){
 			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
 		}
+		$checkRideBookingStatus = $this->Driver_Webservice_model->checkRideBookingStatus($rideId);
 
 		 // $this->checkDeviceToken($userId,$deviceId);
-    		$driverdata = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId));
-		if (!empty($driverdata)) {
-		 $checkRideBookingStatus = $this->Driver_Webservice_model->checkRideBookingStatus($rideId,$driverId);
+    		//$driverdata = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId));
+		if (!empty($checkRideBookingStatus)) {
+		 
 		 $userid = $checkRideBookingStatus["userId"];
 		 if($checkRideBookingStatus)
 		 {
@@ -1352,6 +1477,8 @@ else
 		 	$updateStatus = $this->Driver_Webservice_model->updateRideStatus($rideStatus,$rideId,$cancelReasone);
 		 	if($updateStatus)
 		 	{
+		 		$driverdatas = array("isBooked"=>0);
+            	 $driverdatass =  $this->Driver_Webservice_model->update('tbl_driver',$driverdatas,array("id"=>$driverId));
 		 		$fireBaseToken = $this->Driver_Webservice_model->findFirebaseid($userid);
             	if(!empty($firebasetoken)){
             		$firetokend = $fireBaseToken["fireBaseToken"];
@@ -1377,15 +1504,17 @@ else
                  $title = "System";
                  $msg="Booking #".$rideId." hasebeen cancelled";
                  $date = date('Y-m-d H:i:s');
-                 $insert = array("booking_id"=>$booking_id,"title"=>$title,"msg"=>$msg,"driver_id"=>$driverId,"created_at"=>$date);
+                 $insert = array("booking_id"=>$booking_id,"title"=>$title,"msg"=>$msg,"driver_id"=>$driverId,"created_at"=>$date,"status"=>1);
                 $this->Driver_Webservice_model->insertNotification($insert);
                   
 
 
 		         
 		 			$result['status'] = 1;
-					$result['responseMessage'] = "All Data";
-					$result['AllData'] = array("rideId"=>$rideId,"cancelReasone"=>$cancelReasone,"rideStatus"=>$rideStatus,"driverId"=>$driverId);
+					$result['responseMessage'] = "Ride Cancel Successfully";
+					//$result['AllData'] = array("rideId"=>$rideId,"cancelReasone"=>$cancelReasone,"rideStatus"=>$rideStatus,"driverId"=>$driverId);
+
+					$result['AllData'] = $rideId;
 		 	}
 		 	else
 		 	{
@@ -1396,13 +1525,13 @@ else
 		 else
 		 {
 		 		$result['status'] = 0;
-				$result['responseMessage'] = "Your ride is confirmed, you cannot cancel this ride.";
+				$result['responseMessage'] = "Ride not found.";
 		 }
 		}
 		else
 		 {
 		 		$result['status'] = 0;
-				$result['responseMessage'] = "Driver not found";
+				$result['responseMessage'] = "Ride not found";
 		 }
 
 		echo json_encode($result);
@@ -1431,7 +1560,7 @@ else
 
 		//print_r($rideData);die();
 		if(!empty($rideData)){
-          		  $time = date("Y-m-d h:i:s a");
+          		  $time = date("Y-m-d H:i:s a");
 		  		$distance =  $this->Driver_Webservice_model->distance($rideData["pickup_lat"],$rideData["pickup_lng"] ,$drop_lat,$drop_lng);
 
 
@@ -1485,7 +1614,7 @@ else
 						$tokend = $firetokend;
 						$this->send($tokend,$msg);
 		
-			echo json_encode(array('status' => 1, 'responseMessage' => 'Your Ride is Stop','data'=>$rideDatanew));die;
+			echo json_encode(array('status' => 1, 'responseMessage' => 'Your Ride is Stop','data'=>$rideId));die;
 		}
 		else
 		{
@@ -1518,23 +1647,37 @@ else
 		{
 			if($rideData['driverId'] != 0){
 
-				$driverdata = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$rideData['driverId'],"id as driverId,*"));
+				$driverdata = $this->Driver_Webservice_model->getDataById('tbl_users',array('id'=>$rideData['userId']));
 				$rideDatas =array();
 				if(!empty($driverdata)){
-					$rideDatas["drivername"]=$driverdata["name"];
-					$rideDatas["driver_pic"]=$driverdata["profilepic"];
+					$rideDatas["username"]=$driverdata["name"];
+					if($driverdata["profilepic"]!=""){
+					$rideDatas["user_pic"]=base_url('assets/profileImage/').$driverdata["profilepic"];
+				    }
+				    if($driverdata["socialImageUrl"]!=""){
+					$rideDatas["user_pic"]=$driverdata["socialImageUrl"];
+				    }
+				    if($driverdata["profilepic"]==""){
+					$rideDatas["user_pic"]="";
+				    }
 				}
 				else
 				{
-				    $rideDatas["drivername"]="";
-					$rideDatas["driver_pic"]="";	
+				    $rideDatas["username"]="";
+					$rideDatas["user_pic"]="";	
 				}
 				$rideDatas["toal_cost"]=$rideData["totalCharge"];
 				$rideDatas["totalDistance"]=$rideData["totalDistance"];
-				$rideDatas["startRideTime"]=$rideData["startRideTime"];
-				$rideDatas["endRideTime"]=$rideData["endRideTime"];
+				$startridetime = explode(" ",$rideData["startRideTime"]);
+				$start =date("h:i a", strtotime($startridetime[1]));
+
+				$endridetime = explode(" ",$rideData["endRideTime"]);
+				$end =date("h:i a", strtotime($endridetime[1]));
+				$rideDatas["startRideTime"]=$start;
+				$rideDatas["endRideTime"]=$end;
 				$rideDatas["pickup_address"]=$rideData["pickup_address"];
 				$rideDatas["drop_address"]=$rideData["drop_address"];
+				$rideDatas["start_date"]=$startridetime[0];
 			}
 
 
@@ -1567,9 +1710,27 @@ else
 			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
 		}
 	    $driverdata = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId));
-
+	    //print_r($driverdata);die();
      if(!empty($driverdata)){
 		$notdata = $this->Driver_Webservice_model->FindNotification($driverId);
+			    foreach($notdata as $key=>$cat_fam) {
+
+	    	if($notdata[$key]['title']  == 'NewBooking'){
+	    		$notdata[$key]['notification_status']=0;
+	    	}
+	    	if($notdata[$key]['status']  == 1){
+	    		//$dataa = explode("/r/n", $notdata[$key]['title']);
+			    	$notdata[$key]["title"]=trim($notdata[$key]['title']);
+	    		$notdata[$key]['notification_status']=1;
+	    	}
+	    	if($notdata[$key]['title']  == 3){
+	    		$notdata[$key]['notification_status']=2;
+	    	}
+                    
+             }
+
+
+
 		if(!empty($notdata)){
            			$result['status'] = 1;
 					$result['responseMessage'] = "All Data";
@@ -1767,6 +1928,51 @@ else
 	   echo json_encode($result);
 
 
+ 	}
+
+ 	public function updateLocation(){
+ 	    $apiKey = trim($this->input->get_post('apiKey', TRUE));
+       $driverId = trim($this->input->get_post('driverId', TRUE));
+      $lat = trim($this->input->get_post('lat', TRUE));
+      $lng = trim($this->input->get_post('lng', TRUE));
+		
+        $result = array();
+		if($apiKey != API_KEY){
+			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
+		}
+	    $driverdata = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId));
+	  //  echo $start_date_new.$end_date_new;die();
+
+
+     if(!empty($driverdata)){
+     	$data = array("lat"=>$lat,"lng"=>$lng);
+     	$where=array("id"=>$driverId);
+		$dashdata = $this->Driver_Webservice_model->update("tbl_driver",$data,$where);
+		$dashboard =array();
+		if(($dashdata)){
+			
+           			$result['status'] = 1;
+					$result['responseMessage'] = "update success";
+					$result['driverId'] = $driverId;
+
+		}
+		else
+		{
+			        $result['status'] = 0;
+					$result['responseMessage'] = "Some error occured Please try again";
+			    //   $result['AllData'] = $dashboard;
+
+ 
+		}
+	}
+	else
+	{
+                     $result['status'] = 0;
+					$result['responseMessage'] = "No Driver Found";
+	}
+	   echo json_encode($result);
+
+	
  	}
 
 

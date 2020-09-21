@@ -77,6 +77,14 @@ function checkEmailExists($email){
         return $ob->row();
     }
 
+        function checkLoginUserdata($email)
+    {
+        $this->db->where('email',$email);
+        $ob = $this->db->get('tbl_users');
+        return $ob->result_array();
+    }
+
+
      function getUserProfile($userId){
         $this->db->select("d.id as userId,d.name,d.phone,d.city,d.state,d.languageType,d.phoneVerifyStatus,d.profilepic,d.email,d.deviceid");
         $this->db->from("tbl_users as d");
@@ -174,6 +182,19 @@ function checkEmailExists($email){
     
                 // print_r($data);
                 return $data;
+        }
+
+        function searchDriverfortime($lat,$long,$distance,$vehicleId){
+                       // $sql = $this->db->query("SELECT *, ( '3959' * acos(cos(radians($lat)) * cos( radians(`tbl_driver`.`lat`)) * cos( radians(`tbl_driver`.`lng`) - radians($long)) + sin(radians($lat)) * sin( radians(`tbl_driver`.`lat`)))) AS distance FROMgetUserProfile `tbl_driver` WHERE  ( '3959' * acos( cos( radians($lat) ) * cos( radians(`tbl_driver`.`lng`)) * cos( radians(`tbl_driver`.`lng`) - radians($long)) + sin(radians($lat)) * sin( radians(`tbl_driver`.`lat`)))) < $distance AND `insuranceStatus`= 1 AND `vehicleImageStatus` = 1 AND `RCStatus` = 1 AND `isDeleted`= 0 AND `phoneVerifyStatus` = 1 AND `vehicleCategoryId`= $vehicleId AND `isBooked` = 0");
+
+           $sql = $this->db->query(" SELECT *, ( 3959 * acos( cos( radians($lat) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians($long) ) + sin( radians($lat) ) * sin( radians( lat ) ) ) ) AS distance FROM tbl_driver HAVING distance < 3 AND `insuranceStatus`= 1 AND `vehicleImageStatus` = 1 AND `RCStatus` = 1 AND `isDeleted`= 0 AND `phoneVerifyStatus` = 1 AND `vehicleCategoryId`= $vehicleId AND `isBooked` = 0 limit 0,1");
+
+            // $this->db->where(array('status'=>0,'driverId'=>0));
+                $data = $sql->result_array();
+    
+                // print_r($data);
+                return $data;
+  
         }
 
      function checkRideBookingStatus($rideId)

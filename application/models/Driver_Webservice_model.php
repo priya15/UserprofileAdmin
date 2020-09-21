@@ -165,6 +165,19 @@ $this->db->select("d.*,driver.vehicleNumber");
         {
             // $sql = $this->db->query("SELECT *, ( '3959' * acos(cos(radians($lat)) * cos( radians(`tbl_driver`.`lat`)) * cos( radians(`tbl_driver`.`lng`) - radians($long)) + sin(radians($lat)) * sin( radians(`tbl_driver`.`lat`)))) AS distance FROMgetUserProfile `tbl_driver` WHERE  ( '3959' * acos( cos( radians($lat) ) * cos( radians(`tbl_driver`.`lng`)) * cos( radians(`tbl_driver`.`lng`) - radians($long)) + sin(radians($lat)) * sin( radians(`tbl_driver`.`lat`)))) < $distance AND `insuranceStatus`= 1 AND `vehicleImageStatus` = 1 AND `RCStatus` = 1 AND `isDeleted`= 0 AND `phoneVerifyStatus` = 1 AND `vehicleCategoryId`= $vehicleId AND `isBooked` = 0");
 
+           $sql = $this->db->query(" SELECT * FROM tbl_booking  where id='68'");
+
+            // $this->db->where(array('status'=>0,'driverId'=>0));
+                $data = $sql->result_array();
+    
+                // print_r($data);
+                return $data;
+        }
+
+        function searchDriver1($lat,$long,$distance,$vehicleId,$driverId)
+        {
+            // $sql = $this->db->query("SELECT *, ( '3959' * acos(cos(radians($lat)) * cos( radians(`tbl_driver`.`lat`)) * cos( radians(`tbl_driver`.`lng`) - radians($long)) + sin(radians($lat)) * sin( radians(`tbl_driver`.`lat`)))) AS distance FROMgetUserProfile `tbl_driver` WHERE  ( '3959' * acos( cos( radians($lat) ) * cos( radians(`tbl_driver`.`lng`)) * cos( radians(`tbl_driver`.`lng`) - radians($long)) + sin(radians($lat)) * sin( radians(`tbl_driver`.`lat`)))) < $distance AND `insuranceStatus`= 1 AND `vehicleImageStatus` = 1 AND `RCStatus` = 1 AND `isDeleted`= 0 AND `phoneVerifyStatus` = 1 AND `vehicleCategoryId`= $vehicleId AND `isBooked` = 0");
+
            $sql = $this->db->query(" SELECT *, ( 3959 * acos( cos( radians($lat) ) * cos( radians( pickup_lat ) ) * cos( radians( pickup_lng ) - radians($long) ) + sin( radians($lat) ) * sin( radians( pickup_lat ) ) ) ) AS distance FROM tbl_booking  HAVING distance < 3  and `rideStatus`= 0   AND `vehicleId`= $vehicleId");
 
             // $this->db->where(array('status'=>0,'driverId'=>0));
@@ -190,10 +203,10 @@ $this->db->select("d.*,driver.vehicleNumber");
         //echo ' '.$km; 
         return round($km); 
         }
-     function checkRideBookingStatus($rideId,$driverId)
+     function checkRideBookingStatus($rideId)
         {
             $this->db->where('id',$rideId);
-            $this->db->where('driverId',$driverId);
+           // $this->db->where('driverId',$driverId);
 
             $this->db->where('rideStatus',0);
             $query = $this->db->get('tbl_booking');

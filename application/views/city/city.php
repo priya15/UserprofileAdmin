@@ -1,9 +1,13 @@
+
 <!-- Begin Page Content -->
   <div class="container-fluid">
 
 <!-- Page Heading -->
-<h1 class="h3 mb-2 text-gray-800">Auto Load  #Subadmin List  <a href="<?php echo base_url() ?>AddSubadmin" class="btn btn-sm bg-gradient-primary" style="float:right;font-weight:bold;">Add Subadmin</a>
-  <a href="<?php echo base_url()?>createSubadminXLS" class="btn btn-sm bg-gradient-primary" style="float:right;margin-right:20px">Export Subadmin Record</a></h1> 
+<h1 class="h3 mb-2 text-gray-800">Auto Load  #City List 
+<a href="<?php echo base_url() ?>AddCity" class="btn btn-sm bg-gradient-primary" style="float:right;font-weight:bold;">Add City</a>
+
+ <a href="<?php echo base_url()?>createCityXLS" class="btn btn-sm bg-gradient-primary" style="float:right;margin-right:20px">Export City Record</a>
+</h1> 
 
 <div class="row">
             <div class="col-md-12">
@@ -42,8 +46,8 @@
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
   <div class="card-header py-3">
-    <h6 class="m-0 font-weight-bold text-primary" style="float:left;font-size: 24px;">Subadmin List</h6>
-    <form action="<?php echo base_url() ?>SubadminListing" method="POST" id="searchList" style="float:right">
+    <h6 class="m-0 font-weight-bold text-primary" style="float:left;font-size: 24px;">City List</h6>
+    <form action="<?php echo base_url() ?>CityListing" method="POST" id="searchList" style="float:right">
                            
                        
                            <div class="input-group">
@@ -76,9 +80,7 @@
         <thead>
           <tr>
             <th>id</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone</th>
+            <th>Title</th>
 
             <th>CreatedAt</th>
             <th class="text-center">Actions</th>
@@ -87,31 +89,25 @@
         <tfoot>
         <tr>
             <th>id</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-
+            <th>Title</th>
             <th>CreatedAt</th>
             <th class="text-center">Actions</th>
           </tr>
         </tfoot>
         <tbody>
         <?php
-                    if(!empty($adminRecords))
+                    if(!empty($CityRecords))
                     {
                       $i = 1;
                       
-                  foreach($adminRecords as $record)
+                        foreach($CityRecords as $record)
                         {
                     ?>
                     <tr>
           
-          <td><?php echo "#".$i++ ?></td>
-          <td><?php if($record->name) echo $record->name; else echo "Not Updated Yet"; ?></td>
-          <td><?php if($record->email) echo $record->email; else echo "-----"; ?></td>
-          <td><?php if($record->mobile) echo $record->mobile; else echo "-----"; ?></td>
-
-          <?php $cr = explode(" ",$record->createdDtm); ?>
+          <td><?php echo "#".$record->id ?></td>
+          <td><?php if($record->title) echo ucfirst($record->title); else echo "Not Updated Yet"; ?></td>
+          <?php $cr = explode(" ",$record->created_at); ?>
           <td><?php echo $cr[0]; ?></td>
         
 
@@ -119,14 +115,7 @@
                       
                       
                 <td  class="text-center">
-                   <a class="btn btn-sm bg-gradient-primary" href="<?php echo base_url('ModulePermission/').$record->userId; ?>">
-                    <b> ModulePermission</b>
-                    </a>
-
-                     <a class="btn btn-sm bg-gradient-success" href="<?php echo base_url('SubadminEditDetail/').$record->userId; ?>">
-                        <i class="fa fa-edit"></i>
-                    </a>
-                             <a href="void:main(0)" class="btn btn-sm bg-gradient-danger" onclick="deleteFunction(<?php echo $record->userId; ?>)" title="Delete"><i class="fa fa-trash-o"></i>
+                             <a href="void:main(0)" class="btn btn-sm bg-gradient-danger" onclick="deleteFunction(<?php echo $record->id; ?>)" title="Delete"><i class="fa fa-trash-o"></i>
                            </a>
                    
 
@@ -190,11 +179,11 @@
 <!-- End of Main Content -->
 <script type="text/javascript">
        function deleteFunction($id){
-        var confirmation = confirm("are you sure ? You want to delete Subadmin?");
+        var confirmation = confirm("are you sure ? You want to delete City?");
         if(confirmation) { 
                 var serial_no = $id;
                 $.ajax({
-                     url:"<?php echo base_url('deleteSubadmin/');?>"+serial_no+"",
+                     url:"<?php echo base_url('deletecity/');?>"+serial_no+"",
                      type:"post",
                     // dataType: "JSON",
                      success: function(data){

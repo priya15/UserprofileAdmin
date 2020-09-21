@@ -1,25 +1,24 @@
 <?php if(!defined('BASEPATH')) exit('No direct script access allowed');
 
-class AllSubadminModel extends CI_Model
+class AllCityModel extends CI_Model
 {
     /**
      * This function is used to get the user listing count
      * @param string $searchText : This is optional search text
      * @return number $count : This is row count
      */
-    function SubadminListingCount($searchText = '')
+    function CityListingCount($searchText = '')
     {
         $this->db->select("*");
-        $this->db->from("tbl_admin as d");
+        $this->db->from("tbl_city as d");
          
         if(!empty($searchText)) {
-            $likeCriteria = "(d.email  LIKE '%".$searchText."%'
-                            OR  d.name  LIKE '%".$searchText."%'
-                            OR  d.mobile  LIKE '%".$searchText."%')";
+            $likeCriteria = "(d.title  LIKE '%".$searchText."%'
+                            
+                        )";
             $this->db->where($likeCriteria);
         }
-        $this->db->where('d.isDeleted', 0);
-       $this->db->where('d.roleId', 2);
+        //$this->db->where('d.isDeleted', 0);
 
         
        
@@ -37,22 +36,21 @@ class AllSubadminModel extends CI_Model
      * @param number $segment : This is pagination limit
      * @return array $result : This is result
      */
-    function SubadminListing($searchText = '', $page, $segment)
+    function CityListing($searchText = '', $page, $segment)
     {
         
         $this->db->select("*");
-        $this->db->from("tbl_admin as d");
+        $this->db->from("tbl_city as d");
        // $this->db->join("tbl_vehicle_category as v",'v.id = d.vehicleCategoryId','left');
          
         if(!empty($searchText)) {
-            $likeCriteria = "(d.email  LIKE '%".$searchText."%'
-                            OR  d.name  LIKE '%".$searchText."%'
-                            OR  d.mobile  LIKE '%".$searchText."%')";
+            $likeCriteria = "(d.title  LIKE '%".$searchText."%'
+                            
+                        )";
             $this->db->where($likeCriteria);
         }
 
-        $this->db->where('d.isDeleted', 0);
-                $this->db->where('d.roleId', 2);
+        //$this->db->where('d.isDeleted', 0);
 
         $this->db->limit($page, $segment);
         $query = $this->db->get();
@@ -61,19 +59,16 @@ class AllSubadminModel extends CI_Model
         return $result;
     }
 
-    public function getSubadminInfo($id){
-    return $this->db->select("*")->from("tbl_admin")->where("userId",$id)->get()->result_array();
+
+    public function deleteCityInfo($id){
+         return $this->db->delete('tbl_city', array('id' => $id)); 
 
     }
 
-    function FindLastid(){
-        return $this->db->select_max("userId")->from("tbl_admin")->get()->result_array();
-    }
 
-    function find_module_permission($id){
-          return $this->db->select("*")->from("tbl_modules_permission")->where("user_id",$id)->get()->result_array();
-  
-    }
+   
+
+    
 
 
 

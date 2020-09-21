@@ -149,5 +149,12 @@ $route['deleteSubadmin/(:any)'] = "AllSubadminListing/deleteSubadmin/$1";
 
 $route['addsubadmindata'] = "AllSubadminListing/addsubadmindata";
 $route['createSubadminXLS'] = "AllSubadminListing/createSubadminXLS";
+$route['ModulePermission/(:any)'] = "AllSubadminListing/ModulePermission/$1";
+$route['addsubadminpermissiondata'] = "AllSubadminListing/addsubadminpermissiondata";
 
+$route['CityListing'] = "AllCityListing/CityListing";
+$route['deletecity/(:any)'] = "AllCityListing/deletecity/$1";
+$route['createCityXLS'] = "AllCityListing/createCityXLS";
+$route['AddCity'] = "AllCityListing/AddCity";
+$route['addcitydata'] = "AllCityListing/addcitydata";
 

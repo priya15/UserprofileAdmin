@@ -128,13 +128,70 @@ class AllSubadminListing extends BaseController
 
               $data = array("name"=>$name,"password"=>md5($password),"original_password"=>$password,"email"=>$email,"mobile"=>$mobile,"roleId"=>"2","createdBy"=>1,"createdDtm"=>date("Y-m-d h:i:s"));
               $in = $this->db->insert("tbl_admin",$data);
+              $lastid = $this->AllSubadminModel->FindLastid();
+              //print_r($lastid);die();
               if($in){
+                $moduledata  = array("user"=>0,"driver"=>0,"ride"=>0,"article"=>0,"vechicle"=>0,"setting"=>0,"feedback"=>0,"subadmin"=>0,"user_id"=>$lastid[0]["userId"]);
+                $this->db->insert("tbl_modules_permission",$moduledata);
               //  echo "dd";
               redirect("SubadminListing");
                  }
 }
 
     }
+
+}
+
+function ModulePermission(){
+          $id = $this->uri->segment(2);
+          $data["permission"] =  $this->AllSubadminModel->find_module_permission($id);
+          $this->global['pageTitle'] = 'Auto Load : Permission Modules ';
+           $this->load->view("includes/header",$this->global);
+          $this->load->view("subadmin/add_Permission", $data);
+              $this->load->view("includes/footer");
+
+
+
+}
+
+public function addsubadminpermissiondata(){
+        $user         = $this->input->post("user");
+        $driver       = $this->input->post("driver");
+        $ride         = $this->input->post("ride");
+        $article     = $this->input->post("article");
+        $vechicle     = $this->input->post("vechicle");
+        $setting     = $this->input->post("setting");
+        $subadmin     = $this->input->post("subadmin");
+        $id           = $this->input->post("id");
+
+        $userd=0;$driverd=0;$rided=0;$articled=0;$vechicled=0;$settingd=0;$subadmind=0;
+        if($user == "on"){
+          $userd=1;
+        }
+        if($driver == "on"){
+          $driverd=1;
+        }
+        if($ride == "on"){
+          $rided=1;
+        }
+        if($article == "on"){
+          $articled=1;
+        }
+        if($vechicle == "on"){
+          $vechicled=1;
+        }
+        if($setting == "on"){
+          $settingd=1;
+        }
+       if($subadmin == "on"){
+          $subadmind=1;
+        }
+        $feedbackd=0;
+
+                $moduledata  = array("user"=>$userd,"driver"=>$driverd,"ride"=>$rided,"article"=>$articled,"vechicle"=>$vechicled,"setting"=>$settingd,"feedback"=>$feedbackd,"subadmin"=>$subadmind);
+                $this->db->update("tbl_modules_permission",$moduledata,array("user_id"=>$id));
+                              redirect("SubadminListing");
+
 
 }
 

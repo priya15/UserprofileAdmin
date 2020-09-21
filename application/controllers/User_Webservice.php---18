@@ -131,10 +131,6 @@ class User_Webservice extends CI_Controller {
         $languageType = trim($this->input->get_post('languageType', TRUE)); 
         $firebasetoken =trim($this->input->get_post('fireBaseToken', TRUE)); 
         //  1-> english 2->hindi 
-        
-        $socialMedia =trim($this->input->get_post('socialMedia', TRUE)); 
-        $socialId =trim($this->input->get_post('socialId', TRUE)); 
-        $socialImageUrl =trim($this->input->get_post('socialImageUrl', TRUE)); 
 		$apiKey = trim($this->input->get_post('apiKey', TRUE));
 // 		echo API_KEY;die;
 		if($apiKey != API_KEY){
@@ -161,8 +157,7 @@ class User_Webservice extends CI_Controller {
 				// $msg = "".$code." is your Verification OTP. Do not share this code with anyone else.";
 				// $this->sendSMS($phoneCoun,$msg,$code);
 				// $code = '1111';
-				$tableData = array('name'=>$name,'city'=>$city,'state'=>$state,'phone'=>$phone,"phoneOtp"=>$code,"languageType"=>$languageType,"email"=>$email,'password'=>md5($password),'created_at'=>date('Y-m-d H:i:s'),"socialId"=>$socialId,"socialMedia"=>$socialMedia,"socialImageUrl"=>$socialImageUrl);
-				
+				$tableData = array('name'=>$name,'city'=>$city,'state'=>$state,'phone'=>$phone,"phoneOtp"=>$code,"languageType"=>$languageType,"email"=>$email,'password'=>md5($password),'created_at'=>date('Y-m-d H:i:s'));
 				$insert_id = $this->User_Webservice_model->insert('tbl_users',$tableData);
 				if($insert_id){
 
@@ -189,75 +184,6 @@ class User_Webservice extends CI_Controller {
 			}
 	
 		echo json_encode($result);
-    }
-    
-    function socialLogin()
-    {
-        $result = array();
-	
-		$data['email'] = trim($this->input->get_post('email', TRUE));
-		$data['deviceId'] = trim($this->input->get_post('deviceId', TRUE));
-		$data['deviceType'] = trim($this->input->get_post('deviceType', TRUE));
-		$data['phone'] = trim($this->input->get_post('mobile', TRUE));
-        $data['languageType'] = trim($this->input->get_post('languageType', TRUE)); 
-        $data['firebasetoken'] =trim($this->input->get_post('fireBaseToken', TRUE)); 
-        $data['socialMedia'] =trim($this->input->get_post('socialMedia', TRUE)); 
-        $data['socialId'] =trim($this->input->get_post('socialId', TRUE)); 
-        $data['socialImageUrl'] =trim($this->input->get_post('socialImageUrl', TRUE)); 
-        //  1-> english 2->hindi 
-		$apiKey = trim($this->input->get_post('apiKey', TRUE));
-// 		echo API_KEY;die;
-		if($apiKey != API_KEY){
-			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
-		}
-		
-		if($data['email'] != "")
-		$where['email'] = $data['email'];
-		else
-		$where['phone'] = $data['phone'];
-		
-	
-		    $getUser = $this->db->get_where("tbl_users",$where)->row_array();
-		    if(!empty($getUser))
-		    {
-		             $update = $this->db->update("tbl_users",array("socialMedia"=>$data['socialMedia'],"socialId"=>$data['socialId'],"socialImageUrl"=>$data['socialImageUrl']),$where);
-		             if($update){
-    		           
-    		            
-    		            
-    		        	
-    		        	    $tableData['deviceid'] = $data['deviceId'];
-                    		$tableData['devicetype'] = $data['deviceType'];
-                    		$tableData['fireBaseToken'] = $data['firebasetoken'];
-                    		
-                            $this->User_Webservice_model->update('tbl_users',$tableData,$where);
-    		        	
-    		        	     $result['userData'] =  $this->User_Webservice_model->getUserProfile($getUser['id']);
-                        	if(!empty($result['userData']['profilepic'])){
-                                    $result['userData']['profilepic'] = base_url('assets/profileImage/'.$result['userData']['profilepic']);
-                                }
-                                else{
-                                    $result['userData']['profilepic'] =  "";
-                                }
-		             }
-                       $result['status'] = 1;
-                       $result['responseMessage']="Login Successfully";
-                           
-		        
-		    }
-		    else
-		    {
-		               $result['status'] = 0;
-                       $result['responseMessage']="Data Not Found";
-                        $result['userData'] = $data;
-		    }
-		   
-		  
-		    
-	echo json_encode($result);
-	
-		
-		
     }
 
     public function resendOtp(){
@@ -301,7 +227,6 @@ class User_Webservice extends CI_Controller {
 		
 		$apiKey   = trim($this->input->get_post('apiKey', TRUE));
 		$deviceId   = trim($this->input->get_post('deviceId', TRUE));
-		$deviceType = trim($this->input->get_post('deviceType', TRUE));
 		$deviceType = trim($this->input->get_post('deviceType', TRUE));
 
 		if($apiKey != API_KEY){
@@ -523,10 +448,6 @@ class User_Webservice extends CI_Controller {
 			if(!empty($data['profilepic'])){
 					$data['profilepic'] = base_url('assets/profileImage/'.$data['profilepic']);
                     }
-            if(!empty($data['socialImageUrl'])){
-					$data['socialImageUrl'] = $data['socialImageUrl'];
-                    }
-
                     else{
                         $data['profilepic'] = "";
                     }
@@ -544,7 +465,7 @@ class User_Webservice extends CI_Controller {
 	}
 	
 	
-	function getVehicleCategory1()
+	function getVehicleCategory()
 	{
 		$apiKey = trim($this->input->get_post('apiKey', TRUE));
 	     $pickup_lat = trim($this->input->get_post('pickup_lat', TRUE));
@@ -607,112 +528,6 @@ class User_Webservice extends CI_Controller {
 		echo json_encode($result);
 
 	}
-
-
-
-		function getVehicleCategory()
-	{
-		$apiKey = trim($this->input->get_post('apiKey', TRUE));
-	     $pickup_lat = trim($this->input->get_post('pickup_lat', TRUE));
-        $pickup_lng = trim($this->input->get_post('pickup_lng', TRUE));
-        $drop_lat = trim($this->input->get_post('drop_lat', TRUE));
-        $drop_lng = trim($this->input->get_post('drop_lng', TRUE));
-		//$vehicleId = trim($this->input->get_post('vehicleId', TRUE));
-		$deviceId = trim($this->input->get_post('deviceId', TRUE));
-
-		if($apiKey != API_KEY){
-			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
-		}
-		$distance =  $this->User_Webservice_model->distance($pickup_lat,$pickup_lng ,$drop_lat,$drop_lng);
-
-
-		if($distance == 0)
-		{
-			$distance  = 1;
-		}
-
-		
-		$wherev = array('publish_status'=>1);
-		$data = $this->User_Webservice_model->getData('tbl_vehicle_category',$wherev);
-		if($data)
-		{
-
-            foreach ($data as $key => $value) {
-            	//print_r($data);
-			     //echo $data[$key]['pricePerKM'];die();
-            	$distance1="25";
-              $searchData = $this->User_Webservice_model->searchDriverfortime($pickup_lat,$pickup_lng,$distance1,$data[$key]["id"]);
-             // print_r($searchData);
-             if(!empty($searchData)){
-             	$lat = $searchData[0]["lat"];
-             	$lng = $searchData[0]["lng"];
-             	    $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=".$lat.",".$lng."&destinations=".$pickup_lat.",".$pickup_lng."&mode=driving&language=pl-PL&key=AIzaSyDu09OTRUuqUanO3wkqiD6kC9waAd46oK4";
-			    $ch = curl_init();
-			    curl_setopt($ch, CURLOPT_URL, $url);
-			    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-			    curl_setopt($ch, CURLOPT_PROXYPORT, 3128);
-			    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-			    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-			    $response = curl_exec($ch);
-			    curl_close($ch);
-			    $response_a = json_decode($response, true);
-			    //print_r($response_a);die();
-			    //echo $dist = $response_a['rows'][0]['elements'][0]['distance']['text'];
-			     $time = $response_a['rows'][0]['elements'][0]['duration']['text'];
-            	$data[$key]['time']=$time;
-            	$pricekm = $data[$key]['pricePerKM'];
-			    $totalFair = round($distance * $pricekm);
-			    $totalFairmax = round($distance*3*$pricekm);
-			 // $data[$key]["minPrice"]=$totalFair;
-			 //  $data[$key]["maxPrice"]=$totalFairmax;
-             $data[$key]["driver_avilable"]=1;
-             $data[$key]["totalCharge"]=$totalFair;
-            // $data[$key]["distance"]=$distance;
-
-
-             }
-             else
-             {
-             	 $pricekm = $data[$key]['pricePerKM'];
-			    $totalFair = round($distance * $pricekm);
-			    $totalFairmax = round($distance*3*$pricekm);
-               $data[$key]["driver_avilable"]=0;
-               $data[$key]["time"]="";
-               $data[$key]["totalCharge"]=$totalFair;
-             }
-           
-//price = array("minprice"=>$totalFair,"maxprice"=>$totalFairmax,"distance"=>$distance);
-
-			    ($data[$key]["minPrice"]);
-			    ($data[$key]["maxPrice"]);
-			    unset($data[$key]["pricePerKM"]);
-			    unset($data[$key]["createdAt"]);
-			    unset($data[$key]["publish_status"]);
-//$data[$key]["distance"]=$distance;
-                if(!empty($value['image'])){
-					$data[$key]['image'] = base_url('assets/vehicleImages/'.$value['image']);
-                }
-                else{
-                    $data[$key]['image'] = "";
-                }
-            }
-			if(!empty($data['image'])){
-					$data['image'] = base_url('assets/vehicleImages/'.$data['image']);
-			}
-			$result['status'] = 1;
-			$result['responseMessage'] = "All Data";
-			$result['AllData'] = $data;
-            //$result["vechicleData"]=$price;
-		}
-		else
-		{
-			$result['status'] = 0;
-			$result['responseMessage'] = "No Data Found";
-		}
-		echo json_encode($result);
-
-	}
-
 	
 	function saveUserAddress()
     {
@@ -892,8 +707,6 @@ class User_Webservice extends CI_Controller {
 			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
 		}
 
-$data["booking_no"]="CRN".mt_rand(100000, 999999);
-
 		  $this->checkDeviceToken($data['userId'],$deviceId);
 
 			
@@ -1070,7 +883,7 @@ $data["booking_no"]="CRN".mt_rand(100000, 999999);
 		if($apiKey != API_KEY){
 			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
 		}
-		// $this->checkDeviceToken($userId,$deviceId);
+		 $this->checkDeviceToken($userId,$deviceId);
 
 		 // Check Duplicate Email
 		 $where_email = ["email"=>$email];
@@ -1112,24 +925,17 @@ $data["booking_no"]="CRN".mt_rand(100000, 999999);
 		
 		$where = array('id'=>$userId);
 		$data = $this->User_Webservice_model->update('tbl_users',$arr,$where);
-		//print_r($data);
-		$datar = $this->User_Webservice_model->getDataById("tbl_users",array("id"=>$userId));
-		//print_r($datar);
-		if($datar)
+		if($data)
 		{
-			if($datar['profilepic']!= '')
+			if($arr['profilePic']!= '')
 			{
-			    $datar["profilepic"] = base_url('assets/profileImage/').$datar["profilepic"];
+			    $arr[profilePic] = base_url('assets/profileImage/').$arr[profilePic];
 			}
-           else if(!empty($datar['socialImageUrl'])){
-					$datar['socialImageUrl'] = $datar['socialImageUrl'];
-                    }
-			else {
-			 $datar["profilepic"] = "";
-			}
+			else
+			 $arr[profilePic] = "";
 			$result['status'] = 1;
 			$result['responseMessage'] = "User Profile Update Successfully ";
-			$result['AllData'] = $datar;
+			$result['AllData'] = $arr;
 			
 		}
 		else
@@ -1169,7 +975,7 @@ $data["booking_no"]="CRN".mt_rand(100000, 999999);
                  $title = "System";
                  $msg="Booking #".$rideId." has been cancelled";
                  $date = date('Y-m-d H:i:s');
-                 $insert = array("booking_id"=>$booking_id,"title"=>$title,"msg"=>$msg,"driver_id"=>$driverId,"created_at"=>$date,"status"=>1);
+                 $insert = array("booking_id"=>$booking_id,"title"=>$title,"msg"=>$msg,"driver_id"=>$driverId,"created_at"=>$date);
                             $this->db->insert("tbl_notification",$insert);
 
                   
@@ -1473,33 +1279,6 @@ if(!empty($checkride)){
 
 		echo json_encode($result);
 	
-	}
-
-	public function FindCity(){
-		$apiKey = trim($this->input->get_post('apiKey', TRUE));
-        $city = trim($this->input->get_post('city', TRUE));
-
-		if($apiKey != API_KEY){
-			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
-		}
-
-		 // $this->checkDeviceToken($userId,$deviceId);
-$cityfind = $this->User_Webservice_model->getDataById("tbl_city",array("title"=>strtolower($city)));
-if(!empty($cityfind)){
-		 			$result['status'] = 1;
-					$result['responseMessage'] = "City FindCity";
-					$result['AllData'] = $city;
-
-		 	}
-		 	else
-		 	{
-		 		$result['status'] = 0;
-				$result['responseMessage'] = "city notfound";
-		 	}
-		
-		echo json_encode($result);
-
-
 	}
 
 
