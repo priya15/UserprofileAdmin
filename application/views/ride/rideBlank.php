@@ -1,12 +1,9 @@
-
 <!-- Begin Page Content -->
   <div class="container-fluid">
 
 <!-- Page Heading -->
-<h1 class="h3 mb-2 text-gray-800">Auto Load  #Notification List 
-
-</h1> 
-
+<h1 class="h3 mb-2 text-gray-800">Auto Load  #Ride List
+<a href="<?php echo base_url()?>createRideXLS" class="btn btn-sm bg-gradient-primary" style="float:right;">Export Ride Record</a> </h1>
 <div class="row">
             <div class="col-md-12">
               
@@ -44,13 +41,22 @@
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
   <div class="card-header py-3">
-    <h6 class="m-0 font-weight-bold text-primary" style="float:left;font-size: 24px;">Notification List</h6>
-    <form action="<?php echo base_url() ?>CityListing" method="POST" id="searchList" style="float:right">
+    <h6 class="m-0 font-weight-bold text-primary" style="float:left;font-size: 24px;">Ride List</h6>
+
+    <form action="<?php echo base_url() ?>RideListing" method="POST" id="searchList" style="float:right">
                            
                        
                            <div class="input-group">
 
 
+                           <select class="form-control input-sm" name="dropdownText" id='dropdownText' style="width: 185px;" onchange="this.form.submit()"  >
+                                      <option <?php if($dropdownText == "" || $dropdownText == 'allRides') echo "selected";?> value="allRides" selected>All Ride</option>
+                                      <option <?php if($dropdownText == 'Pending') echo "selected";?> value="Pending" >Pending Ride</option>
+                                      <option <?php if($dropdownText == 'ConfirmedRide') echo "selected";?> value="ConfirmedRide" >Confirmed  Ride</option>
+                                       <option <?php if($dropdownText == 'pickup') echo "selected";?> value="pickup" >pickup</option>
+                                        <option <?php if($dropdownText == 'cancel') echo "selected";?> value="cancel" >cancel Ride</option>
+                                         <option <?php if($dropdownText == 'dropped') echo "selected";?> value="dropped" >Dropped</option>
+                                    </select>
                                    
                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <input type="text" name="searchText" value="<?php echo $searchText; ?>" class="form-control input-sm " style="width: 150px;" placeholder="Search"/>
@@ -78,54 +84,53 @@
         <thead>
           <tr>
             <th>id</th>
-            <th>Msg</th>
-           <th class="text-center">Actions</th>
+           <th>BookingNo</th>
 
+            <th>Name</th>
+            <th>PickupAddress</th>
+            <th>DropAddress</th>
+
+            <th class="text-center">Actions</th>
           </tr>
         </thead>
         <tfoot>
         <tr>
             <th>id</th>
-            <th>Msg</th>
-            <th class="text-center">Actions</th>
+            <th>BookingNo</th>
 
+            <th>Name</th>
+            <th>PickupAddress</th>
+            <th>DropAddress</th>
+            <th class="text-center">Actions</th>
           </tr>
         </tfoot>
         <tbody>
-
         <?php
-                    if(!empty($nRecords))
+                    if(!empty($RideRecords))
                     {
                       $i = 1;
-                      $i=1;
-                        foreach($nRecords as $record)
+                      
+                        foreach($RideRecords as $record)
                         {
                     ?>
                     <tr>
-          <?php if($record->read_status==1){ ?>
-          <td><b><?php echo "#".$i++ ?></b></td>
-          <td><b><?php if($record->msg) echo ucfirst($record->msg); else echo "Not Updated Yet"; ?></b></td>
-        <?php }?>
-          <?php if($record->read_status==0){ ?>
-          <td><?php echo "#".$i++ ?></td>
-          <td><?php if($record->msg) echo ucfirst($record->msg); else echo "Not Updated Yet"; ?></td>
-        <?php }?>
-           <td  class="text-center">
-                                <a class="btn btn-sm bg-gradient-success" href="<?php echo base_url('RideCancelDetailNotification/').$record->booking_id; ?>">
-                                     <i class="fa fa-eye"></i>
+          
+          <td><?php echo "#".$record->id ?></td>
+          <td><?php if($record->name) echo $record->name; else echo "Not Updated Yet"; ?></td>
+          <td><?php if($record->booking_no) echo $record->name; else echo "Not Updated Yet"; ?></td>
+
+          <td><?php echo $record->pickup_address ?></td>
+          <td><?php  echo $record->drop_address; ?></td>
+         
+                      
+                      
+                <td  class="text-center">
+                  
+                    <a class="btn btn-sm bg-gradient-success" href="<?php echo base_url('RideDetail/').$record->id; ?>">
+                        <i class="fa fa-eye"></i>
                     </a>
-
-                             <a href="void:main(0)" class="btn btn-sm bg-gradient-danger" onclick="deleteFunction(<?php echo $record->id; ?>)" title="Delete"><i class="fa fa-trash-o"></i>
-                           </a>
-                   
-
                             
                 </td>
-
-                     
-                      
-                      
-
                     </tr>
                     <?php
                         }
@@ -182,21 +187,6 @@
 </div>
 <!-- End of Main Content -->
 <script type="text/javascript">
-       function deleteFunction($id){
-        var confirmation = confirm("are you sure ? You want to delete Notification?");
-        if(confirmation) { 
-                var serial_no = $id;
-                $.ajax({
-                     url:"<?php echo base_url('deletenotification/');?>"+serial_no+"",
-                     type:"post",
-                    // dataType: "JSON",
-                     success: function(data){
-                        location.reload();
-                     }
-                });
-        }
-    }
-
     jQuery(document).ready(function(){
         jQuery('ul.pagination li a').click(function (e) {
             e.preventDefault();    

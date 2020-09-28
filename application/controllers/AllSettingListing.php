@@ -111,7 +111,7 @@ $fileName = 'Setting-'.time().'.xlsx                        ';
         $objWriter->save($fileName);
         // download file
         header("Content-Type: application/vnd.ms-excel");
-         redirect(site_url().$fileName);              
+          //redirect(site_url().$fileName);              
 
     }
 

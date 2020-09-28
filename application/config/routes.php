@@ -93,6 +93,15 @@ $route['submitDocuments'] = "AllDriverListing/submitDocuments";
 $route['createDriverXLS'] = "AllDriverListing/createDriverXLS";
 
 $route['RideListing'] = 'AllRideListing/RideListing';
+
+$route['CancelRideListing'] = 'AllCancelRideListing/CancelRideListing';
+
+$route['BlankRideListing'] = 'AllBlankRideListing/BlankRideListing';
+
+$route['RideCancelDetail/(:any)'] = 'AllCancelRideListing/RideCancelDetail/$1';
+
+$route['RideCancelDetailNotification/(:any)'] = 'AllCancelRideListing/RideCancelDetailNotification/$1';
+
 $route['RideListing/(:any)'] = "AllRideListing/RideListing/$1";
 $route['RideDetail/(:any)'] = "AllRideListing/RideDetail/$1";
 $route['createRideXLS'] = 'AllRideListing/createRideXLS';

@@ -801,7 +801,7 @@ class User_Webservice extends CI_Controller {
         {
         	$this->db->delete('tbl_address',array('userId'=>$userId,"addressId"=>$addressId));
             $result['status'] = 1;
-			$result['responseMessage'] = "delete Data success";
+			$result['responseMessage'] = "Delete Data success";
 			$result['addressId'] = $addressId;
         }
         else{
@@ -932,7 +932,7 @@ $data["booking_no"]="CRN".mt_rand(100000, 999999);
 			else{
 
 				$result['status'] = 1;
-				$result['responseMessage'] = "Ride Confirmed";
+				$result['responseMessage'] = "Your Ride is Confirmed";
 				$result['rideId'] = $insert;
 			}
 		}
@@ -1299,7 +1299,7 @@ if(!empty($checkride)){
 		else
 		{
            		 $result['status'] = 0;
-				$result['responseMessage'] = "Ride not found";
+				$result['responseMessage'] = "Ride Not Found";
 
 		}
 
@@ -1398,7 +1398,7 @@ if(!empty($checkride)){
 		 	else
 		 	{
 		 		$result['status'] = 0;
-				$result['responseMessage'] = "Can't insert the paymentifo";
+				$result['responseMessage'] = "Can't insert the PaymentInfo";
 		 	}
 		 }
 		 
@@ -1406,7 +1406,7 @@ if(!empty($checkride)){
 		else
 		{
            		 $result['status'] = 0;
-				$result['responseMessage'] = "Ride not found";
+				$result['responseMessage'] = "Ride Not Found";
 
 		}
 
@@ -1456,7 +1456,7 @@ if(!empty($checkride)){
 		 	else
 		 	{
 		 		$result['status'] = 0;
-				$result['responseMessage'] = "Can't insert the paymentifo";
+				$result['responseMessage'] = "Can't Insert The Paymentifo";
 		 	}
 		 }
 		 
@@ -1464,7 +1464,7 @@ if(!empty($checkride)){
 		else
 		{
            		 $result['status'] = 0;
-				$result['responseMessage'] = "RidePayment not found";
+				$result['responseMessage'] = "RidePayment Not Found";
 
 		}
 
@@ -1528,7 +1528,7 @@ if(!empty($checkride)){
 		else
 		{
            		 $result['status'] = 0;
-				$result['responseMessage'] = "RidePayment not found";
+				$result['responseMessage'] = "RidePayment Not Found";
 
 		}
 
@@ -1556,7 +1556,7 @@ if(!empty($cityfind)){
 		 	else
 		 	{
 		 		$result['status'] = 0;
-				$result['responseMessage'] = "city notfound";
+				$result['responseMessage'] = "City Not Found";
 		 	}
 		
 		echo json_encode($result);
@@ -1629,7 +1629,7 @@ if(!empty($checkride)){
 else
 {
 	            $result['status'] = 0;
-				$result['responseMessage'] = "Ride not found";
+				$result['responseMessage'] = "Ride Not Found";
 
 }
 		
@@ -1754,7 +1754,7 @@ else
 		else{
 
 				$result['status'] = 0;
-				$result['responseMessage'] = "No ride details found";
+				$result['responseMessage'] = "No Ride Details Found";
 		}
 
 		echo json_encode($result);
@@ -1783,7 +1783,8 @@ $ridedatadetail =array();
 		{
 			$driverinfo = $this->User_Webservice_model->getDataById('tbl_driver',array('id'=>$rideData[0]["driverId"]));
 			$rideinfo = $this->User_Webservice_model->getDataById('tbl_ride_payment',array('ride_id'=>$rideId));
-			if(!empty($ride_info)){
+			//print_r($rideinfo);die();
+			if(!empty($rideinfo)){
 				if($rideinfo["payment_mode"]==1){
                   $ridedatadetail["payment_mode"]="Cash";
 				}
@@ -1798,7 +1799,7 @@ $ridedatadetail =array();
 
 				
 			}
-			else
+			if(empty($rideinfo))
 			{
 				     $ridedatadetail["payment_mode"]="";
 
@@ -1812,7 +1813,7 @@ $ridedatadetail =array();
                 }
                 else
                 {
-                	$ridedatadetail["rating"]=$rating["rating"].".0";
+                	$ridedatadetail["rating"]=$rating["rating"];
                 }
 
             }
@@ -1961,7 +1962,7 @@ $date2 = strtotime($rideData[0]["endRideTime"]);
 		else{
 
 				$result['status'] = 0;
-				$result['responseMessage'] = "No ride details found";
+				$result['responseMessage'] = "No Ride Details Found";
 		}
 
 		echo json_encode($result);
@@ -1998,7 +1999,7 @@ if(!empty($checkride)){
 else
 {
 	            $result['status'] = 0;
-				$result['responseMessage'] = "Ride not found";
+				$result['responseMessage'] = "Ride Not Found";
 
 }
 		
@@ -2052,7 +2053,7 @@ if(!empty($checkride)){
 	else
 	{
 		            $result['status'] = 0;
-					$result['responseMessage'] = "Ride not found";
+					$result['responseMessage'] = "Ride Not Found";
 
 	}
 		

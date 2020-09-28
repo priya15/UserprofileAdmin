@@ -127,7 +127,7 @@ a.dropdown-item.view-all.text-center.small.text-gray-500{
         <div class="sidebar-brand-icon rotate-n-15">
           <i class="fas fa-laugh-wink"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">Notifications <sup>AL</sup></div>
+        <div class="sidebar-brand-text mx-3">AutoLoad <sup>AL</sup></div>
       </a>
 
       <!-- Divider -->
@@ -181,6 +181,8 @@ a.dropdown-item.view-all.text-center.small.text-gray-500{
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Booking</h6>
               <a class="collapse-item" href="<?=base_url('RideListing')?>">Booking Ride</a>
+              <!-- <a class="collapse-item" href="<?=base_url('BlankRideListing')?>">Blank Ride</a>-->
+              <a class="collapse-item" href="<?=base_url('CancelRideListing')?>">Cancel Ride</a>
           </div>
         </div>
       </li>
@@ -251,7 +253,7 @@ a.dropdown-item.view-all.text-center.small.text-gray-500{
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo17111" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-fw fa-users"></i>
-          <span>Aboutus</span>
+          <span>AboutUs</span>
         </a>
         <div id="collapseTwo17111" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
@@ -347,7 +349,13 @@ a.dropdown-item.view-all.text-center.small.text-gray-500{
 
                   <?php foreach ($data as $key => $value) {
                    ?>
-                     <a class="dropdown-item text-center small text-gray-500" href="#"><?php echo $value["msg"]?> </a>
+                     <a class="dropdown-item text-center small text-gray-500" href="<?php echo base_url('RideCancelDetailNotification/').$value["booking_id"];?>">
+<?php if($value["read_status"]==1) { ?>
+                      <b><?php echo $value["msg"];?></b> </a>
+                      <?php }  ?>
+                      <?php if($value["read_status"]!=1) { ?>
+                      <?php echo $value["msg"];?> </a>
+                      <?php } ?>
 <?php }?>
  <a class="dropdown-item view-all text-center small text-gray-500" href="<?php echo base_url("AllNotification/viewall")?>">View All </a>
 

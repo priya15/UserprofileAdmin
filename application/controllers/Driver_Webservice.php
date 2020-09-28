@@ -1213,7 +1213,7 @@ $ridedatadetail =array();
 		{
 			$driverinfo = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId));
 			$rideinfo = $this->Driver_Webservice_model->getDataById('tbl_ride_payment',array('ride_id'=>$rideId));
-			if(!empty($ride_info)){
+			if(!empty($rideinfo)){
 				if($rideinfo["payment_mode"]==1){
                   $ridedatadetail["payment_mode"]="Cash";
 				}
@@ -1241,7 +1241,7 @@ $ridedatadetail =array();
                 }
                 else
                 {
-                	$ridedatadetail["rating"]=$rating["rating"].".0";
+                	$ridedatadetail["rating"]=$rating["rating"];
                 }
 
             }

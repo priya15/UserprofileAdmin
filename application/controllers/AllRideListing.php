@@ -92,6 +92,8 @@ class AllRideListing extends BaseController
         }
     }
 
+
+
     function createRideXLS(){
          $fileName = 'Ride-'.time().'.xlsx'; 
         $dropdownval  = $this->session->userdata("dropvalbooking"); 
