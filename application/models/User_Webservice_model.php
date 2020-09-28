@@ -86,7 +86,7 @@ function checkEmailExists($email){
 
 
      function getUserProfile($userId){
-        $this->db->select("d.id as userId,d.name,d.phone,d.city,d.state,d.languageType,d.phoneVerifyStatus,d.profilepic,d.email,d.deviceid");
+        $this->db->select("d.id as userId,d.name,d.phone,d.city,d.state,d.languageType,d.phoneVerifyStatus,d.profilepic,d.email,d.deviceid,d.profilepic,d.socialImageUrl");
         $this->db->from("tbl_users as d");
         
         $this->db->where('d.id',$userId);
@@ -196,6 +196,31 @@ function checkEmailExists($email){
                 return $data;
   
         }
+            public function getDataByjoinId($table,$where){
+$this->db->select("d.*,driver.vehicleNumber,driver.profilepic as driverpic,user.profilepic,user.socialImageUrl,d.driverId");
+        $this->db->from("tbl_booking as d");
+        $this->db->join('tbl_driver as driver', 'd.driverId = driver.id', 'inner');
+         $this->db->join('tbl_users as user', 'user.id = d.userId', 'inner');
+        $this->db->where("userId",$where);
+        $this->db->where("rideStatus",4);
+        $query = $this->db->get();
+        return $query->result_array(); 
+    }
+
+
+            public function getDataByjoinRidesId($table,$userId,$rideId){
+$this->db->select("d.*,driver.vehicleNumber,driver.profilepic as driverpic,user.profilepic,user.socialImageUrl,d.driverId");
+        $this->db->from("tbl_booking as d");
+        $this->db->join('tbl_driver as driver', 'd.driverId = driver.id', 'inner');
+         $this->db->join('tbl_users as user', 'user.id = d.userId', 'inner');
+        $this->db->where("d.userId",$userId);
+        $this->db->where("d.id",$rideId);
+        $this->db->where("d.rideStatus",4);
+        $query = $this->db->get();
+        return $query->result_array(); 
+    }
+
+
 
      function checkRideBookingStatus($rideId)
         {

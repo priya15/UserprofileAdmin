@@ -1,8 +1,10 @@
+
 <!-- Begin Page Content -->
   <div class="container-fluid">
 
 <!-- Page Heading -->
-<h1 class="h3 mb-2 text-gray-800">Auto Load  #Setting List  <a href="<?php echo base_url()?>createSettingXLS" class="btn btn-sm bg-gradient-primary" style="float:right;margin-right:20px">Export Setting Record</a>
+<h1 class="h3 mb-2 text-gray-800">Auto Load  #Notification List 
+
 </h1> 
 
 <div class="row">
@@ -42,8 +44,8 @@
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
   <div class="card-header py-3">
-    <h6 class="m-0 font-weight-bold text-primary" style="float:left;font-size: 24px;">Setting List</h6>
-    <form action="<?php echo base_url() ?>SettingListing" method="POST" id="searchList" style="float:right">
+    <h6 class="m-0 font-weight-bold text-primary" style="float:left;font-size: 24px;">Notification List</h6>
+    <form action="<?php echo base_url() ?>CityListing" method="POST" id="searchList" style="float:right">
                            
                        
                            <div class="input-group">
@@ -76,51 +78,45 @@
         <thead>
           <tr>
             <th>id</th>
-            <th>Title</th>
-            <th>Percentage</th>
+            <th>Msg</th>
+           <th class="text-center">Actions</th>
 
-         <!--   <th>CreatedAt</th>-->
-            <th class="text-center">Actions</th>
           </tr>
         </thead>
         <tfoot>
         <tr>
             <th>id</th>
-            <th>Title</th>
-            <th>Percentage</th>
-           <!-- <th>CreatedAt</th>-->
+            <th>Msg</th>
             <th class="text-center">Actions</th>
+
           </tr>
         </tfoot>
         <tbody>
+
         <?php
-                    if(!empty($SettingsRecords))
+                    if(!empty($nRecords))
                     {
                       $i = 1;
-                      
-                        foreach($SettingsRecords as $record)
+                      $i=1;
+                        foreach($nRecords as $record)
                         {
                     ?>
                     <tr>
           
-          <td><?php echo "#".$record->id ?></td>
-          <td><?php if($record->title) echo $record->title; else echo "Not Updated Yet"; ?></td>
-          <td><?php if($record->percent) echo $record->percent; else echo "-----"; ?></td>
-          <?php $cr = explode(" ",$record->created_at); ?>
-        <!--  <td><?php echo $cr[0]; ?></td>-->
+          <td><?php echo "#".$i++ ?></td>
+          <td><?php if($record->msg) echo ucfirst($record->msg); else echo "Not Updated Yet"; ?></td>
         
-
-                     
-                      
-                      
-                <td  class="text-center">
-                                    <a class="btn btn-sm bg-gradient-success" href="<?php echo base_url('settingEditDetail/').$record->id; ?>">
-                        <i class="fa fa-edit"></i>
-                    </a>
+           <td  class="text-center">
+                             <a href="void:main(0)" class="btn btn-sm bg-gradient-danger" onclick="deleteFunction(<?php echo $record->id; ?>)" title="Delete"><i class="fa fa-trash-o"></i>
+                           </a>
                    
 
                             
                 </td>
+
+                     
+                      
+                      
 
                     </tr>
                     <?php
@@ -179,11 +175,11 @@
 <!-- End of Main Content -->
 <script type="text/javascript">
        function deleteFunction($id){
-        var confirmation = confirm("are you sure ? You want to delete Driver?");
+        var confirmation = confirm("are you sure ? You want to delete Notification?");
         if(confirmation) { 
                 var serial_no = $id;
                 $.ajax({
-                     url:"<?php echo base_url('deleteArticle/');?>"+serial_no+"",
+                     url:"<?php echo base_url('deletenotification/');?>"+serial_no+"",
                      type:"post",
                     // dataType: "JSON",
                      success: function(data){

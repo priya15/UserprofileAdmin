@@ -9,7 +9,7 @@ require APPPATH . '/libraries/BaseController.php';
  * @version : 1.1
  * @since : 15 November 2016
  */
-class AllSettingListing extends BaseController
+class AllAboutUsListing extends BaseController
 {
     /**
      * This is default constructor of the class
@@ -17,7 +17,7 @@ class AllSettingListing extends BaseController
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('AllSettingModel');
+        $this->load->model('AllAboutUsModel');
         $this->isLoggedIn();
         $this->load->library('session');
    
@@ -28,13 +28,13 @@ class AllSettingListing extends BaseController
      */
     public function index()
     {
-        echo "Setting List";die;
+        echo "AboutUs List";die;
     }
     
     /**
      * This function is used to load the user list
      */
-    function SettingListing()
+    function AboutUsListing()
     {
 
         if($this->isAdmin() == 1)
@@ -62,78 +62,39 @@ class AllSettingListing extends BaseController
             
             $this->load->library('pagination');
             
-            $count = $this->AllSettingModel->SettingListingCount($searchText);
+            $count = $this->AllAboutUsModel->AboutUsListingCount($searchText);
             //echo $count;die();
 
-			$returns = $this->paginationCompress ( "SettingListing/", $count, 10);
+            $returns = $this->paginationCompress ( "AboutUsListing/", $count, 10);
             
-            $data['SettingsRecords'] = $this->AllSettingModel->SettingListing($searchText, $returns["page"], $returns["segment"]);
+            $data['aboutusRecords'] = $this->AllAboutUsModel->AboutUsListing($searchText, $returns["page"], $returns["segment"]);
             // echo "<pre>";
             //print_r($data);die;
-            $this->global['pageTitle'] = 'Auto Load : Settings Listing';
+            $this->global['pageTitle'] = 'Auto Load : AboutUsListing Listing';
             //print_r($data);die();
-            $this->loadViews("setting/setting", $this->global, $data, NULL);
+            $this->loadViews("aboutus/aboutus", $this->global, $data, NULL);
         }
     }
 
 
-    public function createSettingXLS(){
-$fileName = 'Setting-'.time().'.xlsx                        '; 
-        $searchText="";
-        //$dropdownText = $dropdownval;
-       // echo $dropdownval;die();
-        $data['userRecords'] = $this->AllSettingModel->SettingListing($searchText, "", "");
-       //print_r($data['userRecords']);die();
-
-        // load excel library
-        $this->load->library('excel');
-       // $mobiledata = $this->admin_database->emp_record();
-        $objPHPExcel = new PHPExcel();
-        $objPHPExcel->setActiveSheetIndex(0);
-        // set Header
-        $objPHPExcel->getActiveSheet()->SetCellValue('A1', 'Title.');
-        $objPHPExcel->getActiveSheet()->SetCellValue('B1', 'Percentage');
-    
-
-        // set Row
-        $rowCount = 2;
-        for($i=0; $i<count($data['userRecords']); $i++) 
-        {
-            //print_r($val);die();
-          //  echo  ;die();
-            $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, $data['userRecords'][$i]->title);
-            $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowCount, $data['userRecords'][$i]->percent);
-
-             $rowCount++;
-        }
-
-        $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
-        $objWriter->save($fileName);
-        // download file
-        header("Content-Type: application/vnd.ms-excel");
-         redirect(site_url().$fileName);              
-
-    }
-
-
-    public function settingEditDetail(){
-        $id = $this->uri->segment(2);
-        $data["setting"] = $this->AllSettingModel->getSettingInfo($id);
-        $this->global['pageTitle'] = 'Auto Load : Edit Setting ';
+        public function AboutUsEditDetail(){
+        $id = 1;
+        $data["setting"] = $this->AllAboutUsModel->getAboutUsInfo($id);
+        $this->global['pageTitle'] = 'Auto Load : Edit AboutUs ';
 
         if($data){
             $this->load->view("includes/header",$this->global,$data);
 
-            $this->load->view("setting/editsetting",$data);
+            $this->load->view("aboutus/editaboutus",$data);
              $this->load->view("includes/footer",$data);
 
 
     }}
 
 
-    public function editsettingdata(){
-                $title = $this->input->post("title");
-        $percent  = $this->input->post("percent");
+    public function editaboutusdata(){
+        $content = $this->input->post("content");
+       // $percent  = $this->input->post("percent");
          $id  = $this->input->post("id");
 
         $filename="";
@@ -155,14 +116,15 @@ $fileName = 'Setting-'.time().'.xlsx                        ';
                     $arr['profilePic']  = $filename; 
                   }
               }
-*/              $data = array("title"=>$title,"percent"=>$percent);
+*/              $data = array("content"=>$content);
               $where["id"]=$id;
-              $this->db->update("tbl_settings",$data,$where);
-                            redirect("SettingListing");
-
+              $this->db->update("tbl_aboutus",$data,$where);
+                            redirect("AboutUsEditDetail");
 
 
     }
+
+
 
 
     

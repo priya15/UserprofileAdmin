@@ -520,16 +520,17 @@ class User_Webservice extends CI_Controller {
 		$data = $this->User_Webservice_model->getUserProfile($userId);
 		if($data)
 		{
+			//print_r($data);die();
 			if(!empty($data['profilepic'])){
-					$data['profilepic'] = base_url('assets/profileImage/'.$data['profilepic']);
+					 $data['profilepic'] = base_url('assets/profileImage/'.$data['profilepic']);
                     }
             if(!empty($data['socialImageUrl'])){
 					$data['socialImageUrl'] = $data['socialImageUrl'];
                     }
-
-                    else{
-                        $data['profilepic'] = "";
+                    if(empty($data['profilepic'])){
+					echo $data['profilepic'] = "";
                     }
+
 			$result['status'] = 1;
 			$result['responseMessage'] = "All Data";
 			$result['AllData'] = $data;
@@ -911,6 +912,7 @@ $data["booking_no"]="CRN".mt_rand(100000, 999999);
 			{
 
 				foreach ($searchData as $key => $value) {
+					
 					$msg = array(
 								"title"=>"Auto Load",
 								"body" => "You have a new ride Request.",
@@ -1008,20 +1010,62 @@ $data["booking_no"]="CRN".mt_rand(100000, 999999);
 	function getDriverDetails()
 	{
 		$apiKey = trim($this->input->get_post('apiKey', TRUE));
-        $driverId = trim($this->input->get_post('driverId', TRUE));
-         $deviceId = trim($this->input->get_post('deviceId', TRUE));
+        //$driverId = trim($this->input->get_post('driverId', TRUE));
+         //$deviceId = trim($this->input->get_post('deviceId', TRUE));
 		$userId = trim($this->input->get_post('userId', TRUE));
+		$rideId = trim($this->input->get_post('rideId', TRUE));
 		
 
 		if($apiKey != API_KEY){
 			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
 		}
 
-		 $this->checkDeviceToken($userId,$deviceId);
-		$driverData =  $this->User_Webservice_model->getDataById('tbl_driver',array("id"=>$driverId));
+		// $this->checkDeviceToken($userId,$deviceId);
+		$checkride = $this->User_Webservice_model->getDataById("tbl_booking",array("id"=>$rideId,"userId"=>$userId));
+		//print_r($checkride);die();
+	if(!empty($checkride)){
+		$driverData =  $this->User_Webservice_model->getDataById('tbl_driver',array("id"=>$checkride["driverId"]));
+		$checkrating = $this->User_Webservice_model->getDataById("tbl_driver_rating",array("driverId"=>$checkride["driverId"]));
+		$avgrating="0.0";
+		if (!empty($checkrating)) {
+			$max=0;
+			for ($i=0; $i <=count($checkrating) ; $i++) { 
+				$max=$max+$checkrating["rating"];
+			}
+			$avgrating = $max/count($checkrating);
+			$avgrating = number_format((float)$avgrating, 2, '.', '');
+		}
+
+      $ridedata = array();
 
 		if($driverData)
 		{
+			$ridedata["Name"]=$driverData["name"];
+			$ridedata["VechicleNumber"]=$driverData["vehicleNumber"];
+			if($driverData["profilepic"]!=""){
+			$ridedata["DriverImage"]= base_url()."assets/profileImage/".$driverData["profilepic"];
+		   }
+		   else
+		   {
+		   	$ridedata["DriverImage"]="";
+		   }
+		   if($checkride["token"]!=""){
+		   	$ridedata["token"]=$checkride["token"];
+		   }
+		   if($checkride["token"]==""){
+		   	$ridedata["token"]="";
+		   }
+		   	$ridedata["pickup_address"]=$checkride["pickup_address"];
+		   	$ridedata["drop_address"]=$checkride["drop_address"];
+		   	$ridedata["drop_address"]=$checkride["drop_address"];
+		   	$ridedata["pickup_lat"]=$checkride["pickup_lat"];
+		   	$ridedata["pickup_lng"]=$checkride["pickup_lng"];
+		   $ridedata["drop_lat"]=$checkride["drop_lat"];
+		   $ridedata["drop_lng"]=$checkride["drop_lng"];
+           $ridedata["rating"]=$avgrating;
+		   $ridedata["driverPhone"]=$driverData["phone"];
+           $ridedata["driverId"]=$checkride["driverId"];
+
 			
 					if($driverData['vehicleCategoryId'] != 0){
 						$vehicleData = $this->User_Webservice_model->getDataById('tbl_vehicle_category',array('id'=>$driverData['vehicleCategoryId'],"publish_status"=>1),"id as vehicleCategoryId, vehicle_name,image,vehiDesc,publish_status");
@@ -1033,7 +1077,8 @@ $data["booking_no"]="CRN".mt_rand(100000, 999999);
 						else:
 							$driverData['vehicleData'] = "";	
 						endif;
-
+                      $ridedata["VechicleImage"]=$vehicleData['image'];
+                      $ridedata["VechicleName"]=$vehicleData['vehicle_name'];
 					}
 					else{
 						$driverData['vehicleData'] = "";
@@ -1044,7 +1089,7 @@ $data["booking_no"]="CRN".mt_rand(100000, 999999);
 
 					$result['status'] = 1;
 					$result['responseMessage'] = "All Data";
-					$result['AllData'] = $driverData;
+					$result['AllData'] = $ridedata;
 				
 		
 		}
@@ -1053,6 +1098,14 @@ $data["booking_no"]="CRN".mt_rand(100000, 999999);
 				$result['status'] = 0;
 				$result['responseMessage'] = "Can't find the Driver Details, please check again.";
 		}
+	}
+	else
+	{
+		            $result['status'] = 0;
+					$result['responseMessage'] = "No Ride Found";
+					//$result['AllData'] = $ridedata;
+
+	}
 
 		echo json_encode($result);
 
@@ -1171,6 +1224,9 @@ $data["booking_no"]="CRN".mt_rand(100000, 999999);
                  $date = date('Y-m-d H:i:s');
                  $insert = array("booking_id"=>$booking_id,"title"=>$title,"msg"=>$msg,"driver_id"=>$driverId,"created_at"=>$date,"status"=>1);
                             $this->db->insert("tbl_notification",$insert);
+		    $canceldata = array("rideId"=>$rideId,"driverId"=>$driverId,"status"=>3,"create_at"=> date('Y-m-d H:i:s'));
+		  
+		 	$this->db->insert("driver_cancel_history",$canceldata);
 
                   
 
@@ -1255,9 +1311,9 @@ if(!empty($checkride)){
 		$apiKey = trim($this->input->get_post('apiKey', TRUE));
         $rideId = trim($this->input->get_post('rideId', TRUE));
         $userId = trim($this->input->get_post('userId', TRUE));
-        $deviceId = trim($this->input->get_post('deviceId', TRUE));
+       // $deviceId = trim($this->input->get_post('deviceId', TRUE));
 		$trascation_id = trim($this->input->get_post('trascation_id', TRUE));
-       	$amount = trim($this->input->get_post('amount', TRUE));
+       	$amount = round(trim($this->input->get_post('amount', TRUE)));
        	$payment_mode = trim($this->input->get_post('payment_mode', TRUE));
        	$payment_status = trim($this->input->get_post('payment_status', TRUE));
 		if($apiKey != API_KEY){
@@ -1266,14 +1322,14 @@ if(!empty($checkride)){
 
 		 // $this->checkDeviceToken($userId,$deviceId);
      $checkride = $this->User_Webservice_model->getDataById("tbl_booking",array("id"=>$rideId,"userId"=>$userId));
-     $trascation_id ="";
+    // $trascation_id ="";
 if(!empty($checkride)){
 		  if($trascation_id == ""){
-		  	$trascation_ids == "";
+		  	$trascation_id == "";
 		  }
 		  else
 		  {
-		  	$trascation_ids = $trascation_id;
+		  	$trascation_id = $trascation_id;
 		  }
 		  $payment_modes="";
 		  if($payment_mode == 1){
@@ -1299,13 +1355,19 @@ if(!empty($checkride)){
 		  		}
 		  	}
 		  }
-		 	$in  = array("ride_id"=>$rideId,"user_id"=>$userId,"trascation_id"=>"$trascation_ids","amount"=>$amount,"payment_mode"=>"$payment_mode","payment_status"=>$payment_status,"created_at"=>date("Y-m-d h:i:s a"));
+		 	$in  = array("ride_id"=>$rideId,"user_id"=>$userId,"trascation_id"=>"$trascation_id","amount"=>$amount,"payment_mode"=>"$payment_mode","payment_status"=>$payment_status,"created_at"=>date("Y-m-d h:i:s a"));
 		 	$updateStatus = $this->User_Webservice_model->insert("tbl_ride_payment",$in);
 		 	$paymentdata  = $this->User_Webservice_model->getDataById("tbl_ride_payment",array("id"=>$updateStatus));
-		 	$number = "10%";
+		 $taxinfo = $this->User_Webservice_model->getDataById('tbl_settings',array('id'=>1));
+
+			$taxRate=round($taxinfo["percent"]);
+
+		 	$number = $taxRate."%";
             $amount_transfer =round($number / ($amount / 100),2);
-            $driver_amount = $amount-$amount_transfer;
-		 	$company_transfer = $amount_transfer;	
+                 $taxrate= ($taxRate / 100) * $amount;
+
+            $driver_amount = round($amount-$taxrate);
+		 	$company_transfer = $taxrate;	
 		 	//echo $amount_transfer;die();
 
 
@@ -1314,8 +1376,8 @@ if(!empty($checkride)){
 		 	{//print_r($checkride);die();
 		 		if($payment_mode == 1)  ///cash//
 		 		{
-		 		  $this->User_Webservice_model->insert("tbl_driver_amount_transfer",array("driverId"=>$checkride["driverId"],"amount"=>$driver_amount,"transferAt"=>date("Y-m-d h:i:s a"),"rideId"=>$rideId));
-		 		 $this->User_Webservice_model->insert("tbl_company_amount_transfer",array("driver_id"=>$checkride["driverId"],"user_id"=>$userId,"amount"=>$amount_transfer,"transferAt"=>date("Y-m-d h:i:s a"),"ride_id"=>$rideId));
+		 		  $this->User_Webservice_model->insert("tbl_driver_amount_transfer",array("driverId"=>$checkride["driverId"],"amount"=>$driver_amount,"payment_mode"=>$payment_mode,"transferAt"=>date("Y-m-d h:i:s a"),"rideId"=>$rideId));
+		 		 $this->User_Webservice_model->insert("tbl_company_amount_transfer",array("driver_id"=>$checkride["driverId"],"payment_mode"=>$payment_mode,"user_id"=>$userId,"amount"=>$taxrate,"transferAt"=>date("Y-m-d h:i:s a"),"ride_id"=>$rideId));
 		 		}
 		 		if($payment_mode == 2)  ///paymeny methd//
 		 		{
@@ -1329,7 +1391,7 @@ if(!empty($checkride)){
 		 		}
 
 		 			$result['status'] = 1;
-					$result['responseMessage'] = "All Data";
+					$result['responseMessage'] = "Your Payment Successfully Done";
 					$result['AllData'] = $paymentdata;
 
 		 	}
@@ -1501,6 +1563,508 @@ if(!empty($cityfind)){
 
 
 	}
+
+	 	public function AboutUs(){
+ 	   	  $apiKey = trim($this->input->get_post('apiKey', TRUE));
+      // $start_date = trim($this->input->get_post('start_date', TRUE));
+      // $end_date = trim($this->input->get_post('end_date', TRUE));
+		//$userId = trim($this->input->get_post('userId', TRUE));
+		
+        $result = array();
+		if($apiKey != API_KEY){
+			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
+		}
+
+		$aboutusdata = $this->db->select("*")->from("tbl_aboutus")->get()->row_array();
+	  //  echo $start_date_new.$end_date_new;die();
+
+		if(!empty($aboutusdata)){
+			
+           			$result['status'] = 1;
+					$result['responseMessage'] = "All Data";
+					$result['AllData'] = $aboutusdata;
+
+		}
+		else
+		{
+			        $result['status'] = 0;
+					$result['responseMessage'] = " No Data Found";
+			    //   $result['AllData'] = $dashboard;
+
+ 
+		}
+	
+	
+	   echo json_encode($result);
+
+
+	
+ 	}
+
+
+ 	public function add_Rating(){
+ 		$apiKey = trim($this->input->get_post('apiKey', TRUE));
+        $driverId = trim($this->input->get_post('driverId', TRUE));
+        $rideId = trim($this->input->get_post('rideId', TRUE));
+        $userId = trim($this->input->get_post('userId', TRUE));
+        $rating = trim($this->input->get_post('rating', TRUE));
+        $msg = trim($this->input->get_post('msg', TRUE));
+
+		if($apiKey != API_KEY){
+			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
+		}
+		$checkride = $this->User_Webservice_model->getDataById("tbl_booking",array("id"=>$rideId,"userId"=>$userId));
+
+if(!empty($checkride)){
+		 // $this->checkDeviceToken($userId,$deviceId);
+		$data = array("userId"=>$userId,"rideId"=>$rideId,"driverId"=>$driverId,"msg"=>$msg,"rating"=>$rating,"created_at"=>date('Y-m-d H:i:s'));
+      $ratingdata = $this->User_Webservice_model->insert("tbl_driver_rating",$data);
+
+		 			$result['status'] = 1;
+					$result['responseMessage'] = "ThankYou for Adding Rating";
+					//$result['AllData'] = $city;
+
+		 	
+}
+else
+{
+	            $result['status'] = 0;
+				$result['responseMessage'] = "Ride not found";
+
+}
+		
+		echo json_encode($result);
+
+
+
+ 	}
+
+
+
+
+ 	public function updateStatus(){
+ 		$apiKey = trim($this->input->get_post('apiKey', TRUE));
+        //$driverId = trim($this->input->get_post('driverId', TRUE));
+         //$deviceId = trim($this->input->get_post('deviceId', TRUE));
+		$userId = trim($this->input->get_post('userId', TRUE));
+		$rideId = trim($this->input->get_post('rideId', TRUE));
+		
+
+		if($apiKey != API_KEY){
+			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
+		}
+
+		// $this->checkDeviceToken($userId,$deviceId);
+		$checkride = $this->User_Webservice_model->getDataById("tbl_booking",array("id"=>$rideId,"userId"=>$userId));
+		//print_r($checkride);die();
+	if(!empty($checkride)){
+		            $result['status'] = 1;
+		            $result['AllData'] = array("rideStatus"=>$checkride["rideStatus"],"driverId"=>$checkride["driverId"]);
+		           // $result['driverId'] = $checkride["driverId"];
+		           // $result['status'] = 1;
+					$result['responseMessage'] = "AllData";
+	}
+	else
+	{
+		            $result['status'] = 0;
+					$result['responseMessage'] = "No Ride Found";
+					//$result['AllData'] = $ridedata;
+
+	}
+
+		echo json_encode($result);
+
+ 	}
+
+ 	public function MyRidesHistory(){
+		$apiKey = trim($this->input->get_post('apiKey', TRUE));
+        //$rideId = trim($this->input->get_post('rideId', TRUE));
+       $userId = trim($this->input->get_post('userId', TRUE));
+		//$userId = trim($this->input->get_post('userId', TRUE));
+
+
+		if($apiKey != API_KEY){
+			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
+		}
+
+		// $this->checkDeviceToken($userId,$deviceId);
+		//$where["driverId"]=$driverId;
+		//$where["rideStatus"]!=0;
+		$rideData =  $this->User_Webservice_model->getDataByjoinId('tbl_booking',$userId);
+//print_r($rideData);die();
+
+		if($rideData)
+		{
+          foreach($rideData as $key=>$cat_fam) {
+          	$driverinfo = $this->User_Webservice_model->getDataById('tbl_driver',array('id'=>$rideData[$key]["driverId"]));
+
+          	$vechicleinfo = $this->User_Webservice_model->getDataById('tbl_vehicle_category',array('id'=>$rideData[$key]["vehicleId"]));
+			      if($rideData[$key]["profilepic"]!=""){
+					$rideData[$key]["user_pic"]=base_url('assets/profileImage/').$rideData[$key]["profilepic"];
+				    }
+				    if($rideData[$key]["socialImageUrl"]!=""){
+					$rideData[$key]["user_pic"]=$rideData[$key]["socialImageUrl"];
+				    }
+				    if($rideData[$key]["profilepic"]==""){
+					$rideData[$key]["user_pic"]="";
+				    }
+				    if($rideData[$key]["driverpic"]!=""){
+					$rideData[$key]["driver_pic"]=base_url('assets/profileImage/').$rideData[$key]["driverpic"];
+				    }
+				    
+				    if($rideData[$key]["driverpic"]==""){
+					$rideData[$key]["driver_pic"]="";
+				    }
+				    $rideData[$key]["vechicleimage"]=base_url('assets/vehicleImages/').$vechicleinfo["image"];
+				    $rideData[$key]["driverPhoneno"]=$driverinfo["phone"];
+				    $rideData[$key]["VechicleName"]=$vechicleinfo["vehicle_name"];
+				      $date = explode(" ",$rideData[$key]["created_at"]);
+
+				      if($date[0] == (date("Y-m-d"))){
+                     
+                     $new_date =date("h:i a", strtotime($date[1]));
+                     $rideData[$key]["booking_date"]=$new_date;
+
+
+
+                    }
+                    else
+                    {
+
+                     $new_date =date("d-m-Y h:i a", strtotime($date[1]));
+                    }
+                       $rideData[$key]["booking_date"]=$new_date;
+
+				    
+   }
+
+			//print_r($rideData);die();
+
+			
+
+
+			
+
+					$result['status'] = 1;
+					$result['responseMessage'] = "All Data";
+					$result['AllData'] = $rideData;
+				
+		
+		}
+		else{
+
+				$result['status'] = 0;
+				$result['responseMessage'] = "No ride details found";
+		}
+
+		echo json_encode($result);
+
+	}
+
+		public function MyRidesHistoryDetails(){
+		$apiKey = trim($this->input->get_post('apiKey', TRUE));
+        $rideId = trim($this->input->get_post('rideId', TRUE));
+       $userId = trim($this->input->get_post('userId', TRUE));
+		//$userId = trim($this->input->get_post('userId', TRUE));
+
+
+		if($apiKey != API_KEY){
+			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
+		}
+
+		// $this->checkDeviceToken($userId,$deviceId);
+		//$where["driverId"]=$driverId;
+		$where["id"]      =$rideId;
+		//$where["rideStatus"]!=0;
+		$rideData =  $this->User_Webservice_model->getDataByjoinRidesId('tbl_booking',$userId,$rideId);
+//print_r($rideData);die();
+$ridedatadetail =array();
+		if($rideData)
+		{
+			$driverinfo = $this->User_Webservice_model->getDataById('tbl_driver',array('id'=>$rideData[0]["driverId"]));
+			$rideinfo = $this->User_Webservice_model->getDataById('tbl_ride_payment',array('ride_id'=>$rideId));
+			if(!empty($ride_info)){
+				if($rideinfo["payment_mode"]==1){
+                  $ridedatadetail["payment_mode"]="Cash";
+				}
+				if($rideinfo["payment_mode"]==2){
+				  $ridedatadetail["payment_mode"]="Online";
+
+				}
+				if($rideinfo["payment_mode"]==3){
+				 $ridedatadetail["payment_mode"]="Wallet";
+
+				}
+
+				
+			}
+			else
+			{
+				     $ridedatadetail["payment_mode"]="";
+
+			}
+			
+
+			$rating = $this->User_Webservice_model->getDataById('tbl_driver_rating',array('driverId'=>$rideData[0]["driverId"],"rideId"=>$rideId));
+            if(!empty($rating)){
+            	if(is_float($rating["rating"])){
+            	$ridedatadetail["rating"]=$rating["rating"];
+                }
+                else
+                {
+                	$ridedatadetail["rating"]=$rating["rating"].".0";
+                }
+
+            }
+            else
+            {
+            	$ridedatadetail["rating"]="0.0";
+            }
+			//print_r($rideData);die();
+			$bookdate = explode(" ",$rideData[0]["created_at"]);
+			$Monthname = date("M",strtotime($bookdate[0]));
+		    $Weekname = date("D",strtotime($bookdate[0]));
+            $datename = date("d",strtotime($bookdate[0]));
+            $end      =date("h:i A", strtotime($bookdate[1]));
+          $bookingdate =$Weekname.","." ".$Monthname." ".$datename." ".$end;
+			//echo $Monthname.$Weekname.$datename.$end;die();
+			$ridedatadetail["booking_date"]=$bookingdate;
+			$ridedatadetail["booking_no"]=$rideData[0]["booking_no"];
+			$ridedatadetail["pickup_address"]=$rideData[0]["pickup_address"];
+			$ridedatadetail["drop_address"]=$rideData[0]["drop_address"];
+			$ridedatadetail["pickup_lat"]=$rideData[0]["pickup_lat"];
+			$ridedatadetail["pickup_lng"]=$rideData[0]["pickup_lng"];
+			$ridedatadetail["drop_lat"]=$rideData[0]["drop_lat"];
+			$ridedatadetail["drop_lng"]=$rideData[0]["drop_lng"];
+			$startridetime = explode(" ",$rideData[0]["startRideTime"]);
+			$startridetimenew = date("h:i A", strtotime($startridetime[1]));
+			$ridedatadetail["startRideTime"]=$startridetimenew;
+			$date1 = strtotime($rideData[0]["startRideTime"]);  
+$date2 = strtotime($rideData[0]["endRideTime"]);  
+  
+			// Formulate the Difference between two dates 
+			$diff = abs($date2 - $date1);  
+			  
+			  
+			// To get the year divide the resultant date into 
+			// total seconds in a year (365*60*60*24) 
+			$years = floor($diff / (365*60*60*24));  
+			  
+			  
+			// To get the month, subtract it with years and 
+			// divide the resultant date into 
+			// total seconds in a month (30*60*60*24) 
+			$months = floor(($diff - $years * 365*60*60*24) 
+			                               / (30*60*60*24));  
+			  
+			  
+			// To get the day, subtract it with years and  
+			// months and divide the resultant date into 
+			// total seconds in a days (60*60*24) 
+			$days = floor(($diff - $years * 365*60*60*24 -  
+			             $months*30*60*60*24)/ (60*60*24)); 
+			  
+			  
+			// To get the hour, subtract it with years,  
+			// months & seconds and divide the resultant 
+			// date into total seconds in a hours (60*60) 
+			$hours = floor(($diff - $years * 365*60*60*24  
+			       - $months*30*60*60*24 - $days*60*60*24) 
+			                                   / (60*60));  
+			  
+			  
+			// To get the minutes, subtract it with years, 
+			// months, seconds and hours and divide the  
+			// resultant date into total seconds i.e. 60 
+			$minutes = floor(($diff - $years * 365*60*60*24  
+			         - $months*30*60*60*24 - $days*60*60*24  
+			                          - $hours*60*60)/ 60); 
+          $seconds = floor(($diff - $years * 365*60*60*24  
+         - $months*30*60*60*24 - $days*60*60*24 
+                - $hours*60*60 - $minutes*60));  
+  
+		 if($minutes!=0){
+		 	$totalTime = $minutes." "."MIN";
+		 }
+		 else{
+		 	$totalTime = $seconds." "."SEC";
+		 }
+  
+
+			$endridetime = explode(" ",$rideData[0]["endRideTime"]);
+			$endridetimenew = date("h:i A", strtotime($endridetime[1]));
+          //  $minute = (strtotime($endridetime[1]) - $strtotime($startridetime[1]))/60;
+//echo $minute;die();
+			$ridedatadetail["endRideTime"]=$endridetimenew;
+			$ridedatadetail["TotalCost"]=$rideData[0]["totalCharge"];
+			$ridedatadetail["TotalTime"]=$totalTime;
+
+			$ridedatadetail["totalDistance"]=$rideData[0]["totalDistance"];
+			$ridedatadetail["TotalCostWithoutTax"]=round($rideData[0]["totalCharge"]);
+		$taxinfo = $this->User_Webservice_model->getDataById('tbl_settings',array('id'=>2));
+
+			$taxRate=$taxinfo["percent"];
+            $tax=$rideData[0]["totalCharge"]*$taxRate/100;
+             $totalprice = $rideData[0]["totalCharge"]+$tax;
+			$ridedatadetail["TotalCostIncludedTax"]=round($totalprice);
+
+
+
+
+
+
+			if($rideData[0]["driverpic"]!=""){
+					$ridedatadetail["driver_pic"]=base_url('assets/profileImage/').$rideData[0]["driverpic"];
+				    }
+
+				    if($rideData[0]["driverpic"]==""){
+					$ridedatadetail["driver_pic"]="";
+				    }
+
+			
+          	$vechicleinfo = $this->User_Webservice_model->getDataById('tbl_vehicle_category',array('id'=>$rideData[0]["vehicleId"]));
+			      //if($rideData[0]["profilepic"]!=""){
+					/*$rideData[0]["user_pic"]=base_url('assets/profileImage/').$rideData[0]["profilepic"];
+				    }
+				    if($rideData[0]["socialImageUrl"]!=""){
+					$rideData[0]["user_pic"]=$rideData[0]["socialImageUrl"];
+				    }
+				    if($rideData[0]["profilepic"]==""){
+					$$rideData[0]["user_pic"]="";
+				    }
+				    if($rideData[0]["driverpic"]!=""){
+					$rideData[0]["driver_pic"]=base_url('assets/profileImage/').$rideData[$key]["driverpic"];
+				    }
+				    
+				    if($rideData[0]["driverpic"]==""){
+					$rideData[0]["driver_pic"]="";
+				    }*/
+				    $ridedatadetail["vechicleimage"]=base_url('assets/vehicleImages/').$vechicleinfo["image"];
+				     $ridedatadetail["VechicleName"]=$vechicleinfo["vehicle_name"];
+
+				    
+   
+
+			//print_r($rideData);die();
+
+			
+
+
+			
+
+					$result['status'] = 1;
+					$result['responseMessage'] = "All Data";
+					$result['AllData'] = $ridedatadetail;
+				
+		
+		}
+		else{
+
+				$result['status'] = 0;
+				$result['responseMessage'] = "No ride details found";
+		}
+
+		echo json_encode($result);
+
+	}
+
+
+
+	 	public function Support(){
+ 		$apiKey = trim($this->input->get_post('apiKey', TRUE));
+        $driverId = trim($this->input->get_post('driverId', TRUE));
+        $rideId = trim($this->input->get_post('rideId', TRUE));
+        $userId = trim($this->input->get_post('userId', TRUE));
+        $name = trim($this->input->get_post('name', TRUE));
+        $msg = trim($this->input->get_post('msg', TRUE));
+        $email = trim($this->input->get_post('email', TRUE));
+
+		if($apiKey != API_KEY){
+			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
+		}
+		$checkride = $this->User_Webservice_model->getDataById("tbl_booking",array("id"=>$rideId,"userId"=>$userId));
+
+if(!empty($checkride)){
+		 // $this->checkDeviceToken($userId,$deviceId);
+		$data = array("userId"=>$userId,"rideId"=>$rideId,"driverId"=>$driverId,"msg"=>$msg,"name"=>$name,"email"=>$email,"created_at"=>date('Y-m-d H:i:s'));
+      $ratingdata = $this->User_Webservice_model->insert("tbl_support",$data);
+
+		 			$result['status'] = 1;
+					$result['responseMessage'] = "Thank you for contacting us.We will give you response soon!";
+					//$result['AllData'] = $city;
+
+		 	
+}
+else
+{
+	            $result['status'] = 0;
+				$result['responseMessage'] = "Ride not found";
+
+}
+		
+		echo json_encode($result);
+
+
+
+ 	}
+
+
+ 	 public function getBill(){
+ 		$apiKey = trim($this->input->get_post('apiKey', TRUE));
+        $rideId = trim($this->input->get_post('rideId', TRUE));
+        $userId = trim($this->input->get_post('userId', TRUE));
+
+		if($apiKey != API_KEY){
+			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
+		}
+		$checkride = $this->User_Webservice_model->getDataById("tbl_booking",array("id"=>$rideId,"userId"=>$userId));
+//print_r($checkride);die();
+if(!empty($checkride)){
+		 // $this->checkDeviceToken($userId,$deviceId);
+		$ridedetail["pickup_address"] = $checkride["pickup_address"];
+		$ridedetail["drop_address"] = $checkride["drop_address"];
+		$taxinfo = $this->User_Webservice_model->getDataById('tbl_settings',array('id'=>2));
+
+			$taxRate=$taxinfo["percent"];
+            $tax=$checkride["totalCharge"]*$taxRate/100;
+             $totalprice = $checkride["totalCharge"]+$tax;
+
+	    $ridedetail["total_charge"] = round($totalprice);
+        $ridedetail["ride_status"] = $checkride["rideStatus"];
+    	$bookdate = explode(" ",$checkride["created_at"]);
+		$Monthname = date("M",strtotime($bookdate[0]));
+	    $Weekname = date("D",strtotime($bookdate[0]));
+        $datename = date("d",strtotime($bookdate[0]));
+        $end      = date("h:i A", strtotime($bookdate[1]));
+          $bookingdate =$Weekname.","." ".$Monthname." ".$datename." "."at"." ".$end;
+        $ridedetail["booking_date"] = $bookingdate;
+        $ridedetail["driver_id"] = $checkride["driverId"];
+        $ridedetail["ride_id"] = $checkride["id"];
+
+
+
+		 			$result['status'] = 1;
+					$result['responseMessage'] = "AllData";
+					$result['AllData'] = $ridedetail;
+
+		 	
+	}
+	else
+	{
+		            $result['status'] = 0;
+					$result['responseMessage'] = "Ride not found";
+
+	}
+		
+		echo json_encode($result);
+
+ 	}
+
+
+
+
+
+
 
 
 

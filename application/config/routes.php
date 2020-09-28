@@ -157,4 +157,8 @@ $route['deletecity/(:any)'] = "AllCityListing/deletecity/$1";
 $route['createCityXLS'] = "AllCityListing/createCityXLS";
 $route['AddCity'] = "AllCityListing/AddCity";
 $route['addcitydata'] = "AllCityListing/addcitydata";
+$route['viewall'] = "AllNotification/viewall";
+$route['deletenotification/(:any)'] = "AllNotification/deletenotification/$1";
+$route['AboutUsEditDetail'] = "AllAboutUsListing/AboutUsEditDetail";
+$route['editaboutusdata'] = "AllAboutUsListing/editaboutusdata";
 

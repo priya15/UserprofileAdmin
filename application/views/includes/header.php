@@ -90,6 +90,12 @@
 .mb-2, .my-2 {
     margin-bottom: 1.5rem!important;
 }
+a.dropdown-item.view-all.text-center.small.text-gray-500{
+  background-color: #4e73df;
+  color: #fff !important;
+  font-weight: bold;
+  border:1px solid #4e73df;
+}
 </style> 
 
 
@@ -103,6 +109,11 @@
 //print_r($d);
       $userid = $d[0]->userId;
       $dataper =  $this->db->select("*")->from("tbl_modules_permission")->where("user_id",$userid)->get()->result_array();
+          $data = $this->db->select('*')->from('tbl_notification')->where('status',1)->where('is_deleted',0)->limit(7,0)->order_by('id',"DESC")->get();
+    $data = $data->result_array();
+     $cdata = $this->db->select('*')->from('tbl_notification')->where('status',1)->where('is_deleted',0)->get();
+    $cdata = $cdata->result_array();
+
     //  print_r($dataper);
 ?>
   <!-- Page Wrapper -->
@@ -116,7 +127,7 @@
         <div class="sidebar-brand-icon rotate-n-15">
           <i class="fas fa-laugh-wink"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">Auto Load <sup>AL</sup></div>
+        <div class="sidebar-brand-text mx-3">Notifications <sup>AL</sup></div>
       </a>
 
       <!-- Divider -->
@@ -205,21 +216,6 @@
         </div>
       </li>
       <?php } ?>
-           <?php if($dataper[0]["feedback"] == 1) { ?>
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo1131" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-fw fa-users"></i>
-          <span>All Feedback</span>
-        </a>
-        <div id="collapseTwo1131" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Feedback</h6>
-              <a class="collapse-item" href="<?=base_url('FeedbackListing')?>">Feedback</a>
-          </div>
-        </div>
-      </li>
-      <?php } ?>
  <?php if($dataper[0]["city"] == 1) { ?>
 
       <li class="nav-item">
@@ -250,6 +246,22 @@
         </div>
       </li>
 <?php } ?>
+           <?php if($dataper[0]["aboutus"] == 1) { ?>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo17111" aria-expanded="true" aria-controls="collapseTwo">
+          <i class="fas fa-fw fa-users"></i>
+          <span>Aboutus</span>
+        </a>
+        <div id="collapseTwo17111" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Aboutus</h6>
+              <a class="collapse-item" href="<?=base_url('AboutUsEditDetail')?>">Add AboutUs</a>
+          </div>
+        </div>
+      </li>
+<?php } ?>
+
            <?php if($dataper[0]["setting"] == 1) { ?>
 
       <li class="nav-item">
@@ -319,7 +331,7 @@
               <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-bell fa-fw"></i>
                 <!-- Counter - Alerts -->
-                <span class="badge badge-danger badge-counter">0</span>
+                <span class="badge badge-danger badge-counter"><?php echo count($cdata)?></span>
               </a>
               <!-- Dropdown - Alerts -->
               <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
@@ -328,8 +340,18 @@
                 </h6>
                  
                 
-                
+                <?php if(empty($data)){?>
                 <a class="dropdown-item text-center small text-gray-500" href="#">No Notification</a>
+                  <?php }?>
+                 <?php if(!empty($data)){?>
+
+                  <?php foreach ($data as $key => $value) {
+                   ?>
+                     <a class="dropdown-item text-center small text-gray-500" href="#"><?php echo $value["msg"]?> </a>
+<?php }?>
+ <a class="dropdown-item view-all text-center small text-gray-500" href="<?php echo base_url("AllNotification/viewall")?>">View All </a>
+
+<?php } ?>
               </div>
             </li>
 
