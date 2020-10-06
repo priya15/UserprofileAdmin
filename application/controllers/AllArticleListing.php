@@ -116,7 +116,7 @@ class AllArticleListing extends BaseController
     }
 
     public function createArticleXLS(){
-                $fileName = 'Article-'.time().'.xlsx'; 
+                $fileName = 'Article.xlsx'; 
         $searchText="";
         //$dropdownText = $dropdownval;
        // echo $dropdownval;die();
@@ -152,10 +152,12 @@ class AllArticleListing extends BaseController
         }
 
         $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
-        $objWriter->save($fileName);
-        // download file
         header("Content-Type: application/vnd.ms-excel");
-         redirect(site_url().$fileName);              
+header("Content-Disposition: attachment; filename=\"$fileName\"");
+header("Cache-Control: max-age=0");
+
+$objWriter->save("php://output");
+        // download file
 
     }
 

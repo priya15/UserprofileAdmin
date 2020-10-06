@@ -1,27 +1,26 @@
 <?php if(!defined('BASEPATH')) exit('No direct script access allowed');
 
-class AllSubadminModel extends CI_Model
+class AllRatingRideModel extends CI_Model
 {
     /**
      * This function is used to get the user listing count
      * @param string $searchText : This is optional search text
      * @return number $count : This is row count
      */
-    function SubadminListingCount($searchText = '')
+    function RidesRatingListingCount($searchText = '',$dropdownText = '')
     {
-        $this->db->select("*");
-        $this->db->from("tbl_admin as d");
+        $this->db->select("d.id,d.name,d.vehicleNumber,d.phone,d.city,d.state,d.languageType,d.phoneVerifyStatus,v.vehicle_name,d.walletBalance,d.created_at");
+        $this->db->from("tbl_driver as d");
+        $this->db->join("tbl_vehicle_category as v",'v.id = d.vehicleCategoryId','left');
          
         if(!empty($searchText)) {
             $likeCriteria = "(d.email  LIKE '%".$searchText."%'
                             OR  d.name  LIKE '%".$searchText."%'
-                            OR  d.mobile  LIKE '%".$searchText."%')";
+                            OR  d.phone  LIKE '%".$searchText."%')";
             $this->db->where($likeCriteria);
         }
         $this->db->where('d.isDeleted', 0);
-       $this->db->where('d.roleId', 2);
-
-        
+         
        
          
         $query = $this->db->get();
@@ -37,24 +36,20 @@ class AllSubadminModel extends CI_Model
      * @param number $segment : This is pagination limit
      * @return array $result : This is result
      */
-    function SubadminListing($searchText = '', $page, $segment)
+    function RidesRatingListing($searchText = '', $page, $segment,$dropdownText = '')
     {
         
-        $this->db->select("*");
-        $this->db->from("tbl_admin as d");
-       // $this->db->join("tbl_vehicle_category as v",'v.id = d.vehicleCategoryId','left');
-         
+        $this->db->select("d.id,d.name,d.vehicleNumber,d.phone,d.city,d.state,d.languageType,d.phoneVerifyStatus,v.vehicle_name,d.walletBalance,d.created_at");
+        $this->db->from("tbl_driver as d");
+        $this->db->join("tbl_vehicle_category as v",'v.id = d.vehicleCategoryId','left');
+      
         if(!empty($searchText)) {
             $likeCriteria = "(d.email  LIKE '%".$searchText."%'
                             OR  d.name  LIKE '%".$searchText."%'
-                            OR  d.mobile  LIKE '%".$searchText."%')";
+                            OR  d.phone  LIKE '%".$searchText."%')";
             $this->db->where($likeCriteria);
         }
-
         $this->db->where('d.isDeleted', 0);
-                $this->db->where('d.roleId', 2);
-       $this->db->order_by("d.userId","desc");
-
         $this->db->limit($page, $segment);
         $query = $this->db->get();
         
@@ -62,23 +57,25 @@ class AllSubadminModel extends CI_Model
         return $result;
     }
 
-    public function getSubadminInfo($id){
-    return $this->db->select("*")->from("tbl_admin")->where("userId",$id)->get()->result_array();
 
+        function getRideInfo($driverId)
+    {
+         $this->db->select("tbl_driver_rating.*,v.name,v.id");
+        $this->db->from("tbl_driver_rating");
+        $this->db->join("tbl_driver as v",'v.id = tbl_driver_rating.driverId','left');
+
+     
+        $this->db->where('v.id', $driverId);
+        $query = $this->db->get();
+        
+        return $query->row_array();
     }
-
-    function FindLastid(){
-        return $this->db->select_max("userId")->from("tbl_admin")->get()->result_array();
-    }
-
-    function find_module_permission($id){
-          return $this->db->select("*")->from("tbl_modules_permission")->where("user_id",$id)->get()->result_array();
-  
-    }
-
-
-
     
+
+
+
+
+
   
     
  

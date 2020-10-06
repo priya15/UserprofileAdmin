@@ -85,7 +85,9 @@
 <ul class="nav nav-tabs" id="myTab" role="tablist">
 
     
-    
+    <li class="nav-item">
+       <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Booking Information</a>
+    </li>
     
 
 </ul>
@@ -101,47 +103,62 @@
             <div class="col-md-12">
                 <table class="table table-bordered table-striped">
                 <thead>
-                    <tr class="text-center">
-                       <td>Pickup Addrss</td> 
-                        <td>Drop Address</td>
-                        <td>Ride Status</td>
-                         <td>Total Charges</td>
-                       <td>Total Distance</td>
-
-                    </tr>
                 </thead>        
                 <tbody>
-                  <?php
-                   $ridedats = $this->db->select("*")->from("tbl_booking")->where("userId",$userData["id"])->get()->result_array();
-                   if(!empty($ridedats)){
-                    for($i=0;$i<count($ridedats);$i++){
-                   ?>
-
                             <tr>
-                                
-                                <td><?=$ridedats[$i]['pickup_address']?></td>
-                            
-                                <td><?=$ridedats[$i]['drop_address']?></td>
-                            
-                                <td><?php if($ridedats[$i]["rideStatus"]==0){?>Pending<?php }?>
-                                  <?php if($ridedats[$i]["rideStatus"]==1){?>Confirmed<?php }?>
-                                  <?php if($ridedats[$i]["rideStatus"]==2){?>Pickup<?php }?>
-                                  <?php if($ridedats[$i]["rideStatus"]==3){?>Cancelled<?php }?>
-                                  <?php if($ridedats[$i]["rideStatus"]==4){?>Dropped<?php }?>
-                                </td>
-                            
-                           
-                                <td><?php echo "₹".$ridedats[$i]['totalCharge']."/-"?></td>
+                              <td>Booking Number</td>
+                                <td>Pickup Address</td>
+                                <td>Drop Address</td>
+                                <td>Total Charges</td>
+                                <td>Total Distance</td>
+                                <td>Driver Credit Amount</td>
 
-                            
-                                <td><?php echo $ridedats[$i]['totalDistance']."KM"?></td>
+                              </tr>
+                              <?php 
+                              for($i=0;$i<count($driverData);$i++){ ?>
+                              <tr>
+                                 <td><?php echo $driverData[$i]["booking_no"]; ?></td>
+
+                                <td><?=$driverData[$i]['pickup_address']?></td>
+                           
                                 
+                                <td><?=$driverData[$i]['drop_address']?></td>
+
+                                <td><?php echo "₹".$driverData[$i]['totalCharge']."/-"?></td>
+
+
+                                <td><?php echo $driverData[$i]['totalDistance']."KM"?></td>
+                           <td><?php echo round($driverData[$i]["amount"]); ?></td>
+
                             </tr>    
-  <?php }}?>
-  <?php if(empty($ridedats)){?>
-  <tr><td>No data found</td></tr>
-  <?php }?>
+                     <?php }?>
                         </tbody>
+                </table>
+            </div>
+        </div>
+</div>
+
+<div class="tab-pane fade" id="bank" role="tabpanel" aria-labelledby="bank-tab">
+    <?php
+         /* $driverInfo = $this->db->get_where('tbl_driver',array('id'=>$rideData["driverId"]))->row_array();
+         // print_r($driverInfo);*/?>
+
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-bordered table-striped">
+                <thead>
+                    <tr class="text-center">
+                        <td colspan="3" style='background-color: #3a5fcf;color: white;'>Driver Information</td>
+                    </tr>
+                </thead>   
+                <tbody>
+                            <tr>
+                                <td>Driver Name</td>
+                              
+                                <td><?php echo $driverData[0]["amount"]; ?></td>
+                    
+                            </tr>
+                                                  </tbody>
                 </table>
             </div>
         </div>

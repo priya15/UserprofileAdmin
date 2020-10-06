@@ -94,7 +94,20 @@ class AllBlankRideListing extends BaseController
         }
     }
 
+    public function RideBlankDetail($id){
+         $id = $this->uri->segment(2);
+         $data = $this->AllBlankRideModel->getRideInfo($id);
+         $data['rideData'] = $data[0];
+      //  print_r($data);die();
+       // $driverImage = $this->db->get_where('driverTranspostImages',array("driverId"=>$id))->result_array();
+        //$data['driverData']['driverDocument'] = $driverImage;
+        $this->global['pageTitle'] = 'Auto Load : Blank Ride Detail';
+         
+        $this->loadViews("ride/rideBlankDetail", $this->global, $data, NULL);
 
+
+
+    }
 
 
     

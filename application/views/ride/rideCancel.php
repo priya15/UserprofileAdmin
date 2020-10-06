@@ -79,7 +79,6 @@
             <th>BookingNumber</th>
             <th>PickupAddress</th>
             <th>DropAddress</th>
-            <th>CancelBy</th>
             <th class="text-center">Actions</th>
           </tr>
         </thead>
@@ -89,7 +88,6 @@
             <th>BookingNumber</th>
             <th>PickupAddress</th>
             <th>DropAddress</th>
-            <th>CancelBy</th>
             <th class="text-center">Actions</th>
           </tr>
         </tfoot>
@@ -108,9 +106,6 @@
           <td><?php if($record->booking_no) echo $record->booking_no; else echo "Not Updated Yet"; ?></td>
           <td><?php echo $record->pickup_address ?></td>
           <td><?php  echo $record->drop_address; ?></td>
-          <td><?php if($record->status == 3){ ?>Cancel By User<?php } ?>
-            <?php if($record->driverId == 2){ ?>Cancel By Driver<?php } ?>
-          </td>
 
                      
                       

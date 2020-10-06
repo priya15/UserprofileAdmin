@@ -96,7 +96,9 @@ if($dropdownText != '' || $dropdownText !='allRides' )
                 $this->db->where('book.rideStatus',4);
             }
 
-        }       
+        } 
+        $this->db->order_by("book.id", "DESC");
+      
         $this->db->limit($page, $segment);
         $query = $this->db->get();
         

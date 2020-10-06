@@ -82,7 +82,7 @@ class AllVechicleListing extends BaseController
 
 
     public function createVechicleXLS(){
-                      $fileName = 'Vechicle-'.time().'.xlsx'; 
+                      $fileName = 'Vechicle.xlsx'; 
         $searchText="";
         //$dropdownText = $dropdownval;
        // echo $dropdownval;die();
@@ -128,10 +128,12 @@ class AllVechicleListing extends BaseController
         }
 
         $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
-        $objWriter->save($fileName);
-        // download file
         header("Content-Type: application/vnd.ms-excel");
-         redirect(site_url().$fileName);              
+header("Content-Disposition: attachment; filename=\"$fileName\"");
+header("Cache-Control: max-age=0");
+
+$objWriter->save("php://output");
+        // download file
 
     }
 

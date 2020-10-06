@@ -41,7 +41,7 @@ class AllUserModel extends CI_Model
             }
 
         }
-       
+       $this->db->order_by("d.id","desc");
          
         $query = $this->db->get();
       
@@ -91,7 +91,8 @@ class AllUserModel extends CI_Model
 
         }
        
-         
+               $this->db->order_by("d.id","desc");
+ 
        
         $this->db->limit($page, $segment);
         $query = $this->db->get();

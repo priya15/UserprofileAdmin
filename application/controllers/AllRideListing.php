@@ -95,7 +95,7 @@ class AllRideListing extends BaseController
 
 
     function createRideXLS(){
-         $fileName = 'Ride-'.time().'.xlsx'; 
+         $fileName = 'Ride.xlsx'; 
         $dropdownval  = $this->session->userdata("dropvalbooking"); 
         $searchText="";
         $dropdownText = $dropdownval;
@@ -210,10 +210,12 @@ class AllRideListing extends BaseController
         }
 
         $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
-        $objWriter->save($fileName);
-        // download file
         header("Content-Type: application/vnd.ms-excel");
-         redirect(site_url().$fileName);              
+header("Content-Disposition: attachment; filename=\"$fileName\"");
+header("Cache-Control: max-age=0");
+
+$objWriter->save("php://output");
+        // download file
 
     }
 

@@ -162,9 +162,13 @@ public function addsubadminpermissiondata(){
         $vechicle     = $this->input->post("vechicle");
         $setting     = $this->input->post("setting");
         $subadmin     = $this->input->post("subadmin");
+                $city     = $this->input->post("city");
+
+        $aboutus     = $this->input->post("aboutus");
+
         $id           = $this->input->post("id");
 
-        $userd=0;$driverd=0;$rided=0;$articled=0;$vechicled=0;$settingd=0;$subadmind=0;
+        $userd=0;$driverd=0;$rided=0;$articled=0;$vechicled=0;$settingd=0;$subadmind=0;$cityd=0;$aboutusd=0;
         if($user == "on"){
           $userd=1;
         }
@@ -186,9 +190,15 @@ public function addsubadminpermissiondata(){
        if($subadmin == "on"){
           $subadmind=1;
         }
+        if($city == "on"){
+          $cityd=1;
+        }
+        if($aboutus == "on"){
+          $aboutusd=1;
+        }
         $feedbackd=0;
 
-                $moduledata  = array("user"=>$userd,"driver"=>$driverd,"ride"=>$rided,"article"=>$articled,"vechicle"=>$vechicled,"setting"=>$settingd,"feedback"=>$feedbackd,"subadmin"=>$subadmind);
+                $moduledata  = array("user"=>$userd,"driver"=>$driverd,"ride"=>$rided,"article"=>$articled,"vechicle"=>$vechicled,"setting"=>$settingd,"feedback"=>$feedbackd,"subadmin"=>$subadmind,"city"=>$cityd,"aboutus"=>$aboutusd);
                 $this->db->update("tbl_modules_permission",$moduledata,array("user_id"=>$id));
                               redirect("SubadminListing");
 
@@ -279,7 +289,7 @@ public function editsubadmindata(){
   }
 
   public function createSubadminXLS(){
-         $fileName = 'Subadmin-'.time().'.xlsx'; 
+         $fileName = 'Subadmin.xlsx'; 
         $searchText="";
         //$dropdownText = $dropdownval;
        // echo $dropdownval;die();
@@ -315,10 +325,12 @@ public function editsubadmindata(){
         }
 
         $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
-        $objWriter->save($fileName);
-        // download file
         header("Content-Type: application/vnd.ms-excel");
-         redirect(site_url().$fileName);              
+header("Content-Disposition: attachment; filename=\"$fileName\"");
+header("Cache-Control: max-age=0");
+
+$objWriter->save("php://output");
+        // download file
 
 
   }

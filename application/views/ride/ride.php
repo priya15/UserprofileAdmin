@@ -109,6 +109,7 @@
         </tfoot>
         <tbody>
         <?php
+        //print_r($RideRecords);die();
                     if(!empty($RideRecords))
                     {
                       $i = 1;
@@ -118,7 +119,7 @@
                     ?>
                     <tr>
           
-          <td><?php echo "#".$record->id ?></td>
+          <td><?php echo "#".$i++; ?></td>
           <td><?php if($record->name) echo $record->name; else echo "Not Updated Yet"; ?></td>
           <td><?php if($record->phone) echo $record->phone; else echo "Not Updated Yet"; ?></td>
           <td><?php echo $record->pickup_address ?></td>

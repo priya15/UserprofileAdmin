@@ -93,7 +93,7 @@ class AllUserListing extends BaseController
 
 
     public function createUserXLS(){
-        $fileName = 'User-'.time().'.xlsx'; 
+        $fileName = 'User.xlsx'; 
         $dropdownval  = $this->session->userdata("dropval"); 
         $searchText="";
         $dropdownText = $dropdownval;
@@ -152,7 +152,7 @@ class AllUserListing extends BaseController
             $objPHPExcel->getActiveSheet()->SetCellValue('H' . $rowCount, $data['userRecords'][$i]->lat);
         
         
-            $objPHPExcel->getActiveSheet()->SetCellValue('I' . $rowCount, $data['userRecords'][$i]->lng);
+            $objPHPExcel->getActiveSheet()->SetCellValue('I' . $rowCount, $data['userRecords'][$i]->long);
             if($data['userRecords'][$i]->languageType == 1){
             $objPHPExcel->getActiveSheet()->SetCellValue('J' . $rowCount, "English");
         }
@@ -166,10 +166,11 @@ class AllUserListing extends BaseController
         }
 
         $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
-        $objWriter->save($fileName);
-        // download file
         header("Content-Type: application/vnd.ms-excel");
-         redirect(site_url().$fileName);              
+header("Content-Disposition: attachment; filename=\"$fileName\"");
+header("Cache-Control: max-age=0");
+
+$objWriter->save("php://output");
 
     }
 

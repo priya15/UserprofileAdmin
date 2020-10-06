@@ -9,7 +9,7 @@ require APPPATH . '/libraries/BaseController.php';
  * @version : 1.1
  * @since : 15 November 2016
  */
-class AllCancelRideListing extends BaseController
+class AllRatingRideListing extends BaseController
 {
     /**
      * This is default constructor of the class
@@ -17,9 +17,11 @@ class AllCancelRideListing extends BaseController
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('AllCancelRideModel');
+        $this->load->model('AllRatingRideModel');
         $this->isLoggedIn();
         $this->load->library('session');
+        $this->load->helper('date');
+
    
     }
     
@@ -34,7 +36,7 @@ class AllCancelRideListing extends BaseController
     /**
      * This function is used to load the user list
      */
-    function CancelRideListing()
+    function DriverRatingListing()
     {
 
         if($this->isAdmin() == 1)
@@ -49,7 +51,11 @@ class AllCancelRideListing extends BaseController
             } 
             if($this->session->userdata("dropval")!=""){
                     $this->session->unset_userdata("dropval");
+            } 
+            if($this->session->userdata("dropvalbooking")!=""){
+                    $this->session->unset_userdata("dropvalbooking");
             }   
+  
   
         
             $searchText = $this->input->post('searchText');
@@ -78,61 +84,38 @@ class AllCancelRideListing extends BaseController
             
             $this->load->library('pagination');
             
-            $count = $this->AllCancelRideModel->RidesListingCount($searchText,$dropdownText);
+            $count = $this->AllRatingRideModel->RidesRatingListingCount($searchText,$dropdownText);
             //echo $count;die();
 
             $returns = $this->paginationCompress ( "RideListing/", $count, 10);
             
-            $data['RideRecords'] = $this->AllCancelRideModel->RidesListing($searchText, $returns["page"], $returns["segment"],$dropdownText);
+            $data['userRecords'] = $this->AllRatingRideModel->RidesRatingListing($searchText, $returns["page"], $returns["segment"],$dropdownText);
             // echo "<pre>";
             //print_r($data);die;
-            $this->global['pageTitle'] = 'Auto Load : RideBooking Listing';
+            $this->global['pageTitle'] = 'Auto Load : DriverRating Listing';
             //print_r($data);die();
-            $this->loadViews("ride/rideCancel", $this->global, $data, NULL);
+            $this->loadViews("rating/driverRating", $this->global, $data, NULL);
         }
     }
 
-
-
-    public function RideCancelDetail(){
-                $id = $this->uri->segment(2);
-         $data = $this->AllCancelRideModel->getRideInfo($id);
-         if(!empty($data)){
+    public function driverRatingDetail($id){
+         $id = $this->uri->segment(2);
+         $data = $this->AllRatingRideModel->getRideInfo($id);
+         print_r($data);die();
          $data['rideData'] = $data[0];
       //  print_r($data);die();
        // $driverImage = $this->db->get_where('driverTranspostImages',array("driverId"=>$id))->result_array();
         //$data['driverData']['driverDocument'] = $driverImage;
-       }
-       else{
-                 $data['rideData'] = "";
-
-       }
-        $this->global['pageTitle'] = 'Auto Load : Ride Detail';
+        $this->global['pageTitle'] = 'Auto Load : DriverRating Ride Detail';
          
-        $this->loadViews("ride/ridecancelDetail", $this->global, $data, NULL);
-      
+        $this->loadViews("rating/rideRatingDetail", $this->global, $data, NULL);
+
 
 
     }
 
-        public function RideCancelDetailNotification(){
-                $id = $this->uri->segment(2);
-              $where = ['booking_id'=>$id];
-          $data  = ['read_status'=>1];
-          $this->AllCancelRideModel->updateById("tbl_notification",$data,$where);
 
-
-         $data = $this->AllCancelRideModel->getRideInfo($id);
-         $data['rideData'] = $data[0];
-      //  print_r($data);die();
-       // $driverImage = $this->db->get_where('driverTranspostImages',array("driverId"=>$id))->result_array();
-        //$data['driverData']['driverDocument'] = $driverImage;
-        $this->global['pageTitle'] = 'Auto Load : Ride Detail';
-         
-        $this->loadViews("ride/ridecancelDetail", $this->global, $data, NULL);
-
-
-    }
+    
     
     
 

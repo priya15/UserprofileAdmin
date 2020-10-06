@@ -49,6 +49,7 @@ class AllArticleModel extends CI_Model
                         )";
             $this->db->where($likeCriteria);
         }
+       $this->db->order_by("d.id","desc");
 
         //$this->db->where('d.isDeleted', 0);
 

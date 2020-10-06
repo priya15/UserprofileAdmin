@@ -2,8 +2,8 @@
   <div class="container-fluid">
 
 <!-- Page Heading -->
-<h1 class="h3 mb-2 text-gray-800">Auto Load  #BlankRide List
-<!--<a href="<?php echo base_url()?>createRideXLS" class="btn btn-sm bg-gradient-primary" style="float:right;">Export Ride Record</a> --></h1>
+<h1 class="h3 mb-2 text-gray-800">Auto Load  #Driver List <a href="<?php echo base_url()?>createDriverTrascationXLS" class="btn btn-sm bg-gradient-primary" style="float:right;">Export Driver Record</a></h1>
+
 <div class="row">
             <div class="col-md-12">
               
@@ -41,9 +41,9 @@
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
   <div class="card-header py-3">
-    <h6 class="m-0 font-weight-bold text-primary" style="float:left;font-size: 24px;">Blank Ride List</h6>
+    <h6 class="m-0 font-weight-bold text-primary" style="float:left;font-size: 24px;">DriverTransaction List</h6>
 
-    <form action="<?php echo base_url() ?>BlankRideListing" method="POST" id="searchList" style="float:right">
+    <form action="<?php echo base_url() ?>driverTrascationDetails" method="POST" id="searchList" style="float:right">
                            
                        
                            <div class="input-group">
@@ -76,51 +76,65 @@
         <thead>
           <tr>
             <th>id</th>
-           <th>BookingNo</th>
-
             <th>Name</th>
-            <th>PickupAddress</th>
-            <th>DropAddress</th>
-
+            <th>Phone</th>
+            <th>City</th>
+            <th>State</th>
+             <th>PaymentMode</th>
             <th class="text-center">Actions</th>
           </tr>
         </thead>
         <tfoot>
         <tr>
             <th>id</th>
-            <th>BookingNo</th>
-
             <th>Name</th>
-            <th>PickupAddress</th>
-            <th>DropAddress</th>
+            <th>Phone</th>
+            <th>City</th>
+            <th>State</th>
+             <th>PaymentMode</th>
+
             <th class="text-center">Actions</th>
           </tr>
         </tfoot>
         <tbody>
         <?php
-                    if(!empty($RideRecords))
+                    if(!empty($TrasnscationRecords))
                     {
                       $i = 1;
                       
-                        foreach($RideRecords as $record)
+                        foreach($TrasnscationRecords as $record)
                         {
                     ?>
                     <tr>
           
           <td><?php echo "#".$i++; ?></td>
-          <td><?php if($record->booking_no) echo $record->booking_no; else echo "Not Updated Yet"; ?></td>
-                  <td><?php if($record->name) echo $record->name; else echo "Not Updated Yet"; ?></td>
+          <td><?php if($record->name) echo $record->name; else echo "Not Updated Yet"; ?></td>
+          <td><?php if($record->phone) echo $record->phone; else echo "Not Updated Yet"; ?></td>
+          <td><?php echo $record->city ?></td>
+          <td><?php if($record->state) echo $record->state; else echo "Not Updated Yet"; ?></td>
+                  <?php if($record->payment_mode ==1){?>
+                <td>Cash</td>
 
-          <td><?php echo $record->pickup_address ?></td>
-          <td><?php  echo $record->drop_address; ?></td>
-         
+          <?php }?>
+          <?php if($record->payment_mode ==2){?>
+                <td>BankAccount</td>
+
+          <?php }?>
+          <?php if($record->payment_mode ==3){?>
+                <td>UserWallet</td>
+
+          <?php }?>
+
+
+                     
                       
                       
                 <td  class="text-center">
-                  
-                    <a class="btn btn-sm bg-gradient-success" href="<?php echo base_url('RideBlankDetail/').$record->id; ?>">
+
+                    <a class="btn btn-sm bg-gradient-success" href="<?php echo base_url('driverTrsactionDetailData/').$record->id; ?>">
                         <i class="fa fa-eye"></i>
                     </a>
+                    
                             
                 </td>
                     </tr>
@@ -184,10 +198,10 @@
             e.preventDefault();    
 
             
-            var i = $("#dropdownText").val();        
+            //var i = $("#dropdownText").val();        
             var link = jQuery(this).get(0).href;            
             var value = link.substring(link.lastIndexOf('/') + 1);
-            jQuery("#searchList").attr("action", baseURL + "UsersListing/" + value + "/" + i);
+            jQuery("#searchList").attr("action", baseURL + "DriversListing/" + value + "/" );
            
             // jQuery("#filter").attr("action", baseURL + "DriversListing/" + value);
             // jQuery("#filter").submit();
@@ -204,4 +218,20 @@
         $('#driverId').val(driverId);
         $("#transferMoney").modal('show');
     }
+
+     function deleteFunction($id){
+        var confirmation = confirm("are you sure ? You want to delete Driver?");
+        if(confirmation) { 
+                var serial_no = $id;
+                $.ajax({
+                     url:"<?php echo base_url('driverdelete/');?>"+serial_no+"",
+                     type:"post",
+                    // dataType: "JSON",
+                     success: function(data){
+                        location.reload();
+                     }
+                });
+        }
+    }
+    
 </script>

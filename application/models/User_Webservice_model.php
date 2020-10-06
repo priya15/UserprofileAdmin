@@ -129,6 +129,8 @@ function checkEmailExists($email){
         if($where != ''){
         $this->db->where($where);
         }
+
+       // $this->db->order_by("id","DESC");
         $result = $this->db->get()->result_array();
         
         if($result){
@@ -175,7 +177,7 @@ function checkEmailExists($email){
         {
             // $sql = $this->db->query("SELECT *, ( '3959' * acos(cos(radians($lat)) * cos( radians(`tbl_driver`.`lat`)) * cos( radians(`tbl_driver`.`lng`) - radians($long)) + sin(radians($lat)) * sin( radians(`tbl_driver`.`lat`)))) AS distance FROMgetUserProfile `tbl_driver` WHERE  ( '3959' * acos( cos( radians($lat) ) * cos( radians(`tbl_driver`.`lng`)) * cos( radians(`tbl_driver`.`lng`) - radians($long)) + sin(radians($lat)) * sin( radians(`tbl_driver`.`lat`)))) < $distance AND `insuranceStatus`= 1 AND `vehicleImageStatus` = 1 AND `RCStatus` = 1 AND `isDeleted`= 0 AND `phoneVerifyStatus` = 1 AND `vehicleCategoryId`= $vehicleId AND `isBooked` = 0");
 
-           $sql = $this->db->query(" SELECT *, ( 3959 * acos( cos( radians($lat) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians($long) ) + sin( radians($lat) ) * sin( radians( lat ) ) ) ) AS distance FROM tbl_driver HAVING distance < 3 AND `insuranceStatus`= 1 AND `vehicleImageStatus` = 1 AND `RCStatus` = 1 AND `isDeleted`= 0 AND `phoneVerifyStatus` = 1 AND `vehicleCategoryId`= $vehicleId AND `isBooked` = 0");
+           $sql = $this->db->query(" SELECT *, ( 3959 * acos( cos( radians($lat) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians($long) ) + sin( radians($lat) ) * sin( radians( lat ) ) ) ) AS distance FROM tbl_driver HAVING distance < 3 AND `insuranceStatus`= 2 AND `vehicleImageStatus` = 2 AND `RCStatus` = 2 AND `isDeleted`= 0 AND `phoneVerifyStatus` = 1 AND `vehicleCategoryId`= $vehicleId AND `isBooked` = 0");
 
             // $this->db->where(array('status'=>0,'driverId'=>0));
                 $data = $sql->result_array();
@@ -203,6 +205,8 @@ $this->db->select("d.*,driver.vehicleNumber,driver.profilepic as driverpic,user.
          $this->db->join('tbl_users as user', 'user.id = d.userId', 'inner');
         $this->db->where("userId",$where);
         $this->db->where("rideStatus",4);
+                $this->db->order_by("d.id","DESC");
+
         $query = $this->db->get();
         return $query->result_array(); 
     }

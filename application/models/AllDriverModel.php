@@ -86,7 +86,8 @@ class AllDriverModel extends CI_Model
                
             }
         }
-       
+              $this->db->order_by("d.id","desc");
+
          
        
         $this->db->limit($page, $segment);

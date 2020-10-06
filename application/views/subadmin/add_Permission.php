@@ -31,7 +31,7 @@
 
         <form class="user" method="post" action="<?=base_url('addsubadminpermissiondata')?>" >
           <?php 
-            $user=0;$driver=0;$ride=0;$article=0;$vechicle=0;$subadmin=0;$setting=0;$feedback=0;
+            $user=0;$driver=0;$ride=0;$article=0;$vechicle=0;$subadmin=0;$setting=0;$feedback=0;$city=0;$aboutus=0;
             if($permission[0]["user"]==1){
               $user =1;
             }
@@ -56,6 +56,16 @@
             if($permission[0]["subadmin"]==1){
               $subadmin =1;
             }
+            if($permission[0]["city"]==1){
+              $city =1;
+            }
+
+            if($permission[0]["aboutus"]==1){
+              $aboutus =1;
+            }
+           // print_r($permission);
+            //echo $aboutus;die();
+
 
           ?>      <?php if($user ==1){?>
                     <div class="form-group">
@@ -130,17 +140,17 @@
                  <?php }?>
                  <?php if($feedback ==0){?>
 
-                 <div class="form-group">
+              <!---   <div class="form-group">
                   <input type="checkbox"  style='border-radius: 10rem !important;' name="feedback" aria-describedby="emailHelp"  placeholder="Enter name">
                   <label>Feedback</label>
-                </div>
+                </div>-->
                 <?php }?>
                  <?php if($feedback ==1){?>
 
-                 <div class="form-group">
+            <!--     <div class="form-group">
                   <input type="checkbox"  style='border-radius: 10rem !important;' name="feedback" aria-describedby="emailHelp"  placeholder="Enter name" checked>
                   <label>Feedback</label>
-                </div>
+                </div>-->
                 <?php }?>
                 <?php if($setting ==1){?>
 
@@ -170,6 +180,41 @@
 
                 <input type="checkbox"  style='border-radius: 10rem !important;' name="subadmin" aria-describedby="emailHelp"  placeholder="Enter name" checked>
                 <label>Subadmin</label>
+                </div>
+                <?php }?>
+
+                                <?php if($city ==0){?>
+
+                <div class="form-group">
+
+                <input type="checkbox"  style='border-radius: 10rem !important;' name="city" aria-describedby="emailHelp"  placeholder="Enter name">
+                <label>City</label>
+                </div>
+                <?php }?>
+                <?php if($city ==1){?>
+
+                <div class="form-group">
+
+                <input type="checkbox"  style='border-radius: 10rem !important;' name="city" aria-describedby="emailHelp"  placeholder="Enter name" checked>
+                <label>City</label>
+                </div>
+                <?php }?>
+
+
+                <?php if($aboutus ==0){?>
+
+                <div class="form-group">
+
+                <input type="checkbox"  style='border-radius: 10rem !important;' name="aboutus" aria-describedby="emailHelp"  placeholder="Enter name">
+                <label>AboutUs</label>
+                </div>
+                <?php }?>
+                <?php if($aboutus == 1){?>
+
+                <div class="form-group">
+
+                <input type="checkbox"  style='border-radius: 10rem !important;' name="aboutus" aria-describedby="emailHelp"  placeholder="Enter name" checked>
+                <label>Aboutus</label>
                 </div>
                 <?php }?>
 

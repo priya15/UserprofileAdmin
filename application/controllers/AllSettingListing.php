@@ -78,7 +78,7 @@ class AllSettingListing extends BaseController
 
 
     public function createSettingXLS(){
-$fileName = 'Setting-'.time().'.xlsx                        '; 
+$fileName = 'Setting.xlsx'; 
         $searchText="";
         //$dropdownText = $dropdownval;
        // echo $dropdownval;die();
@@ -108,9 +108,13 @@ $fileName = 'Setting-'.time().'.xlsx                        ';
         }
 
         $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
-        $objWriter->save($fileName);
-        // download file
         header("Content-Type: application/vnd.ms-excel");
+header("Content-Disposition: attachment; filename=\"$fileName\"");
+header("Cache-Control: max-age=0");
+
+$objWriter->save("php://output");
+        // download file
+
           //redirect(site_url().$fileName);              
 
     }

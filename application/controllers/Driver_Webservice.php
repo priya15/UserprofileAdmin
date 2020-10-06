@@ -1459,12 +1459,7 @@ if((empty($rideDatae))){
 				$notcheck = $this->Driver_Webservice_model->getDataById('tbl_notification',array("booking_id"=>$booking_id,"title"=>"NewBooking"));
 				//print_r($notcheck);die();
 				if(($notcheck == "")){
-                 $title = "NewBooking";
-                 $msg="";
-                 $date = date('Y-m-d H:i:s');
-                 $insert = array("booking_id"=>$booking_id,"title"=>$title,"msg"=>$msg,"driver_id"=>$driverId,"created_at"=>$date);
-                $this->Driver_Webservice_model->insertNotification($insert);
-                  }
+ }
                   $userid=$searchmaindata["userId"];
                 $fireBaseToken = $this->Driver_Webservice_model->findFirebaseid($userid);
             	//print_r($fireBaseToken);die();
@@ -1726,7 +1721,11 @@ $rideData["vechicle_number"] = $driverdatas["vehicleNumber"];
             	$token = $six_digit_random_number = mt_rand(1000, 9999); 
             	$data  = array("driverId"=>$driverId,"rideStatus"=>1,"token"=>$token);
             	$rideDatas =  $this->Driver_Webservice_model->update('tbl_booking',$data,array("id"=>$rideId));
+                 $notdata= array("status"=>4);
+            	$rideDatas =  $this->Driver_Webservice_model->update('tbl_notification',$notdata,array("booking_id"=>$rideId,"status"=>0));
             	
+                $driverdatas = array("isBooked"=>1);
+            	 $driverdatass =  $this->Driver_Webservice_model->update('tbl_driver',$driverdatas,array("id"=>$driverId));
 
             	$rideDatanew =  $this->Driver_Webservice_model->getDataById('tbl_booking',array("id"=>$rideId));
 

@@ -116,6 +116,7 @@ $this->db->select("d.*,driver.vehicleNumber,driver.profilepic as driverpic,user.
          $this->db->join('tbl_users as user', 'user.id = d.userId', 'inner');
         $this->db->where("driverId",$where);
         $this->db->where("rideStatus",4);
+        $this->db->order_by("d.id","DESC");
         $query = $this->db->get();
         return $query->result_array(); 
     }
@@ -280,6 +281,7 @@ $this->db->select("d.*,driver.vehicleNumber,driver.profilepic as driverpic,user.
         $this->db->join("tbl_booking as v",'v.id = d.rideId');
         $this->db->where('d.driverId',$driverId);
         $this->db->where('d.status',2);
+        $this->db->order_by("d.id","DESC");
        return  $query = $this->db->get()->result_array();
         // $query->result(); 
 
@@ -291,6 +293,7 @@ $this->db->select("d.*,driver.vehicleNumber,driver.profilepic as driverpic,user.
         $this->db->where('d.driverId',$driverId);
         $this->db->where('v.id',$rideId);
         $this->db->where('d.status',2);
+        $this->db->order_by("d.id","DESC");
        return  $query = $this->db->get()->row_array();
         // $query->result(); 
 

@@ -51,6 +51,7 @@ class AllVechicleModel extends CI_Model
         }
 
         //$this->db->where('d.isDeleted', 0);
+              $this->db->order_by("d.id","desc");
 
         $this->db->limit($page, $segment);
         $query = $this->db->get();

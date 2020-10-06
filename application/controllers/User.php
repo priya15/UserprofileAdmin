@@ -34,7 +34,10 @@ class User extends BaseController
 
         $monthlySale = $this->db->get('tbl_driver_amount_transfer')->result_array();
         $data['verifyDriver'] = count($this->db->get_where('tbl_driver',array('RCStatus'=>2,"insuranceStatus"=>2,"vehicleImageStatus"=>2))->result_array());
-        $data['unVerifyDriver'] = $countUser - $data['verifyDriver'];
+     $data['verifyUser'] = count($this->db->get_where('tbl_users',array('phoneVerifyStatus'=>1,"isDeleted"=>0))->result_array());
+
+        $data['unVerifyDriver'] = $countDriver - $data['verifyDriver'];
+        $data['unVerifyUser'] = $countUser - $data['verifyUser'];
 
        
 

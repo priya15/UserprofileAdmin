@@ -111,7 +111,7 @@ a.dropdown-item.view-all.text-center.small.text-gray-500{
       $dataper =  $this->db->select("*")->from("tbl_modules_permission")->where("user_id",$userid)->get()->result_array();
           $data = $this->db->select('*')->from('tbl_notification')->where('status',1)->where('is_deleted',0)->limit(7,0)->order_by('id',"DESC")->get();
     $data = $data->result_array();
-     $cdata = $this->db->select('*')->from('tbl_notification')->where('status',1)->where('is_deleted',0)->get();
+     $cdata = $this->db->select('*')->from('tbl_notification')->where('status',1)->where('read_status',0)->where('is_deleted',0)->get();
     $cdata = $cdata->result_array();
 
     //  print_r($dataper);
@@ -162,6 +162,7 @@ a.dropdown-item.view-all.text-center.small.text-gray-500{
            <?php if($dataper[0]["driver"] == 1) { ?>
             <a class="collapse-item" href="<?=base_url('DriversListing')?>">Driver</a>
             <?php }?>
+
             <?php if($dataper[0]["user"] == 1) { ?>
 
             <a class="collapse-item" href="<?=base_url('UsersListing')?>">User</a>
@@ -181,12 +182,29 @@ a.dropdown-item.view-all.text-center.small.text-gray-500{
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Booking</h6>
               <a class="collapse-item" href="<?=base_url('RideListing')?>">Booking Ride</a>
-              <!-- <a class="collapse-item" href="<?=base_url('BlankRideListing')?>">Blank Ride</a>-->
+              <a class="collapse-item" href="<?=base_url('BlankRideListing')?>">Blank Ride</a>
               <a class="collapse-item" href="<?=base_url('CancelRideListing')?>">Cancel Ride</a>
           </div>
         </div>
       </li>
       <?php } ?>
+           <?php if($dataper[0]["rating"] == 1) { ?>
+
+<!--
+                  <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo161" aria-expanded="true" aria-controls="collapseTwo">
+          <i class="fas fa-fw fa-users"></i>
+          <span>All DriverRating</span>
+        </a>
+        <div id="collapseTwo161" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">DriverRating</h6>
+              <a class="collapse-item" href="<?=base_url('DriverRatingListing')?>">DriverRating</a>
+          </div>
+        </div>
+      </li>-->
+      <?php }  ?>
+
      <?php if($dataper[0]["article"] == 1) { ?>
 
 
@@ -236,11 +254,11 @@ a.dropdown-item.view-all.text-center.small.text-gray-500{
      <?php if($dataper[0]["subadmin"] == 1) { ?>
 
            <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo11111" aria-expanded="true" aria-controls="collapseTwo">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo117111" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-fw fa-users"></i>
           <span>All Subadmin</span>
         </a>
-        <div id="collapseTwo11111" class="collapse" aria-labelledby="headingTwo" data-parent="  #accordionSidebar">
+        <div id="collapseTwo117111" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Subadmin</h6>
               <a class="collapse-item" href="<?=base_url('SubadminListing')?>">Add Subadmin</a>
@@ -263,6 +281,40 @@ a.dropdown-item.view-all.text-center.small.text-gray-500{
         </div>
       </li>
 <?php } ?>
+           <?php if($dataper[0]["trascation"] == 1) { ?>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo176111" aria-expanded="true" aria-controls="collapseTwo">
+          <i class="fas fa-fw fa-users"></i>
+          <span>Transaction Details</span>
+        </a>
+        <div id="collapseTwo176111" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Transaction</h6>
+              <a class="collapse-item" href="<?=base_url('driverTrascationDetails')?>">Driver Transaction </a>
+               <a class="collapse-item" href="<?=base_url('companyTrascationDetails')?>">Company Transaction</a>
+          </div>
+        </div>
+      </li>
+<?php } ?>
+           <?php if($dataper[0]["trascation"] == 1) { ?>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo176111" aria-expanded="true" aria-controls="collapseTwo">
+          <i class="fas fa-fw fa-users"></i>
+          <span>Support Details</span>
+        </a>
+        <div id="collapseTwo176111" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Support</h6>
+              <a class="collapse-item" href="<?=base_url('driverTrascationDetails')?>">Support Details </a>
+               <a class="collapse-item" href="<?=base_url('companyTrascationDetails')?>">Company Transaction</a>
+          </div>
+        </div>
+      </li>
+<?php } ?>
+
+
 
            <?php if($dataper[0]["setting"] == 1) { ?>
 

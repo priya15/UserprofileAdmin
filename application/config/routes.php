@@ -98,7 +98,12 @@ $route['CancelRideListing'] = 'AllCancelRideListing/CancelRideListing';
 
 $route['BlankRideListing'] = 'AllBlankRideListing/BlankRideListing';
 
+$route['RideBlankDetail/(:any)'] = 'AllBlankRideListing/RideBlankDetail/$1';
+
 $route['RideCancelDetail/(:any)'] = 'AllCancelRideListing/RideCancelDetail/$1';
+$route['DriverRatingListing'] = 'AllRatingRideListing/DriverRatingListing';
+$route['driverRatingDetail/(:any)'] = 'AllRatingRideListing/driverRatingDetail/$1';
+
 
 $route['RideCancelDetailNotification/(:any)'] = 'AllCancelRideListing/RideCancelDetailNotification/$1';
 
@@ -170,4 +175,12 @@ $route['viewall'] = "AllNotification/viewall";
 $route['deletenotification/(:any)'] = "AllNotification/deletenotification/$1";
 $route['AboutUsEditDetail'] = "AllAboutUsListing/AboutUsEditDetail";
 $route['editaboutusdata'] = "AllAboutUsListing/editaboutusdata";
+$route['driverTrascationDetails'] = "AllTrascationDriverListing/driverTrascationDetails";
+$route['driverTrsactionDetailData/(:any)'] = "AllTrascationDriverListing/driverTrsactionDetailData/$1";
+$route['createDriverTrascationXLS'] = "AllTrascationDriverListing/createDriverTrascationXLS";
+
+
+$route['companyTrascationDetails'] = "AllTrascationCompanyListing/companyTrascationDetails";
+$route['companyTrsactionDetailData/(:any)'] = "AllTrascationCompanyListing/companyTrsactionDetailData/$1";
+$route['createCompanyTrascationXLS'] = "AllTrascationCompanyListing/createCompanyTrascationXLS";
 

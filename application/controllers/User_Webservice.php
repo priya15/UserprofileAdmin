@@ -240,8 +240,14 @@ class User_Webservice extends CI_Controller {
                                     $result['userData']['profilepic'] =  "";
                                 }
 		             }
+		             if($getUser["isDeleted"] == 0){
                        $result['status'] = 1;
                        $result['responseMessage']="Login Successfully";
+                      }
+                      if($getUser["isDeleted"] == 1){
+                       $result['status'] = 0;
+                       $result['responseMessage']="Your Profile is Inactive";
+                      }
                            
 		        
 		    }
@@ -312,7 +318,7 @@ class User_Webservice extends CI_Controller {
 		 
 		if($checkLoginUser){
 			$this->updateDeviceInfo($deviceId,$deviceType,$firebasetoken,$phone);
-		
+		if($checkLoginUser->isDeleted == 0){
 			$result['status'] = 1;
             $result['responseMessage'] = "Login Successfully";
             
@@ -324,6 +330,13 @@ class User_Webservice extends CI_Controller {
             else{
                 $result['userData']['profilepic'] = "";
             }
+        }
+        if($checkLoginUser->isDeleted == 1){
+        	$result['status'] = 0;
+			$result['responseMessage'] = "Your Profile Is Inactive";
+
+         }
+
  		}else{
 			$result['status'] = 0;
 			$result['responseMessage'] = "Phone Or Password Didn't Match.";
@@ -906,13 +919,18 @@ $data["booking_no"]="CRN".mt_rand(100000, 999999);
 			$distance = '25';
 			$searchData = $this->User_Webservice_model->searchDriver($data['pickup_lat'],$data['pickup_lng'],$distance,$data['vehicleId']);
 			// echo "<pre>";
-			// print_r($searchData);die;
+			//print_r($searchData);die;
 			 
 			if($searchData)
 			{
 
 				foreach ($searchData as $key => $value) {
-					
+		         $title = "NewBooking";
+                 $msg="";
+                 $date = date('Y-m-d H:i:s');
+                 $insert = array("booking_id"=>$insert,"title"=>$title,"msg"=>$msg,"driver_id"=>$value["id"],"created_at"=>$date);
+                $this->db->insert("tbl_notification",$insert);
+                 
 					$msg = array(
 								"title"=>"Auto Load",
 								"body" => "You have a new ride Request.",
@@ -1334,14 +1352,25 @@ if(!empty($checkride)){
 		  $payment_modes="";
 		  if($payment_mode == 1){
 		  	$payment_modes="Cash";
+		  	$payment_status=1;
 		  }
 		  if($payment_mode == 2){
 		  	$payment_modes="paymetMethod";
+		  	if($payment_status == 0){
+	  		   $result['status'] = 0;
+				$result['responseMessage'] = "Your Trascation hasbeen Failure.Please Try Again";
+				//$result['AllData'] = $paymentdata;
+              		echo json_encode($result);die();
+
+
+		  	}
 		  }
 		  if($payment_mode == 3){
 		  	$payment_modes="Wallet";
+		  	$payment_status=1;
 		  	$amountuser = $this->User_Webservice_model->getDataById("user_amount_transfer",array("user_id"=>$userId));
-		  	if(!empty($amountuser)){
+		  	//echo($amountuser);die();
+		  	if(($amountuser!="")){
 		  		//echo $amountuser["amount"].$amount;
 		  		if($amount > $amountuser["amount"]){
                        $result['status'] = 0;
@@ -1349,11 +1378,19 @@ if(!empty($checkride)){
 				        echo json_encode($result);die();
 
 		  		}
-		  		else
+		  	}
+		      if(($amountuser == ""))
 		  		{
+		  			//echo "sds";die();
+                       $result['status'] = 0;
+				        $result['responseMessage'] = "Your wallet not have amount for payment";
+				        echo json_encode($result);die();
+
+	
 
 		  		}
-		  	}
+
+
 		  }
 		 	$in  = array("ride_id"=>$rideId,"user_id"=>$userId,"trascation_id"=>"$trascation_id","amount"=>$amount,"payment_mode"=>"$payment_mode","payment_status"=>$payment_status,"created_at"=>date("Y-m-d h:i:s a"));
 		 	$updateStatus = $this->User_Webservice_model->insert("tbl_ride_payment",$in);
@@ -1381,14 +1418,54 @@ if(!empty($checkride)){
 		 		}
 		 		if($payment_mode == 2)  ///paymeny methd//
 		 		{
-		 		  $this->User_Webservice_model->insert("tbl_driver_amount_transfer",array("driverId"=>$checkride["driverId"],"amount"=>$driver_amount,"transferAt"=>date("Y-m-d h:i:s a"),"rideId"=>$rideId));
-		 		 $this->User_Webservice_model->insert("tbl_company_amount_transfer",array("driver_id"=>$checkride["driverId"],"user_id"=>$userId,"amount"=>$amount_transfer,"transferAt"=>date("Y-m-d h:i:s a"),"ride_id"=>$rideId));
+		 			if($payment_status == 1){
+		 		  $this->User_Webservice_model->insert("tbl_driver_amount_transfer",array("driverId"=>$checkride["driverId"],"amount"=>$driver_amount,"payment_mode"=>$payment_mode,"transferAt"=>date("Y-m-d h:i:s a"),"rideId"=>$rideId));
+		 		 $this->User_Webservice_model->insert("tbl_company_amount_transfer",array("driver_id"=>$checkride["driverId"],"payment_mode"=>$payment_mode,"user_id"=>$userId,"amount"=>$taxrate,"transferAt"=>date("Y-m-d h:i:s a"),"ride_id"=>$rideId));
+
+		 		}
 		 		}
 		 		if($payment_mode == 3)  ///wallet//
 		 		{
-		 		  $this->User_Webservice_model->insert("tbl_driver_amount_transfer",array("driverId"=>$checkride["driverId"],"amount"=>$driver_amount,"transferAt"=>date("Y-m-d h:i:s a"),"rideId"=>$rideId));
-		 		 $this->User_Webservice_model->insert("tbl_company_amount_transfer",array("driver_id"=>$checkride["driverId"],"user_id"=>$userId,"amount"=>$amount_transfer,"transferAt"=>date("Y-m-d h:i:s a"),"ride_id"=>$rideId));
+		 			if($payment_status == 1){
+
+		 		  $this->User_Webservice_model->insert("tbl_driver_amount_transfer",array("driverId"=>$checkride["driverId"],"amount"=>$driver_amount,"payment_mode"=>$payment_mode,"transferAt"=>date("Y-m-d h:i:s a"),"rideId"=>$rideId));
+		 		 $this->User_Webservice_model->insert("tbl_company_amount_transfer",array("driver_id"=>$checkride["driverId"],"payment_mode"=>$payment_mode,"user_id"=>$userId,"amount"=>$taxrate,"transferAt"=>date("Y-m-d h:i:s a"),"ride_id"=>$rideId));
+              $mainamount = $amountuser["amount"]-$amount;
+	        	$this->User_Webservice_model->update("user_amount_transfer",array("amount"=>$mainamount),array("user_id"=>$userId));
+	           $paymentdata  = $this->User_Webservice_model->getDataById("user_amount_transfer",array("user_id"=>$userId));
+	          $wallet = array("amount"=>$amount,"rideId"=>$rideId,"userId"=>$userId,"trascationId"=>$trascation_id,"payment_status"=>$payment_status,"payment_mode"=>0,"created_at"=>date("Y-m-d h:i:s a"));
+           	$updateStatus1 = $this->User_Webservice_model->insert("user_wallet_histroy",$wallet);
+
+
+
 		 		}
+		 		}
+                /*notification add*/
+		 		$daten = date('Y-m-d H:i:s');
+		 		$title = "System";
+
+		 		$msg="Thank you! Your Transaction is Completed";
+                 $insert = array("booking_id"=>$rideId,"title"=>$title,"msg"=>$msg,"driver_id"=>$checkride["driverId"],"created_at"=>$daten,"status"=>2);
+                 $this->db->insert("tbl_notification",$insert);
+                $firebasetoken =  $this->db->select("*")->from("tbl_users")->where("id",$userId)->get()->result_array();
+               // print_r($firebasetoken);die();
+            	if(!empty($firebasetoken)){
+            		$firetokend = $firebasetoken[0]["fireBaseToken"];
+            	}
+            	else
+            	{
+            		$firetokend="";
+            	}
+
+        					$msg = array(
+						"title"=>"Auto Load",
+						"body" => "You Trascation is Completed.",
+						"userId" => $userId,
+						"rideId" => $rideId,
+				);
+						$token = $firetokend;
+						$this->send($token,$msg);
+
 
 		 			$result['status'] = 1;
 					$result['responseMessage'] = "Your Payment Successfully Done";
@@ -1415,58 +1492,150 @@ if(!empty($checkride)){
 	}
 
 
-	public function Recharge_user_Wallet(){
+
+
+
+
+
+
+
+	public function wallet_balance(){
+	    $apiKey = trim($this->input->get_post('apiKey', TRUE));
+        $userId = trim($this->input->get_post('userId', TRUE));
+		if($apiKey != API_KEY){
+			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
+		}
+		 $checkride = $this->User_Webservice_model->getDataById("user_amount_transfer",array("user_id"=>$userId));
+		$mainamount=0;
+        if(!empty($checkride)){
+        	$mainamount = $checkride["amount"];
+        	$result['status'] = 1;
+			$result['responseMessage'] = "All Data";
+			$result['Balance'] = $mainamount;
+
+        }
+        else
+        {
+            $result['status'] = 1;
+			$result['responseMessage'] = "All Data";
+			$result['Balance'] = $mainamount;
+
+        }
+        		echo json_encode($result);
+
+
+	}
+
+
+	public function add_money(){
 	  	$apiKey = trim($this->input->get_post('apiKey', TRUE));
         $userId = trim($this->input->get_post('userId', TRUE));
-        $deviceId = trim($this->input->get_post('deviceId', TRUE));
-        $id = trim($this->input->get_post('id', TRUE));
+       // $deviceId = trim($this->input->get_post('deviceId', TRUE));
+       $trascation_id = trim($this->input->get_post('trascation_id', TRUE));
+       $payment_status = trim($this->input->get_post('payment_status', TRUE));
 
        	$amount = trim($this->input->get_post('amount', TRUE));
 		if($apiKey != API_KEY){
 			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
 		}
+		if($payment_status == 1){
 
 		 // $this->checkDeviceToken($userId,$deviceId);
-     $checkride = $this->User_Webservice_model->getDataById("tbl_ride_payment",array("user_id"=>$userId,"id"=>$id,"payment_mode"=>2));
-if(!empty($checkride)){
 		  $amountdata  = $this->User_Webservice_model->getDataById("user_amount_transfer",array("user_id"=>$userId));
 		  $mainamount=0;
         if(!empty($amountdata)){
+        	if($payment_status ==1){
         	$mainamount = $amountdata["amount"]+$amount;
         	$this->User_Webservice_model->update("user_amount_transfer",array("amount"=>$mainamount),array("user_id"=>$userId));
            $paymentdata  = $this->User_Webservice_model->getDataById("user_amount_transfer",array("user_id"=>$userId));
+       }
+           $wallet = array("amount"=>$amount,"rideId"=>0,"userId"=>$userId,"trascationId"=>$trascation_id,"payment_status"=>$payment_status,"payment_mode"=>1,"created_at"=>date("Y-m-d h:i:s a"));
+           	$updateStatus1 = $this->User_Webservice_model->insert("user_wallet_histroy",$wallet);
+
 
         }
         else
         {
+        	if($payment_status == 1){
         	$mainamount = $amount;
 		 	$in  = array("user_id"=>$userId,"amount"=>$mainamount,"status"=>0,"created_at"=>date("Y-m-d h:i:s a"));
 		 	$updateStatus = $this->User_Webservice_model->insert("user_amount_transfer",$in);
+		 }
 		 	$paymentdata  = $this->User_Webservice_model->getDataById("user_amount_transfer",array("id"=>$updateStatus));
+		 	 $wallet = array("amount"=>$amount,"rideId"=>0,"userId"=>$userId,"trascationId"=>$trascation_id,"payment_status"=>$payment_status,"payment_mode"=>1,"created_at"=>date("Y-m-d h:i:s a"));
+           	$updateStatus1 = $this->User_Webservice_model->insert("user_wallet_histroy",$wallet);
+
 
        }
 
-		 	if($paymentdata)
+		 	if($payment_status ==1)
 		 	{//print_r($checkride);die();
 		 			$result['status'] = 1;
-					$result['responseMessage'] = "All Data";
-					$result['AllData'] = $paymentdata;
+					$result['responseMessage'] = "Recharge Wallet Successfully";
+					$result['Balance'] = $paymentdata["amount"];
 
 		 	}
 		 	else
 		 	{
 		 		$result['status'] = 0;
-				$result['responseMessage'] = "Can't Insert The Paymentifo";
+				$result['responseMessage'] = "Can't Recharge The WalletAmount";
 		 	}
-		 }
-		 
-		
+		}
 		else
 		{
-           		 $result['status'] = 0;
-				$result['responseMessage'] = "RidePayment Not Found";
+			    $result['status'] = 0;
+				$result['responseMessage'] = "Can't Recharge The WalletAmount.Your Trascation Failure";
+
 
 		}
+		
+
+		echo json_encode($result);
+	
+	}
+
+	public function Trascation_histroy(){
+		$apiKey = trim($this->input->get_post('apiKey', TRUE));
+        $userId = trim($this->input->get_post('userId', TRUE));
+       // $deviceId = trim($this->input->get_post('deviceId', TRUE));
+		if($apiKey != API_KEY){
+			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
+		}
+
+		 // $this->checkDeviceToken($userId,$deviceId);
+		  $amountdata  = $this->User_Webservice_model->getData("user_wallet_histroy",array("userId"=>$userId,"payment_status"=>1));
+		  $mainamount=0;
+		 // print_r($amountdata);die();
+		  $trascation_Data=array();
+        if(!empty($amountdata)){
+        	for($i=0;$i<count($amountdata);$i++){
+        		$trascation_Data[$i]["status"]=$amountdata[$i]["payment_mode"];
+        		$trascation_Data[$i]["amount"]=$amountdata[$i]["amount"];
+        		$explode_Date = explode(" ", $amountdata[$i]["created_at"]);
+        		$dateFormat = date("m-d-Y h:i A", strtotime($amountdata[$i]["created_at"]));
+
+        		$trascation_Data[$i]["date"]=$dateFormat;
+        		if($amountdata[$i]["payment_mode"]==1){
+        		 $trascation_Data[$i]["title"]="Money added to Wallet";
+        	   }
+        	   if($amountdata[$i]["payment_mode"]==0){
+		           $ridedata  = $this->User_Webservice_model->getDataById("tbl_booking",array("id"=>$amountdata[$i]["rideId"]));
+
+        		 $trascation_Data[$i]["title"]="Paid For Ride".$ridedata["booking_no"]."";
+        	   }
+        	   }
+
+        	         $result['status'] = 1;
+					$result['responseMessage'] = "AllData";
+					$result['AllData'] = $trascation_Data;
+        }
+        else
+        {
+        	    $result['status'] = 0;
+				$result['responseMessage'] = "No Wallet Trascation Histroy Found";
+
+        	
+       }
 
 
 		echo json_encode($result);
