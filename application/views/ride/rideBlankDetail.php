@@ -24,7 +24,12 @@
 <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12 col-lg-3">
             <div class="card">
+                <?php if($rideData["profilepic"]!=""){?>
+                <img src="<?php echo base_url('assets/profileImage/'.$rideData["profilepic"].'') ?>" alt="John" style="width:100%;height: 250px">
+            <?php }?>
+             <?php if($rideData["profilepic"]==""){?>
                 <img src="<?php echo base_url('assets/user.jpg') ?>" alt="John" style="width:100%;height: 250px">
+            <?php }?>
                 <h1 style="font-size: 22px;"><?=$rideData['name']?></h1>
                <?php if($rideData["status"] == 2){?>
              <p class="title">Ride Cancel By Driver</p>

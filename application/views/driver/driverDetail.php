@@ -64,7 +64,13 @@
         <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12 col-lg-3">
             <div class="card">
+                <?php if($driverData["profilepic"]!=""){?>
+                <img src="<?php echo base_url('assets/profileImage/'.$driverData["profilepic"].'') ?>" alt="John" style="width:100%;height: 250px">
+            <?php }?>
+             <?php if($driverData["profilepic"]==""){?>
                 <img src="<?php echo base_url('assets/user.jpg') ?>" alt="John" style="width:100%;height: 250px">
+            <?php }?>
+
                 <h1 style="font-size: 22px;"><?=$driverData['name']?></h1>
                 <p class="title"><?=$driverData['city']?>,  <?=$driverData['state']?></p>
                 <p><?=date('d F Y h:ia',strtotime($driverData['created_at']))?></p>

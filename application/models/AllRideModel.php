@@ -109,7 +109,7 @@ if($dropdownText != '' || $dropdownText !='allRides' )
 
     public function getRideInfo($id){
 
-         $this->db->select("d.id,d.email,d.city,d.state,d.name,d.phone,book.pickup_address,book.drop_address,book.id as bookid,book.userId,book.rideStatus as status,book.created_at,book.totalCharge,book.totalDistance,book.canceledBy,d.isDeleted,d.phoneVerifyStatus,vc.vehicle_name,d.profilepic,book.driverId");
+         $this->db->select("d.id,d.email,d.city,d.state,d.name,d.phone,book.pickup_address,book.drop_address,book.id as bookid,book.userId,book.rideStatus as status,book.created_at,book.totalCharge,book.totalDistance,book.canceledBy,d.isDeleted,d.phoneVerifyStatus,vc.vehicle_name,d.profilepic,book.driverId,d.profilepic");
         $this->db->from("tbl_users as d");
         $this->db->join("tbl_booking as book",'d.id=book.userId');
         $this->db->join("tbl_vehicle_category as vc",'vc.id=book.vehicleId');

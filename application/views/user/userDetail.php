@@ -24,7 +24,12 @@
 <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12 col-lg-3">
             <div class="card">
+                <?php if($userData["profilepic"]!=""){?>
+                <img src="<?php echo base_url('assets/profileImage/'.$userData["profilepic"].'') ?>" alt="John" style="width:100%;height: 250px">
+            <?php }?>
+             <?php if($userData["profilepic"]==""){?>
                 <img src="<?php echo base_url('assets/user.jpg') ?>" alt="John" style="width:100%;height: 250px">
+            <?php }?>
                 <h1 style="font-size: 22px;"><?=$userData['name']?></h1>
                 <h1 style="font-size: 22px;"><?=$userData['email']?></h1>
                 <h1 style="font-size: 22px;"><?=$userData['phone']?></h1>

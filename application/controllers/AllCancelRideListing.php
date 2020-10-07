@@ -81,7 +81,7 @@ class AllCancelRideListing extends BaseController
             $count = $this->AllCancelRideModel->RidesListingCount($searchText,$dropdownText);
             //echo $count;die();
 
-            $returns = $this->paginationCompress ( "RideListing/", $count, 10);
+            $returns = $this->paginationCompress ( "CancelRideListing/", $count, 10);
             
             $data['RideRecords'] = $this->AllCancelRideModel->RidesListing($searchText, $returns["page"], $returns["segment"],$dropdownText);
             // echo "<pre>";

@@ -118,13 +118,23 @@ if($dropdownText != '' || $dropdownText !='allRides' )
 
 
         public function getRideInfo($id){
-        $this->db->select("d.id,d.email,,d.name,d.phone,book.pickup_address,book.drop_address,book.id as bookid,book.userId,book.rideStatus as status,book.created_at,book.totalCharge,book.totalDistance,book.canceledBy,d.isDeleted,d.phoneVerifyStatus,d.profilepic,book.driverId,book.vehicleId");
+        $this->db->select("d.id,d.email,,d.name,d.phone,book.pickup_address,book.drop_address,book.id as bookid,book.userId,book.rideStatus as status,book.created_at,book.totalCharge,book.totalDistance,book.canceledBy,d.isDeleted,d.phoneVerifyStatus,d.profilepic,book.driverId,book.vehicleId,d.profilepic");
         $this->db->from("tbl_users as d");
         $this->db->join("tbl_booking as book",'d.id=book.userId');
         
         $this->db->where("book.id",$id);
        return $this->db->get()->result_array();
    
+    }
+
+
+    public function getRideInfodata(){
+               $this->db->select("d.id,d.email,,d.name,d.phone,book.pickup_address,book.drop_address,book.id as bookid,book.userId,book.rideStatus as status,book.created_at,book.totalCharge,book.totalDistance,book.canceledBy,d.isDeleted,d.phoneVerifyStatus,d.profilepic,book.driverId,book.vehicleId,d.profilepic");
+        $this->db->from("tbl_users as d");
+        $this->db->join("tbl_booking as book",'d.id=book.userId');
+        
+       return $this->db->get()->result_array();
+ 
     }
 
 

@@ -1,8 +1,12 @@
+
 <!-- Begin Page Content -->
   <div class="container-fluid">
 
 <!-- Page Heading -->
-<h1 class="h3 mb-2 text-gray-800">Auto Load  #Driver List <a href="<?php echo base_url()?>createDriverXLS" class="btn btn-sm bg-gradient-primary" style="float:right;">Export Driver Record</a></h1>
+<h1 class="h3 mb-2 text-gray-800">Auto Load  #Support List 
+
+ <a href="<?php echo base_url()?>createSupportXLS" class="btn btn-sm bg-gradient-primary" style="float:right;margin-right:20px">Export Support Record</a>
+</h1> 
 
 <div class="row">
             <div class="col-md-12">
@@ -41,20 +45,13 @@
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
   <div class="card-header py-3">
-    <h6 class="m-0 font-weight-bold text-primary" style="float:left;font-size: 24px;">Driver List</h6>
-
-    <form action="<?php echo base_url() ?>DriversListing" method="POST" id="searchList" style="float:right">
+    <h6 class="m-0 font-weight-bold text-primary" style="float:left;font-size: 24px;">Support List</h6>
+    <form action="<?php echo base_url() ?>SupportListing" method="POST" id="searchList" style="float:right">
                            
                        
                            <div class="input-group">
 
 
-                           <select class="form-control input-sm" name="dropdownText" id='dropdownText' style="width: 185px;" onchange="this.form.submit()"  >
-                                      <option <?php if($dropdownText == "" || $dropdownText == 'allUsers') echo "selected";?> value="allUsers" selected>All Driver</option>
-                                      <option <?php if($dropdownText == 'verifyUser') echo "selected";?> value="verifyUser" >Verify Driver</option>
-                                      <option <?php if($dropdownText == 'unVerifyUser') echo "selected";?> value="unVerifyUser" >Un Verify Driver</option>
-                                     
-                                    </select>
                                    
                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <input type="text" name="searchText" value="<?php echo $searchText; ?>" class="form-control input-sm " style="width: 150px;" placeholder="Search"/>
@@ -83,10 +80,9 @@
           <tr>
             <th>id</th>
             <th>Name</th>
-            <th>Phone</th>
-            <th>City</th>
-            <th>State</th>
-            <th>Wallet Balance</th>
+            <th>Email</th>
+            <th>Message</th>
+
             <th>CreatedAt</th>
             <th class="text-center">Actions</th>
           </tr>
@@ -95,61 +91,44 @@
         <tr>
             <th>id</th>
             <th>Name</th>
-            <th>Phone</th>
-            <th>City</th>
-            <th>State</th>
-            <th>Wallet Balance</th>
+            <th>Email</th>
+            <th>Message</th>
+
             <th>CreatedAt</th>
             <th class="text-center">Actions</th>
           </tr>
         </tfoot>
         <tbody>
         <?php
-                    if(!empty($userRecords))
+                    if(!empty($SupportRecords))
                     {
                       $i = 1;
                       
-                        foreach($userRecords as $record)
+                        foreach($SupportRecords as $record)
                         {
                     ?>
                     <tr>
           
           <td><?php echo "#".$i++ ?></td>
-          <td><?php if($record->name) echo $record->name; else echo "Not Updated Yet"; ?></td>
-          <td><?php if($record->phone) echo $record->phone; else echo "Not Updated Yet"; ?></td>
-          <td><?php echo $record->city ?></td>
-          <td><?php if($record->state) echo $record->state; else echo "Not Updated Yet"; ?></td>
-          <td><?php if($record->walletBalance) echo "₹ ".$record->walletBalance; else echo "Not Updated Yet"; ?></td>
-          <td><?php if($record->created_at) echo date('d-m-y h:ia',strtotime($record->created_at));
-                       ?></td>
+          <td><?php if($record->name) echo ucfirst($record->name); else echo "Not Updated Yet"; ?></td>
+           <td><?php if($record->email) echo ucfirst($record->email); else echo "Not Updated Yet"; ?></td>
+            <td><?php if($record->msg) echo ucfirst($record->msg); else echo "Not Updated Yet"; ?></td>
+          <?php $cr = explode(" ",$record->created_at); ?>
+          <td><?php echo $cr[0]; ?></td>
         
 
                      
                       
                       
                 <td  class="text-center">
-                         <?php if($record->isDeleted == 0){ ?>
-                    <a class="btn btn-sm bg-gradient-info" href="<?php echo base_url('driverstatus/').$record->id; ?>"  style='padding: 3px 11px 5px;'>
-                        Active
-                    </a>
-                    <?php }?>
-                    <?php if($record->isDeleted == 1){ ?>
-                    <a class="btn btn-sm bg-gradient-info" href="<?php echo base_url('driverstatus/').$record->id; ?>"  style='padding: 3px 11px 5px;'>
-                        InActive
-                    </a>
-                    <?php }?>
+                                    <a class="btn btn-sm bg-gradient-success" href="<?php echo base_url('supportDetail/').$record->id; ?>">
+                        <i class="fa fa-edit"></i>
+                           </a>
+                   
 
-                    <a class="btn btn-sm bg-gradient-info" href="#" onclick="transferWalletBalance(<?=$record->id?>)" style='padding: 3px 11px 5px;'>
-                        <i class="fa fa-rupee"></i>
-                    </a>
-                    <a class="btn btn-sm bg-gradient-success" href="<?php echo base_url('driverDetail/').$record->id; ?>">
-                        <i class="fa fa-eye"></i>
-                    </a>
-                    
-                 <!--   <a href="void:main(0)" class="btn btn-sm bg-gradient-danger" onclick="deleteFunction(<?php echo $record->id; ?>)" title="Delete"><i class="fa fa-trash-o"></i>
-                           </a>-->
                             
                 </td>
+
                     </tr>
                     <?php
                         }
@@ -206,15 +185,30 @@
 </div>
 <!-- End of Main Content -->
 <script type="text/javascript">
+       function deleteFunction($id){
+        var confirmation = confirm("are you sure ? You want to delete City?");
+        if(confirmation) { 
+                var serial_no = $id;
+                $.ajax({
+                     url:"<?php echo base_url('deletecity/');?>"+serial_no+"",
+                     type:"post",
+                    // dataType: "JSON",
+                     success: function(data){
+                        location.reload();
+                     }
+                });
+        }
+    }
+
     jQuery(document).ready(function(){
         jQuery('ul.pagination li a').click(function (e) {
             e.preventDefault();    
 
             
-            //var i = $("#dropdownText").val();        
+            var i = $("#dropdownText").val();        
             var link = jQuery(this).get(0).href;            
             var value = link.substring(link.lastIndexOf('/') + 1);
-            jQuery("#searchList").attr("action", baseURL + "DriversListing/" + value + "/" );
+            jQuery("#searchList").attr("action", baseURL + "UsersListing/" + value + "/" + i);
            
             // jQuery("#filter").attr("action", baseURL + "DriversListing/" + value);
             // jQuery("#filter").submit();
@@ -231,20 +225,4 @@
         $('#driverId').val(driverId);
         $("#transferMoney").modal('show');
     }
-
-     function deleteFunction($id){
-        var confirmation = confirm("are you sure ? You want to delete Driver?");
-        if(confirmation) { 
-                var serial_no = $id;
-                $.ajax({
-                     url:"<?php echo base_url('driverdelete/');?>"+serial_no+"",
-                     type:"post",
-                    // dataType: "JSON",
-                     success: function(data){
-                        location.reload();
-                     }
-                });
-        }
-    }
-    
 </script>

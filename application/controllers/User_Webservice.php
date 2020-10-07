@@ -147,10 +147,26 @@ class User_Webservice extends CI_Controller {
 		}
 		//print_r($dataemail);die();
 		if($dataemail!=""){
+		if($dataemail->isDeleted==1){
+					$result['status'] = 0;
+					$result['responseMessage'] = "Your Profile is Inactive.Please Contact to Administration";
+					echo json_encode($result);die();
+
+			}
+
 			$result['status'] = 0;
 			$result['responseMessage'] = "Email number Already Exits";
 			echo json_encode($result);die();
 		}
+   if($data!=""){
+		if($data->isDeleted==1){
+					$result['status'] = 0;
+					$result['responseMessage'] = "Your Profile is Inactive.Please Contact to Administration";
+					echo json_encode($result);die();
+
+			}
+	}
+
 
 			// print_r($data);die;
 			//var_dump($flag); die;
@@ -215,7 +231,7 @@ class User_Webservice extends CI_Controller {
 		$where['email'] = $data['email'];
 		else
 		$where['phone'] = $data['phone'];
-		
+		//$where["isDeleted"]=0;
 	
 		    $getUser = $this->db->get_where("tbl_users",$where)->row_array();
 		    if(!empty($getUser))
@@ -278,6 +294,14 @@ class User_Webservice extends CI_Controller {
 		
 			$data = $this->User_Webservice_model->checkMobileExists($phone);
 			if($data!=""){
+		      if($data->isDeleted==1){
+					$result['status'] = 0;
+					$result['responseMessage'] = "Your Profile is Inactive.Please Contact to Administration";
+					echo json_encode($result);die();
+
+			}
+	
+
 				$code = '1111';
 				// $code=rand(1000,9999);
 				// $phoneCoun = '91'.$phone;
@@ -360,7 +384,13 @@ class User_Webservice extends CI_Controller {
 		if($phone != ''){
 			$data = $this->User_Webservice_model->checkMobileExists($phone);
 			if($data){
-				
+			      if($data->isDeleted==1){
+					$result['status'] = 0;
+					$result['responseMessage'] = "Your Profile is Inactive.Please Contact to Administration";
+					echo json_encode($result);die();
+
+			}
+
 				$code = '1111';
 				// $code=rand(1000,9999);
 				// $phoneCoun = '91'.$phone;
@@ -1184,7 +1214,7 @@ $data["booking_no"]="CRN".mt_rand(100000, 999999);
 		$where = array('id'=>$userId);
 		$data = $this->User_Webservice_model->update('tbl_users',$arr,$where);
 		//print_r($data);
-		$datar = $this->User_Webservice_model->getDataById("tbl_users",array("id"=>$userId));
+		$datar = $this->User_Webservice_model->getDataById("tbl_users",array("id"=>$userId,"isDeleted"=>0));
 		//print_r($datar);
 		if($datar)
 		{
@@ -1505,6 +1535,8 @@ if(!empty($checkride)){
 		if($apiKey != API_KEY){
 			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
 		}
+	    $checkuser = $this->User_Webservice_model->getDataById("tbl_users",array("id"=>$userId,"isDeleted"=>0));
+      if(!empty($checkuser)){
 		 $checkride = $this->User_Webservice_model->getDataById("user_amount_transfer",array("user_id"=>$userId));
 		$mainamount=0;
         if(!empty($checkride)){
@@ -1521,6 +1553,11 @@ if(!empty($checkride)){
 			$result['Balance'] = $mainamount;
 
         }
+    }
+    else {
+    	      $result['status'] = 0;
+			  $result['responseMessage'] = "User Not Found";
+    }
         		echo json_encode($result);
 
 
@@ -1538,6 +1575,8 @@ if(!empty($checkride)){
 		if($apiKey != API_KEY){
 			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
 		}
+	    $checkuser = $this->User_Webservice_model->getDataById("tbl_users",array("id"=>$userId,"isDeleted"=>0));
+     if(!Empty($checkuser)){
 		if($payment_status == 1){
 
 		 // $this->checkDeviceToken($userId,$deviceId);
@@ -1588,6 +1627,12 @@ if(!empty($checkride)){
 
 
 		}
+	}
+	else{
+		      $result['status'] = 0;
+			  $result['responseMessage'] = "User Not Found";
+
+	}
 		
 
 		echo json_encode($result);
@@ -1601,7 +1646,9 @@ if(!empty($checkride)){
 		if($apiKey != API_KEY){
 			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
 		}
+	    $checkuser = $this->User_Webservice_model->getDataById("tbl_users",array("id"=>$userId,"isDeleted"=>0));
 
+        if(!empty($checkuser)){
 		 // $this->checkDeviceToken($userId,$deviceId);
 		  $amountdata  = $this->User_Webservice_model->getData("user_wallet_histroy",array("userId"=>$userId,"payment_status"=>1));
 		  $mainamount=0;
@@ -1636,6 +1683,12 @@ if(!empty($checkride)){
 
         	
        }
+      }
+      else{
+      		  $result['status'] = 0;
+			  $result['responseMessage'] = "User Not Found";
+
+      }
 
 
 		echo json_encode($result);

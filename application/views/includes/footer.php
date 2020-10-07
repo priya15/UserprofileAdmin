@@ -12,6 +12,8 @@
     <!-- End of Content Wrapper -->
 
   </div>
+
+
   <!-- End of Page Wrapper -->
 
   <!-- Scroll to Top Button-->
@@ -182,7 +184,7 @@ var myPieChart = new Chart(ctx, {
     data: {
         labels: ["Driver", "User"],
         datasets: [{
-            data: [<?=$countUser?>, 0],
+            data: [<?=$countDriver?>, <?=$countUser?>],
             backgroundColor: ['#4e73df', '#1cc88a'],
             hoverBackgroundColor: ['#2e59d9', '#17a673'],
             hoverBorderColor: "rgba(234, 236, 244, 1)",

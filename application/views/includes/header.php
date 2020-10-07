@@ -175,7 +175,7 @@ a.dropdown-item.view-all.text-center.small.text-gray-500{
 
             <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo1" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-fw fa-users"></i>
+<i class="fa fa-car" aria-hidden="true"></i>
           <span>All Rides</span>
         </a>
         <div id="collapseTwo1" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -210,7 +210,7 @@ a.dropdown-item.view-all.text-center.small.text-gray-500{
 
                   <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo11" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-fw fa-users"></i>
+<i class="fa fa-newspaper-o" aria-hidden="true"></i>
           <span>All Articles</span>
         </a>
         <div id="collapseTwo11" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -225,7 +225,7 @@ a.dropdown-item.view-all.text-center.small.text-gray-500{
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo1112" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-fw fa-users"></i>
+<i class="fa fa-car" aria-hidden="true"></i>
           <span>All Vechicle</span>
         </a>
         <div id="collapseTwo1112" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -240,7 +240,7 @@ a.dropdown-item.view-all.text-center.small.text-gray-500{
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo111111" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-fw fa-users"></i>
+          <i class="fas fa-fw fa-city"></i>
           <span>All City</span>
         </a>
         <div id="collapseTwo111111" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -270,7 +270,7 @@ a.dropdown-item.view-all.text-center.small.text-gray-500{
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo17111" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-fw fa-users"></i>
+          <i class="fas fa-fw fa-info"></i>
           <span>AboutUs</span>
         </a>
         <div id="collapseTwo17111" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -285,7 +285,7 @@ a.dropdown-item.view-all.text-center.small.text-gray-500{
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo176111" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-fw fa-users"></i>
+          <i class="fas fa-fw fa-money"></i>
           <span>Transaction Details</span>
         </a>
         <div id="collapseTwo176111" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -297,18 +297,17 @@ a.dropdown-item.view-all.text-center.small.text-gray-500{
         </div>
       </li>
 <?php } ?>
-           <?php if($dataper[0]["trascation"] == 1) { ?>
+           <?php if($dataper[0]["support"] == 1) { ?>
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo176111" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-fw fa-users"></i>
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo1756111" aria-expanded="true" aria-controls="collapseTwo">
+          <i class="fas fa-fw fa-life-ring"></i>
           <span>Support Details</span>
         </a>
-        <div id="collapseTwo176111" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div id="collapseTwo1756111" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Support</h6>
-              <a class="collapse-item" href="<?=base_url('driverTrascationDetails')?>">Support Details </a>
-               <a class="collapse-item" href="<?=base_url('companyTrascationDetails')?>">Company Transaction</a>
+              <a class="collapse-item" href="<?=base_url('SupportListing')?>">Support Details </a>
           </div>
         </div>
       </li>
@@ -320,7 +319,7 @@ a.dropdown-item.view-all.text-center.small.text-gray-500{
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo1111" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-fw fa-users"></i>
+          <i class="fas fa-fw fa-cogs"></i>
           <span>All Settings</span>
         </a>
         <div id="collapseTwo1111" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">

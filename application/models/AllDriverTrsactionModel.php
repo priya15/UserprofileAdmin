@@ -47,7 +47,7 @@ class AllDriverTrsactionModel extends CI_Model
                             OR  d.phone  LIKE '%".$searchText."%')";
             $this->db->where($likeCriteria);
         }
-        $this->db->where('d.isDeleted', 0);
+       // $this->db->where('d.isDeleted', 0);
         $this->db->group_by('v.driverId'); 
 
          
@@ -59,7 +59,7 @@ class AllDriverTrsactionModel extends CI_Model
 
 
     public function getDriverInfo($id){
-                $this->db->select("d.id,d.name as drivername,d.vehicleNumber,d.phone,d.city,d.state,d.languageType,d.phoneVerifyStatus,d.walletBalance,d.created_at,v.*,b.*");
+                $this->db->select("d.id,d.name as drivername,d.vehicleNumber,d.phone,d.city,d.state,d.languageType,d.phoneVerifyStatus,d.profilepic,d.walletBalance,d.created_at,v.*,b.*");
         $this->db->from("tbl_driver as d");
         $this->db->join("tbl_driver_amount_transfer as v",'d.id = v.driverId');
        $this->db->join("tbl_booking as b",'b.id = v.rideId');

@@ -418,6 +418,18 @@ $objWriter->save("php://output");
     }
 
 
+      public function driverstatus(){
+    $status = $this->uri->segment(2);
+   $data['userRecords'] = $this->AllDriverModel->getStatusInfo($status); 
+    $this->global['pageTitle'] = 'Auto Load : User Listing';
+            //print_r($data);die();
+      redirect("DriversListing");
+ 
+
+  }
+
+
+
     function sendSMS($mobile,$smsBody,$otp)
     {
 

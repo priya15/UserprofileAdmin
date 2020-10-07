@@ -125,6 +125,22 @@ class Driver_Webservice extends CI_Controller {
 		}
 		
 			$data = $this->Driver_Webservice_model->checkMobileExists($phone,$vehicleRegistrationNumber);
+			//print_r($data);die();
+		if($data !=""){
+			if($data->isDeleted==1){
+					$result['status'] = 0;
+					$result['responseMessage'] = "Your Profile is Inactive.Please Contact to Administration";
+					echo json_encode($result);die();
+
+			}
+			if($data->vehicleNumber==$vehicleRegistrationNumber){
+					$result['status'] = 0;
+					$result['responseMessage'] = "Phone or VehicleAlready Exist";
+					echo json_encode($result);die();
+
+			}
+		}
+
 			// print_r($data);die;
 			//var_dump($flag); die;
 			if($data == ""){
@@ -176,6 +192,15 @@ class Driver_Webservice extends CI_Controller {
 		}
 		
 			$data = $this->Driver_Webservice_model->checkMobileExists($phone);
+			if($data!=""){
+			if($data->isDeleted==1){
+					$result['status'] = 0;
+					$result['responseMessage'] = "Your Profile is Inactive.Please Contact to Administration";
+					echo json_encode($result);die();
+
+			}
+		}
+
                  if($data != ""){
 				// $code = '1111';
 				$code=rand(1000,9999);
@@ -216,7 +241,13 @@ class Driver_Webservice extends CI_Controller {
 		}
 
 		$checkLoginUser = $this->Driver_Webservice_model->checkLoginUser($phone,$password);
-		 
+		 if($checkLoginUser->isDeleted==1){
+					$result['status'] = 0;
+					$result['responseMessage'] = "Your Profile is Inactive.Please Contact to Administration";
+					echo json_encode($result);die();
+
+			}
+
 		if($checkLoginUser){
 			$this->updateDeviceInfo($deviceId,$deviceType,$firebasetoken,$phone);
 		$profiledata = 	$this->db->select("*")->from("tbl_driver")->where("id",$checkLoginUser->id)->get()->result_array();
@@ -313,6 +344,13 @@ class Driver_Webservice extends CI_Controller {
 		if($phone != ''){
 			$data = $this->Driver_Webservice_model->checkMobileExists($phone);
 			if($data){
+				if($data->isDeleted==1){
+					$result['status'] = 0;
+					$result['responseMessage'] = "Your Profile is Inactive.Please Contact to Administration";
+					echo json_encode($result);die();
+
+
+				}
 				
 				// $code = '1111';
 				$code=rand(1000,9999);
@@ -885,6 +923,8 @@ function uploadDocuments()
 				echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
 		}
 		$where = array("id"=>$driverId);
+		$where = array("isDeleted"=>0);
+
 		$getDriverDetails = $this->Driver_Webservice_model->getDataById('tbl_driver',$where);
 		if($getDriverDetails)
 		{
@@ -922,6 +962,8 @@ function uploadDocuments()
 				echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
 		}
 		$where = array("id"=>$driverId);
+		$where = array("isDeleted"=>0);
+
 		$column = "id as driverId,RCStatus,insuranceStatus,vehicleImageStatus";
 		$getDriverDetails = $this->Driver_Webservice_model->getDataById('tbl_driver',$where,$column);
 		if($getDriverDetails)
@@ -960,7 +1002,7 @@ function uploadDocuments()
         if($apiKey != API_KEY){
 		echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
 	 	}
-	 	$where = array("email"=>$email,"id!="=>$driverId);
+	 	$where = array("email"=>$email,"id!="=>$driverId,"isDeleted"=>0);
 	 	$getDriverDetails = $this->Driver_Webservice_model->getDataById('tbl_driver',$where);
 	 	//print_r($getDriverDetails);die();
       if(empty($getDriverDetails)){
@@ -1142,7 +1184,7 @@ function uploadDocuments()
 
 		if($rideData)
 		{
-			$driverinfo = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId));
+			$driverinfo = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId,"isDeleted"=>0));
           foreach($rideData as $key=>$cat_fam) {
           	$vechicleinfo = $this->Driver_Webservice_model->getDataById('tbl_vehicle_category',array('id'=>$rideData[$key]["vehicleId"]));
 			      if($rideData[$key]["profilepic"]!=""){
@@ -1211,7 +1253,7 @@ function uploadDocuments()
 $ridedatadetail =array();
 		if($rideData)
 		{
-			$driverinfo = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId));
+			$driverinfo = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId,"isDeleted"=>0));
 			$rideinfo = $this->Driver_Webservice_model->getDataById('tbl_ride_payment',array('ride_id'=>$rideId));
 			if(!empty($rideinfo)){
 				if($rideinfo["payment_mode"]==1){
@@ -1412,7 +1454,7 @@ $date2 = strtotime($rideData[0]["endRideTime"]);
 
 
 	// $this->checkDeviceToken($userId,$deviceId);
-	$driverData =  $this->Driver_Webservice_model->getDataById('tbl_driver',array("id"=>$driverId));
+	$driverData =  $this->Driver_Webservice_model->getDataById('tbl_driver',array("id"=>$driverId,"isDeleted"=>0));
 	if(!empty($driverData)){
 	$rideDatae =  $this->Driver_Webservice_model->getDataById('tbl_booking',array("driverId"=>$driverId,"rideStatus"=>1));
 	$rideDataed =  $this->Driver_Webservice_model->getDataById('tbl_booking',array("driverId"=>$driverId,"rideStatus"=>2));
@@ -1541,7 +1583,7 @@ else
 
 
 	// $this->checkDeviceToken($userId,$deviceId);
-	$driverData =  $this->Driver_Webservice_model->getDataById('tbl_driver',array("id"=>$driverId));
+	$driverData =  $this->Driver_Webservice_model->getDataById('tbl_driver',array("id"=>$driverId,"isDeleted"=>0));
 	if(!empty($driverData)){
 
 	$vechicleData =  $this->Driver_Webservice_model->getDataById('tbl_vehicle_category',array("id"=>$driverData["vehicleCategoryId"],"publish_status"=>1));
@@ -1712,7 +1754,7 @@ $rideData["vechicle_number"] = $driverdatas["vehicleNumber"];
 		if($apiKey != API_KEY){
 			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
 		}
-		$driverdata = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId));
+		$driverdata = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId,"isDeleted"=>0));
 		if(!empty($driverdata)){
             $rideData =  $this->Driver_Webservice_model->getDataById('tbl_booking',array("id"=>$rideId));
            // print_r($rideData);die();
@@ -1776,7 +1818,7 @@ $rideData["vechicle_number"] = $driverdatas["vehicleNumber"];
 		if($token == ""){
 			echo json_encode(array('status' => 0, 'responseMessage' => 'Please enter Verification Code'));die;
 		}
-		$driverdata = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId));
+		$driverdata = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId,"isDeleted"=>0));
 		if (!empty($driverdata)) {
 			# code...
 		
@@ -2029,7 +2071,7 @@ $rideData["vechicle_number"] = $driverdatas["vehicleNumber"];
 		if($apiKey != API_KEY){
 			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
 		}
-		$driverdata = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId));
+		$driverdata = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId,"isDeleted"=>0));
 		if (!empty($driverdata)) {
 			# code...
 		
@@ -2186,7 +2228,7 @@ $rideData["vechicle_number"] = $driverdatas["vehicleNumber"];
 		if($apiKey != API_KEY){
 			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
 		}
-	    $driverdata = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId));
+	    $driverdata = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId,"isDeleted"=>0));
 	    //print_r($driverdata);die();
      if(!empty($driverdata)){
 		$notdata = $this->Driver_Webservice_model->FindNotification($driverId);
@@ -2242,7 +2284,7 @@ $rideData["vechicle_number"] = $driverdatas["vehicleNumber"];
 		if($apiKey != API_KEY){
 			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
 		}
-	    $driverdata = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId));
+	    $driverdata = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId,"isDeleted"=>0));
 	    $start_date_new = date('Y-m-d', strtotime(' +1 days'));
 	    $end_date_new   = date('Y-m-d', strtotime(' -30 days'));
 	    $start_date = date("d M Y",strtotime($start_date_new));
@@ -2396,7 +2438,7 @@ $rideData["vechicle_number"] = $driverdatas["vehicleNumber"];
 		if($apiKey != API_KEY){
 			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
 		}
-	    $driverdata = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId));
+	    $driverdata = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId,"isDeleted"=>0));
 	  //  echo $start_date_new.$end_date_new;die();
 
 
@@ -2511,7 +2553,7 @@ $rideData["vechicle_number"] = $driverdatas["vehicleNumber"];
 		if($apiKey != API_KEY){
 			echo json_encode(array('status' => 0, 'responseMessage' => 'API Key mismatched'));die;
 		}
-	    $driverdata = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId));
+	    $driverdata = $this->Driver_Webservice_model->getDataById('tbl_driver',array('id'=>$driverId,"isDeleted"=>0));
 	  //  echo $start_date_new.$end_date_new;die();
 
 

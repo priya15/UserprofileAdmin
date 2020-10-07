@@ -13,7 +13,7 @@ class User_Webservice_model extends CI_Model
         $this->db->from("tbl_users");
        
         $this->db->where("phone", $phone);   
-        $this->db->where("isDeleted", 0);
+        //$this->db->where("isDeleted", 0);
         
         $query = $this->db->get();
         // echo $this->db->last_query();
@@ -24,7 +24,7 @@ function checkEmailExists($email){
         $this->db->from("tbl_users");
        
         $this->db->where("email", $email);   
-        $this->db->where("isDeleted", 0);
+       // $this->db->where("isDeleted", 0);
         
         $query = $this->db->get();
         // echo $this->db->last_query();
@@ -35,7 +35,8 @@ function checkEmailExists($email){
     function validateOTP($mobile,$otp){
         $this->db->select("*");
         $this->db->from("tbl_users");
-       
+        $this->db->where("isDeleted", 0);
+
         $this->db->where("phone", $mobile);
         $this->db->where("phoneOtp", $otp);
         $query = $this->db->get();
@@ -73,6 +74,8 @@ function checkEmailExists($email){
     {
         $this->db->where('phone',$phone);
         $this->db->where('password',$pass);
+       // $this->db->where("isDeleted", 0);
+
         $ob = $this->db->get('tbl_users');
         return $ob->row();
     }
@@ -90,6 +93,8 @@ function checkEmailExists($email){
         $this->db->from("tbl_users as d");
         
         $this->db->where('d.id',$userId);
+        $this->db->where('d.isDeleted',0);
+
         $query = $this->db->get();
         return $query->row_array(); 
     }

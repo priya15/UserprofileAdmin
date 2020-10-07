@@ -83,7 +83,7 @@ class AllBlankRideListing extends BaseController
             $count = $this->AllBlankRideModel->RidesBlankListingCount($searchText,$dropdownText);
             //echo $count;die();
 
-            $returns = $this->paginationCompress ( "RideListing/", $count, 10);
+            $returns = $this->paginationCompress ( "BlankRideListing/", $count, 10);
             
             $data['RideRecords'] = $this->AllBlankRideModel->RidesBlankListing($searchText, $returns["page"], $returns["segment"],$dropdownText);
             // echo "<pre>";
@@ -106,6 +106,71 @@ class AllBlankRideListing extends BaseController
         $this->loadViews("ride/rideBlankDetail", $this->global, $data, NULL);
 
 
+
+    }
+
+
+    public function createBlankXLS(){
+                        $fileName = 'BlankRide.xlsx'; 
+        $searchText="";
+        //$dropdownText = $dropdownval;
+       // echo $dropdownval;die();
+        $data['userRecords'] = $this->AllBlankRideModel->getRideInfodata();
+       //print_r($data['userRecords']);die();
+
+        // load excel library
+        $this->load->library('excel');
+       // $mobiledata = $this->admin_database->emp_record();
+        $objPHPExcel = new PHPExcel();
+        $objPHPExcel->setActiveSheetIndex(0);
+        // set Header
+        $objPHPExcel->getActiveSheet()->SetCellValue('A1', 'Name.');
+        $objPHPExcel->getActiveSheet()->SetCellValue('B1', 'PickupAddress');
+        $objPHPExcel->getActiveSheet()->SetCellValue('C1', 'DropAddress');
+         $objPHPExcel->getActiveSheet()->SetCellValue('D1', 'TotalCharge');
+        $objPHPExcel->getActiveSheet()->SetCellValue('E1', 'TotalDistance');
+        $objPHPExcel->getActiveSheet()->SetCellValue('F1', 'vechicleName');
+        $objPHPExcel->getActiveSheet()->SetCellValue('G1', 'DriverName');
+
+
+
+        // set Row
+        $rowCount = 2;
+        for($i=0; $i<count($data['userRecords']); $i++) 
+        {
+            //print_r($val);die();
+          //  echo  ;die();
+            $vechicleInfo = $this->db->get_where('tbl_vehicle_category',array('id'=>$data['userRecords'][$i]["vehicleId"]))->row_array();
+            //print_r($vechicleInfo);die();
+         $driverInfo = $this->db->get_where('tbl_driver',array('id'=>$data['userRecords'][$i]["driverId"]))->row_array();
+
+            $objPHPExcel->getActiveSheet()->SetCellValue('A' . $rowCount, $data['userRecords'][$i]["name"]);
+            $objPHPExcel->getActiveSheet()->SetCellValue('B' . $rowCount, $data['userRecords'][$i]["pickup_address"]);
+            $objPHPExcel->getActiveSheet()->SetCellValue('C' . $rowCount, $data['userRecords'][$i]["drop_address"]);
+            $objPHPExcel->getActiveSheet()->SetCellValue('D' . $rowCount, $data['userRecords'][$i]["totalCharge"]);
+            $objPHPExcel->getActiveSheet()->SetCellValue('E' . $rowCount, $data['userRecords'][$i]["totalDistance"]);
+            $objPHPExcel->getActiveSheet()->SetCellValue('F' . $rowCount, $vechicleInfo["vehicle_name"]);
+         if(!empty($driverInfo)){
+                $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowCount, $driverInfo["name"]);
+
+         }
+         else
+         {
+            $objPHPExcel->getActiveSheet()->SetCellValue('G' . $rowCount, "Driver Not Found");
+
+         }
+
+      
+
+             $rowCount++;
+        }
+
+        $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+        header("Content-Type: application/vnd.ms-excel");
+header("Content-DispositiovechicleInfon: attachment; filename=\"$fileName\"");
+header("Cache-Control: max-age=0");
+
+$objWriter->save("php://output");
 
     }
 

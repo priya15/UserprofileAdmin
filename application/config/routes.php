@@ -76,6 +76,9 @@ $route['createPasswordUser'] = "login/createPasswordUser";
 
 $route['transferMoneyToDriver'] = "AllDriverListing/transferMoneyToDriver";
 $route['DriversListing'] = "AllDriverListing/DriversListing";
+$route['driverstatus/(:any)'] = "AllDriverListing/driverstatus//$1";
+
+
 $route['UsersListing'] = "AllUserListing/UsersListing";
 $route['UsersListing/(:any)'] = "AllUserListing/UsersListing/$1";
 $route['userstatus/(:any)'] = "AllUserListing/userstatus/$1";
@@ -97,10 +100,17 @@ $route['RideListing'] = 'AllRideListing/RideListing';
 $route['CancelRideListing'] = 'AllCancelRideListing/CancelRideListing';
 
 $route['BlankRideListing'] = 'AllBlankRideListing/BlankRideListing';
+$route['createBlankXLS'] = 'AllBlankRideListing/createBlankXLS';
+
 
 $route['RideBlankDetail/(:any)'] = 'AllBlankRideListing/RideBlankDetail/$1';
+$route['BlankRideListing/(:any)'] = 'AllBlankRideListing/BlankRideListing/$1';
+
 
 $route['RideCancelDetail/(:any)'] = 'AllCancelRideListing/RideCancelDetail/$1';
+$route['CancelRideListing/(:any)'] = 'AllCancelRideListing/CancelRideListing/$1';
+
+
 $route['DriverRatingListing'] = 'AllRatingRideListing/DriverRatingListing';
 $route['driverRatingDetail/(:any)'] = 'AllRatingRideListing/driverRatingDetail/$1';
 
@@ -123,6 +133,8 @@ $route['editarticledata'] = 'AllArticleListing/editarticledata';
 
 
 $route['VechicleListing'] = 'AllVechicleListing/VechicleListing';
+$route['VechicleListing/(:any)'] = 'AllVechicleListing/VechicleListing/$1';
+
 $route['createVechicleXLS'] = 'AllVechicleListing/createVechicleXLS';
 
 $route['AddVechicle'] = 'AllVechicleListing/AddVechicle';
@@ -176,11 +188,19 @@ $route['deletenotification/(:any)'] = "AllNotification/deletenotification/$1";
 $route['AboutUsEditDetail'] = "AllAboutUsListing/AboutUsEditDetail";
 $route['editaboutusdata'] = "AllAboutUsListing/editaboutusdata";
 $route['driverTrascationDetails'] = "AllTrascationDriverListing/driverTrascationDetails";
+$route['driverTrascationDetails/(:any)'] = "AllTrascationDriverListing/driverTrascationDetails/$1";
+
 $route['driverTrsactionDetailData/(:any)'] = "AllTrascationDriverListing/driverTrsactionDetailData/$1";
 $route['createDriverTrascationXLS'] = "AllTrascationDriverListing/createDriverTrascationXLS";
 
 
 $route['companyTrascationDetails'] = "AllTrascationCompanyListing/companyTrascationDetails";
+$route['companyTrascationDetails/(:any)'] = "AllTrascationCompanyListing/companyTrascationDetails/$1";
+
 $route['companyTrsactionDetailData/(:any)'] = "AllTrascationCompanyListing/companyTrsactionDetailData/$1";
 $route['createCompanyTrascationXLS'] = "AllTrascationCompanyListing/createCompanyTrascationXLS";
+$route['SupportListing'] = "AllSupportListing/SupportListing";
+$route['supportDetail/(:any)'] = "AllSupportListing/supportDetail/$1";
+$route['createSupportXLS'] = "AllSupportListing/createSupportXLS";
+$route['SupportListing(:any)'] = "AllSupportListing/SupportListing/$1";
 

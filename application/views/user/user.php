@@ -117,7 +117,7 @@
                     ?>
                     <tr>
           
-          <td><?php echo "#".$record->id ?></td>
+          <td><?php echo "#".$i++ ?></td>
           <td><?php if($record->name) echo $record->name; else echo "Not Updated Yet"; ?></td>
           <td><?php if($record->phone) echo $record->phone; else echo "Not Updated Yet"; ?></td>
           <td><?php echo $record->city ?></td>
@@ -148,8 +148,8 @@
                    <a class="btn btn-sm bg-gradient-success" href="<?php echo base_url('userDetail/').$record->id; ?>">
                         <i class="fa fa-eye"></i>
                     </a>
-                       <a href="void:main(0)" class="btn btn-sm bg-gradient-danger" onclick="deleteFunction(<?php echo $record->id; ?>)" title="Delete"><i class="fa fa-trash-o"></i>
-                           </a>
+                    <!--   <a href="void:main(0)" class="btn btn-sm bg-gradient-danger" onclick="deleteFunction(<?php echo $record->id; ?>)" title="Delete"><i class="fa fa-trash-o"></i>
+                           </a>-->
 
                             
                 </td>

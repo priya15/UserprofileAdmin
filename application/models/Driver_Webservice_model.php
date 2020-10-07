@@ -13,11 +13,11 @@ class Driver_Webservice_model extends CI_Model
         $this->db->from("tbl_driver");
         if($vehicleRegistrationNumber != '')
         {
-            $this->db->where("vehicleNumber", $vehicleRegistrationNumber);  
+           // $this->db->where("vehicleNumber", $vehicleRegistrationNumber);  
            
         }
           $this->db->where("phone", $phone);   
-        // $this->db->where("isDeleted", 0);
+       // $this->db->where("isDeleted", 0);
         
         $query = $this->db->get();
         // echo $this->db->last_query();
@@ -27,7 +27,8 @@ class Driver_Webservice_model extends CI_Model
     function validateOTP($mobile,$otp){
         $this->db->select("*");
         $this->db->from("tbl_driver");
-       
+     $this->db->where("isDeleted", 0);
+
         $this->db->where("phone", $mobile);
         $this->db->where("phoneOtp", $otp);
         $query = $this->db->get();
@@ -66,6 +67,8 @@ class Driver_Webservice_model extends CI_Model
     {
         $this->db->where('phone',$phone);
         $this->db->where('password',$pass);
+         //$this->db->where("isDeleted", 0);
+
         $ob = $this->db->get('tbl_driver');
         return $ob->row();
     }
@@ -75,6 +78,9 @@ class Driver_Webservice_model extends CI_Model
         $this->db->from("tbl_driver as d");
         $this->db->join("tbl_vehicle_category as v",'v.id = d.vehicleCategoryId','left');
         $this->db->where('d.id',$driverId);
+        $this->db->where("isDeleted", 0);
+
+
         $query = $this->db->get();
         return $query->row_array(); 
     }

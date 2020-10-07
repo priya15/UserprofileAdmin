@@ -29,7 +29,12 @@
 <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12 col-lg-3">
             <div class="card">
+                <?php if($driverData[0]["profilepic"]!=""){?>
+                <img src="<?php echo base_url('assets/profileImage/'.$driverData[0]["profilepic"].'') ?>" alt="John" style="width:100%;height: 250px">
+            <?php }?>
+             <?php if($driverData[0]["profilepic"]==""){?>
                 <img src="<?php echo base_url('assets/user.jpg') ?>" alt="John" style="width:100%;height: 250px">
+            <?php }?>
                 <h1 style="font-size: 22px;"><?=$driverData[0]['drivername']?></h1>
                 <h1 style="font-size: 22px;">Payment Mode:
                     <? if($driverData[0]['payment_mode'] == 1){?>

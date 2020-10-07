@@ -9,7 +9,7 @@ class AllDriverModel extends CI_Model
      */
     function DriversListingCount($searchText = '',$dropdownText = '')
     {
-        $this->db->select("d.id,d.name,d.vehicleNumber,d.phone,d.city,d.state,d.languageType,d.phoneVerifyStatus,v.vehicle_name,d.walletBalance,d.created_at");
+        $this->db->select("d.id,d.name,d.vehicleNumber,d.phone,d.city,d.state,d.languageType,d.phoneVerifyStatus,v.vehicle_name,d.walletBalance,d.created_at,d.isDeleted");
         $this->db->from("tbl_driver as d");
         $this->db->join("tbl_vehicle_category as v",'v.id = d.vehicleCategoryId','left');
          
@@ -19,7 +19,7 @@ class AllDriverModel extends CI_Model
                             OR  d.phone  LIKE '%".$searchText."%')";
             $this->db->where($likeCriteria);
         }
-        $this->db->where('d.isDeleted', 0);
+       // $this->db->where('d.isDeleted', 0);
         if($dropdownText != '' || $dropdownText !='allUser' )
         {
             if($dropdownText == 'verifyUser'){
@@ -53,7 +53,7 @@ class AllDriverModel extends CI_Model
      */
     function DriversListing($searchText = '', $page, $segment,$dropdownText = '')
     {
-        $this->db->select("d.id,d.RCStatus,d.insuranceStatus,d.vehicleImageStatus,d.name,d.vehicleNumber,d.phone,d.city,d.state,d.languageType,d.phoneVerifyStatus,v.vehicle_name,d.walletBalance,d.created_at,v.minPrice,v.maxPrice,v.pricePerKM,v.vehiDesc,d.lat,d.lng");
+        $this->db->select("d.id,d.RCStatus,d.insuranceStatus,d.vehicleImageStatus,d.name,d.vehicleNumber,d.phone,d.city,d.state,d.languageType,d.phoneVerifyStatus,v.vehicle_name,d.walletBalance,d.created_at,v.minPrice,v.maxPrice,v.pricePerKM,v.vehiDesc,d.lat,d.lng,d.isDeleted");
         $this->db->from("tbl_driver as d");
         $this->db->join("tbl_vehicle_category as v",'v.id = d.vehicleCategoryId','left');
          
@@ -63,7 +63,7 @@ class AllDriverModel extends CI_Model
                             OR  d.phone  LIKE '%".$searchText."%')";
             $this->db->where($likeCriteria);
         }
-        $this->db->where('d.isDeleted', 0);
+       // $this->db->where('d.isDeleted', 0);
         if($dropdownText != '' || $dropdownText !='allUser' )
         {
             if($dropdownText == 'verifyUser'){
@@ -98,7 +98,10 @@ class AllDriverModel extends CI_Model
     }
 
     function deleteDriverInfo($id){
-       return $this->db->delete('tbl_driver', array('id' => $id)); 
+        $this->db->where('id', $id);
+       // $this->db->where('isDeleted', 1);
+
+       return $this->db->update('tbl_driver', array('isDeleted' => 1)); 
 
     }
     
@@ -188,6 +191,34 @@ class AllDriverModel extends CI_Model
         
         return $this->db->affected_rows();
     }
+         function getStatusInfo($id){
+        $this->db->select('*');
+        $this->db->from('tbl_driver');
+        $this->db->where('id', $id);
+        $query = $this->db->get()->result_array();
+        
+        $data = $query;
+        //echo($data[0]["isDeleted"]);die();
+        //print_r($data->isDeleted);die();
+        if($data[0]["isDeleted"] ==0){
+           $this->db->where("id",$id);
+           $this->db->update("tbl_driver", array("isDeleted"=>1));
+  
+         }
+         else
+         {
+             $this->db->where("id",$id);
+             $this->db->update("tbl_driver", array("isDeleted"=>0));
+        }
+        $this->db->select('*');
+        $this->db->from('tbl_driver');
+        
+       $query = $this->db->get();
+       return $data1 = $query->result();
+ 
+        }
+    
+
 }
 
   

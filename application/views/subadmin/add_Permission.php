@@ -31,7 +31,7 @@
 
         <form class="user" method="post" action="<?=base_url('addsubadminpermissiondata')?>" >
           <?php 
-            $user=0;$driver=0;$ride=0;$article=0;$vechicle=0;$subadmin=0;$setting=0;$feedback=0;$city=0;$aboutus=0;
+            $user=0;$driver=0;$ride=0;$article=0;$vechicle=0;$subadmin=0;$setting=0;$feedback=0;$city=0;$aboutus=0;$trascation=0;$support=0;
             if($permission[0]["user"]==1){
               $user =1;
             }
@@ -62,6 +62,12 @@
 
             if($permission[0]["aboutus"]==1){
               $aboutus =1;
+            }
+             if($permission[0]["support"]==1){
+              $support =1;
+            }
+             if($permission[0]["trascation"]==1){
+              $trascation =1;
             }
            // print_r($permission);
             //echo $aboutus;die();
@@ -217,6 +223,40 @@
                 <label>Aboutus</label>
                 </div>
                 <?php }?>
+                                <?php if($support ==0){?>
+
+                <div class="form-group">
+
+                <input type="checkbox"  style='border-radius: 10rem !important;' name="support" aria-describedby="emailHelp"  placeholder="Enter name">
+                <label>Support</label>
+                </div>
+                <?php }?>
+                <?php if($support == 1){?>
+
+                <div class="form-group">
+
+                <input type="checkbox"  style='border-radius: 10rem !important;' name="support" aria-describedby="emailHelp"  placeholder="Enter name" checked>
+                <label>Support</label>
+                </div>
+                <?php }?>
+
+                <?php if($trascation ==0){?>
+
+                <div class="form-group">
+
+                <input type="checkbox"  style='border-radius: 10rem !important;' name="trascation" aria-describedby="emailHelp"  placeholder="Enter name">
+                <label>Trascation</label>
+                </div>
+                <?php }?>
+                <?php if($trascation == 1){?>
+
+                <div class="form-group">
+
+                <input type="checkbox"  style='border-radius: 10rem !important;' name="trascation" aria-describedby="emailHelp"  placeholder="Enter name" checked>
+                <label>Trascation</label>
+                </div>
+                <?php }?>
+
 
                       
                     <input type= 'submit' id="submit" href="#" class="btn btn-primary btn-user btn-block" value="Add Permission">

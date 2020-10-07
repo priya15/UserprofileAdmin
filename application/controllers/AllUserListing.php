@@ -196,7 +196,10 @@ $objWriter->save("php://output");
 
         public function userdelete(){
         $id = $this->uri->segment(2);
-         $data = $this->db->delete("tbl_users",array("id"=>$id));
+        $this->db->where('id', $id);
+       // $this->db->where('isDeleted', 1);
+
+        $this->db->update('tbl_users', array('isDeleted' => 1)); 
 
         if($data){
             //redirect("DriversListing");
